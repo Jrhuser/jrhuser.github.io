@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cooling System Selector</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    label, select, input { display: block; margin: 10px 0; }
+    .result { border: 1px solid #ccc; padding: 10px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+<h2>Cooling System Selector</h2>
+
+<form id="filter-form">
+  <label for="systemType">Cooling System Type:</label>
+  <select id="systemType" required>
+    <option value="">-- Select Type --</option>
+    <option value="Open">Open Loop</option>
+    <option value="Closed">Closed Loop</option>
+  </select>
+
+  <div id="openLoopOptions" style="display: none;">
+    <label for="openLoopChoice">Select Input Type:</label>
+    <select id="openLoopChoice">
+      <option value="">-- Select --</option>
+      <option value="recirc">Recirc Rate (GPM)</option>
+      <option value="tonnage">Tonnage (Tons)</option>
+    </select>
+
+    <div id="recircInput" style="display: none;">
+      <label for="recircRate">Recirc Rate (GPM):</label>
+      <input type="number" id="recircRate" min="0">
+    </div>
+
+    <div id="tonnageInput" style="display: none;">
+      <label for="tonnage">Tonnage (Tons):</label>
+      <input type="number" id="tonnage" min="0">
+    </div>
+  </div>
+
+  <div id="closedLoopOptions" style="display: none;">
+    <label for="systemVolume">System Volume (Gallons):</label>
+    <input type="number" id="systemVolume" min="0">
+  </div>
+
+  <button type="submit">Search</button>
+</form>
+
+<div id="results"></div>
+
+<script>
+  let data = [];
+
+  // Load JSON data
+  fetch('selection_database.json')
+    .then(response => response.json())
+    .then(json => data = json);
+
+  const systemType = document.getElementById('systemType');
+  const openLoopOptions = document.getElementById('openLoopOptions');
+  const closedLoopOptions = document.getElementById('closedLoopOptions');
+  const openLoopChoice = document.getElementById('openLoopChoice');
+  const recircInput = document.getElementById('recircInput');
+  const tonnageInput = document.getElementById('tonnageInput');
+  const resultsDiv = document.getElementById('results');
+
+  systemType.addEventListener('change', () => {
+    openLoopOptions.style.display = systemType.value === 'Open' ? 'block' : 'none';
+    closedLoopOptions.style.display = systemType.value === 'Closed' ? 'block' : 'none';
+    recircInput.style.display = 'none';
+    tonnageInput.style.display = 'none';
+  });
+
+  openLoopChoice.addEventListener('change', () => {
+    recircInput.style.display = openLoopChoice.value === 'recirc' ? 'block' : 'none';
+    tonnageInput.style.display = openLoopChoice.value === 'tonnage' ? 'block' : 'none';
+  });
+
+  document.getElementById('filter-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    resultsDiv.innerHTML = '';
+
+    const type = systemType.value;
+    let filtered = [];
+
+    if (type === 'Open') {
+      const choice = openLoopChoice.value;
+      if (choice === 'recirc') {
+        const recirc = parseFloat(document.getElementById('recircRate').value);
+        filtered = data.filter(item =>
+          item['Min Recirc (gallons)'] <= recirc && recirc <= item[' Max Recirc (gallons)']
+        );
+      } else if (choice === 'tonnage') {
+        const tonnage = parseFloat(document.getElementById('tonnage').value);
+        filtered = data.filter(item =>
+          item['Tonnage Min'] <= tonnage && tonnage <= item['Tonnage Max']
+        );
+      }
+    } else if (type === 'Closed') {
+      const volume = parseFloat(document.getElementById('systemVolume').value);
+      filtered = data.filter(item =>
+        item['Loop Min'] <= volume && volume <= item['Loop Max']
+      );
+    }
+
+    if (filtered.length === 0) {
+      resultsDiv.innerHTML = '<p>No matching models found.</p>';
+    } else {
+      filtered.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'result';
+        div.innerHTML = `<strong>${item.Model}</strong><br>
+                         HP: ${item.hp}<br>
+                         Flow Rate: ${item['Flow Rate']}<br>
+                         Description: ${item.Description || 'N/A'}`;
+        resultsDiv.appendChild(div);
+      });
+    }
+  });
+</script>
+
+</body>
+</html>
