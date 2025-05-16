@@ -191,42 +191,67 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    function findMatchingModels(systemType, inputType, value, electricalCost) {
-        // ... (findMatchingModels function remains the same)
-        const matchedModels = { separator: null, vaf: null, vortisand: null };
-        console.log(`Searching for: System=${systemType}, InputType=${inputType}, Value=${value}, ElecCost=${electricalCost}`);
+function findMatchingModels(systemType, inputType, value, electricalCost) {
+        const matchedModels = {
+            separator: null,
+            vaf: null,
+            vortisand: null
+        };
+
+        console.log(`Searching for: System=${systemType}, InputType=${inputType}, Value=${value}, ElecCost=${electricalCost}`); // ElecCost added to log
+
         database.forEach(model => {
             const modelType = model['Type']?.trim().toLowerCase();
             const modelSystem = model['System']?.trim().toLowerCase();
             const modelName = model['Model']?.trim();
             const description = model['Description']?.trim();
-            const flowrateGPM = parseFloat(model['Flowrate (GPM)']);
-            const hp = parseFloat(model['HP']);
-            const minRecirc = parseFloat(model['Min Recirc (GPM)']);
-            const maxRecirc = parseFloat(model['Max Recirc (GPM)']);
-            const minVolume = parseFloat(model['Min System Volume (Gal)']);
-            const maxVolume = parseFloat(model['Max System Volume (Gal)']);
+
+            // Helper function to parse numbers that might have commas
+            const parseNumericValue = (str) => {
+                if (typeof str !== 'string') return parseFloat(str); // If already a number or non-string
+                return parseFloat(str.replace(/,/g, '')); // Remove all commas then parse
+            };
+
+            const flowrateGPM = parseNumericValue(model['Flowrate (GPM)']);
+            const hp = parseNumericValue(model['HP']);
+            const minRecirc = parseNumericValue(model['Min Recirc (GPM)']);
+            const maxRecirc = parseNumericValue(model['Max Recirc (GPM)']);
+            const minVolume = parseNumericValue(model['Min System Volume (Gal)']);
+            const maxVolume = parseNumericValue(model['Max System Volume (Gal)']);
+
             let isMatch = false;
+
             if (modelSystem === systemType) {
                 if (inputType === 'recirc' && systemType === 'open') {
-                    if (!isNaN(minRecirc) && !isNaN(maxRecirc) && value >= minRecirc && value <= maxRecirc) isMatch = true;
-                } else if (inputType === 'volume') {
-                    if (!isNaN(minVolume) && !isNaN(maxVolume) && value >= minVolume && value <= maxVolume) isMatch = true;
+                    if (!isNaN(minRecirc) && !isNaN(maxRecirc) && value >= minRecirc && value <= maxRecirc) {
+                        isMatch = true;
+                    }
+                } else if (inputType === 'volume') { // Applies to both 'open' (if volume chosen) and 'closed'
+                    if (!isNaN(minVolume) && !isNaN(maxVolume) && value >= minVolume && value <= maxVolume) {
+                        isMatch = true;
+                    }
                 }
             }
+
             if (isMatch) {
                 const kw = !isNaN(hp) ? hp * 0.7457 : 0;
                 const annualHours = 8760;
                 const annualElectricalCost = kw * annualHours * electricalCost;
+
                 const modelData = {
                     model: modelName || 'N/A',
                     flowrate: !isNaN(flowrateGPM) ? flowrateGPM : 'N/A',
                     description: description || 'No description available.',
                     annualElectricalCost: annualElectricalCost.toFixed(2)
                 };
-                if (modelType === 'separator' && !matchedModels.separator) matchedModels.separator = modelData;
-                else if (modelType === 'vaf' && !matchedModels.vaf) matchedModels.vaf = modelData;
-                else if (modelType === 'vortisand' && !matchedModels.vortisand) matchedModels.vortisand = modelData;
+
+                if (modelType === 'separator' && !matchedModels.separator) {
+                    matchedModels.separator = modelData;
+                } else if (modelType === 'vaf' && !matchedModels.vaf) {
+                    matchedModels.vaf = modelData;
+                } else if (modelType === 'vortisand' && !matchedModels.vortisand) {
+                    matchedModels.vortisand = modelData;
+                }
             }
         });
         console.log("Matched models:", matchedModels);
