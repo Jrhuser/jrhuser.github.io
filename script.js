@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM fully loaded and parsed'); // 1. Check if DOMContentLoaded fires
+
     const openSystemRadio = document.getElementById('openSystem');
     const closedSystemRadio = document.getElementById('closedSystem');
     const openSystemPrompts = document.getElementById('openSystemPrompts');
@@ -6,16 +8,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.getElementById('calculateButton');
     const resultsArea = document.getElementById('resultsArea');
 
-    const recircRateInput = document.getElementById('recircRate');
-    const openSystemTonnageInput = document.getElementById('openSystemTonnage');
-    const openElectricalCostInput = document.getElementById('openElectricalCost');
-    const closedSystemVolumeInput = document.getElementById('closedSystemVolume');
-    const closedElectricalCostInput = document.getElementById('closedElectricalCost');
+    // 2. Check if elements are found
+    console.log('openSystemRadio element:', openSystemRadio);
+    console.log('closedSystemRadio element:', closedSystemRadio);
+    console.log('openSystemPrompts element:', openSystemPrompts);
+    console.log('closedSystemPrompts element:', closedSystemPrompts);
+
 
     const dbUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT216WTQadamMw4sIIFvBuWNWe69BCz3GedD5Ahcy3i187k9XGtiBve_yUiDc7jtqYZjtB4mrgDPnbK/pub?gid=0&single=true&output=csv';
     let database = [];
 
     async function fetchData() {
+        // ... (fetchData function remains the same as the previous version)
         try {
             const response = await fetch(dbUrl);
             if (!response.ok) {
@@ -30,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
             database = parseResult.data;
             console.log('Database loaded. Number of rows:', database.length);
             if (database.length > 0) {
-                console.log('First row of database:', database[0]); // Log first row to see headers
+                console.log('First row of database:', database[0]);
             }
             if (parseResult.errors.length > 0) {
                 console.warn('CSV parsing errors:', parseResult.errors);
@@ -45,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchData();
 
     function validateAndGetElectricalCost(inputElement) {
+        // ... (validateAndGetElectricalCost function remains the same)
         const cost = parseFloat(inputElement.value);
         if (isNaN(cost) || cost < 0) {
             alert('Please enter a valid, non-negative Electrical Cost.');
@@ -55,21 +60,51 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function togglePrompts() {
+        console.log('togglePrompts function called.'); // 4. Check if togglePrompts is called
+
         const openSelected = openSystemRadio.checked;
         const closedSelected = closedSystemRadio.checked;
 
-        openSystemPrompts.classList.toggle('hidden', !openSelected);
-        closedSystemPrompts.classList.toggle('hidden', !closedSelected);
+        console.log('In togglePrompts - Open selected:', openSelected, 'Closed selected:', closedSelected); // 5. Check radio state
 
-        calculateButton.disabled = !(openSelected || closedSelected);
-        resultsArea.classList.add('hidden');
+        if (openSystemPrompts && closedSystemPrompts) { // Ensure elements exist before trying to modify classList
+            console.log('openSystemPrompts classList before:', openSystemPrompts.classList.toString());
+            openSystemPrompts.classList.toggle('hidden', !openSelected);
+            console.log('openSystemPrompts classList after:', openSystemPrompts.classList.toString());
+
+            console.log('closedSystemPrompts classList before:', closedSystemPrompts.classList.toString());
+            closedSystemPrompts.classList.toggle('hidden', !closedSelected);
+            console.log('closedSystemPrompts classList after:', closedSystemPrompts.classList.toString());
+        } else {
+            console.error('Error in togglePrompts: openSystemPrompts or closedSystemPrompts element not found!');
+        }
+
+
+        if (calculateButton) {
+            calculateButton.disabled = !(openSelected || closedSelected);
+        } else {
+            console.error('Error in togglePrompts: calculateButton element not found!');
+        }
+
+        if (resultsArea) {
+            resultsArea.classList.add('hidden');
+        } else {
+            console.error('Error in togglePrompts: resultsArea element not found!');
+        }
         clearResults();
     }
 
-    openSystemRadio.addEventListener('change', togglePrompts);
-    closedSystemRadio.addEventListener('change', togglePrompts);
+    if (openSystemRadio && closedSystemRadio) {
+        console.log('Adding event listeners to radio buttons.'); // 3. Check if listeners are being added
+        openSystemRadio.addEventListener('change', togglePrompts);
+        closedSystemRadio.addEventListener('change', togglePrompts);
+    } else {
+        console.error('Could not add event listeners: openSystemRadio or closedSystemRadio element not found!');
+    }
+
 
     calculateButton.addEventListener('click', () => {
+        // ... (calculateButton click listener remains the same as the previous version)
         if (database.length === 0) {
             alert('Database is not loaded or is empty. Please wait or try refreshing.');
             return;
@@ -99,48 +134,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
             database.forEach((item, index) => {
-                // Corrected CSV Header Names
                 const itemRecircMin = item['Min Recirc Rate (gpm)'];
-                const itemRecircMax = item['Max Recirc Rate (gpm)'];
+                const itemRecircMax = item['Max Recirc Rate (gpm)']; //  MAKE SURE THIS HEADER IS 100% CORRECT
                 const itemTonnageMin = item['TONNAGE Min'];
                 const itemTonnageMax = item['TONNAGE Max'];
-                const itemTypeRaw = item.Type; // Original 'Type' from CSV
-                const itemSystemTypeRaw = item['System Type']; // Original 'System Type' from CSV
-
-                // console.log(`[DEBUG] Processing Row ${index}:`, item); // Log the whole item
-                // console.log(`[DEBUG] Row ${index} Raw Values - RecircMin: ${itemRecircMin} (type: ${typeof itemRecircMin}), RecircMax: ${itemRecircMax} (type: ${typeof itemRecircMax}), TonnageMin: ${itemTonnageMin} (type: ${typeof itemTonnageMin}), TonnageMax: ${itemTonnageMax} (type: ${typeof itemTonnageMax})`);
-
+                const itemTypeRaw = item.Type;
+                const itemSystemTypeRaw = item['System Type'];
 
                 if (itemSystemTypeRaw?.trim().toLowerCase() !== 'open') return;
 
                 let recircMatch = false;
                 let tonnageMatch = false;
 
-                // Check Recirc Rate condition if input is provided
                 if (!isNaN(inputRecircRate) && typeof itemRecircMin === 'number' && typeof itemRecircMax === 'number') {
                     if (inputRecircRate >= itemRecircMin && inputRecircRate <= itemRecircMax) {
                         recircMatch = true;
                     }
                 }
-                // else if (!isNaN(inputRecircRate)) {
-                //     console.log(`[DEBUG] Row ${index} Recirc Check: Input (${inputRecircRate}) vs Row Min (${itemRecircMin}), Row Max (${itemRecircMax}). Min/Max not numbers or input NaN.`);
-                // }
 
-
-                // Check Tonnage condition if input is provided
                 if (!isNaN(inputOpenTonnageOrVolume) && typeof itemTonnageMin === 'number' && typeof itemTonnageMax === 'number') {
                     if (inputOpenTonnageOrVolume >= itemTonnageMin && inputOpenTonnageOrVolume <= itemTonnageMax) {
                         tonnageMatch = true;
                     }
                 }
-                // else if (!isNaN(inputOpenTonnageOrVolume)) {
-                //      console.log(`[DEBUG] Row ${index} Tonnage Check: Input (${inputOpenTonnageOrVolume}) vs Row Min (${itemTonnageMin}), Row Max (${itemTonnageMax}). Min/Max not numbers or input NaN.`);
-                // }
 
-                // console.log(`[DEBUG] Row ${index} Matches - Recirc: ${recircMatch}, Tonnage: ${tonnageMatch}`);
-
-
-                if (recircMatch || tonnageMatch) { // OR condition as per requirement
+                if (recircMatch || tonnageMatch) {
                     const currentItemType = itemTypeRaw?.trim().toLowerCase();
                     if (currentItemType === 'separator' && !selectedSeparator) selectedSeparator = item;
                     else if (currentItemType === 'vaf' && !selectedVaf) selectedVaf = item;
@@ -167,10 +185,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const itemTypeRaw = item.Type;
                 const itemSystemTypeRaw = item['System Type'];
 
-                // console.log(`[DEBUG] Processing Closed Row ${index}:`, item);
-                // console.log(`[DEBUG] Row ${index} Closed Values - LoopMin: ${itemLoopMin} (type: ${typeof itemLoopMin}), LoopMax: ${itemLoopMax} (type: ${typeof itemLoopMax})`);
-
-
                 if (itemSystemTypeRaw?.trim().toLowerCase() !== 'closed') return;
 
                 let loopMatch = false;
@@ -179,9 +193,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         loopMatch = true;
                     }
                 }
-                // else {
-                //     console.log(`[DEBUG] Row ${index} Loop Check: Input (${systemVolumeClosed}) vs Row Min (${itemLoopMin}), Row Max (${itemLoopMax}). Min/Max not numbers.`);
-                // }
 
                 if (loopMatch) {
                     const currentItemType = itemTypeRaw?.trim().toLowerCase();
@@ -196,6 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function displayResults(separator, vaf, vortisand, elecCost) {
+        // ... (displayResults function remains the same)
         const calculateOpCost = (item, cost) => {
             if (!item || item['Electrical Usage (kWh)'] === undefined || item['Electrical Usage (kWh)'] === null || isNaN(parseFloat(item['Electrical Usage (kWh)'])) || cost === null || isNaN(cost)) {
                 return 'N/A';
@@ -229,14 +241,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
      function clearResults() {
+        // ... (clearResults function remains the same)
         const types = ['separator', 'vaf', 'vortisand'];
         types.forEach(type => {
-            document.getElementById(`${type}Model`).textContent = '-';
-            document.getElementById(`${type}Flowrate`).textContent = '-';
-            document.getElementById(`${type}Description`).textContent = '-';
-            document.getElementById(`${type}OpCost`).textContent = '-';
+            if (document.getElementById(`${type}Model`)) { // Check if element exists
+                document.getElementById(`${type}Model`).textContent = '-';
+                document.getElementById(`${type}Flowrate`).textContent = '-';
+                document.getElementById(`${type}Description`).textContent = '-';
+                document.getElementById(`${type}OpCost`).textContent = '-';
+            }
         });
     }
 
+    // Initial call to set up the page correctly
+    console.log('Initial call to togglePrompts.'); // 6. Check if togglePrompts is called initially
     togglePrompts();
 });
