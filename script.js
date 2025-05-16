@@ -1,9 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOM fully loaded and parsed - using CORRECTED script.");
+    console.log("DOM fully loaded and parsed - using CORRECTED script (for new Tonnage input).");
 
     // --- Element Selection ---
-    // These variable names (e.g., radioOpen) are used throughout this script.
-    // The strings inside getElementById() (e.g., 'radioOpen') MUST match HTML element IDs.
     const radioOpen = document.getElementById('radioOpen');
     const radioClosed = document.getElementById('radioClosed');
     const openSystemInputs = document.getElementById('openSystemInputs');
@@ -14,22 +12,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const noResultsMessage = document.getElementById('noResultsMessage');
 
     const recircRateInput = document.getElementById('recircRate');
-    const openSystemVolumeInput = document.getElementById('openSystemVolume');
+    const tonnageInput = document.getElementById('tonnage'); // For "Open" system Tonnage
     const closedSystemVolumeInput = document.getElementById('closedSystemVolume');
     const electricalCostInput = document.getElementById('electricalCost');
 
     // --- Initial Element Checks (for debugging) ---
-    // These console logs will tell you immediately if an ID is mismatched or an element is missing.
     if (!radioOpen) console.error("CORRECTED SCRIPT: Element with ID 'radioOpen' not found in HTML!");
     if (!radioClosed) console.error("CORRECTED SCRIPT: Element with ID 'radioClosed' not found in HTML!");
     if (!openSystemInputs) console.error("CORRECTED SCRIPT: Element with ID 'openSystemInputs' not found in HTML!");
+    if (!tonnageInput) console.error("CORRECTED SCRIPT: Element with ID 'tonnage' (for tonnageInput) not found in HTML!");
     if (!closedSystemInputs) console.error("CORRECTED SCRIPT: Element with ID 'closedSystemInputs' not found in HTML!");
     if (!electricalCostSection) console.error("CORRECTED SCRIPT: Element with ID 'electricalCostSection' not found in HTML!");
     if (!calculateButton) console.error("CORRECTED SCRIPT: Element with ID 'calculateButton' not found in HTML!");
     if (!resultsSection) console.error("CORRECTED SCRIPT: Element with ID 'resultsSection' not found in HTML!");
     if (!noResultsMessage) console.error("CORRECTED SCRIPT: Element with ID 'noResultsMessage' not found in HTML!");
     if (!recircRateInput) console.error("CORRECTED SCRIPT: Element with ID 'recircRate' (for recircRateInput) not found in HTML!");
-    if (!openSystemVolumeInput) console.error("CORRECTED SCRIPT: Element with ID 'openSystemVolume' (for openSystemVolumeInput) not found in HTML!");
     if (!closedSystemVolumeInput) console.error("CORRECTED SCRIPT: Element with ID 'closedSystemVolume' (for closedSystemVolumeInput) not found in HTML!");
     if (!electricalCostInput) console.error("CORRECTED SCRIPT: Element with ID 'electricalCost' (for electricalCostInput) not found in HTML!");
 
@@ -37,7 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const dbUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT216WTQadamMw4sIIFvBuWNWe69BCz3GedD5Ahcy3i187k9XGtiBve_yUiDc7jtqYZjtB4mrgDPnbK/pub?gid=0&single=true&output=csv';
     let database = [];
 
-    // --- Fetch and parse CSV data ---
     async function loadDatabase() {
         if (typeof Papa === 'undefined') {
             console.error("CORRECTED SCRIPT: PapaParse library is NOT LOADED. Please include it in your HTML before script.js.");
@@ -117,8 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadDatabase();
 
-    // --- UI Logic ---
-    // This function is named toggleInputs and uses the variable names defined above.
     function toggleInputs() {
         if (!radioOpen || !radioClosed || !openSystemInputs || !closedSystemInputs || !electricalCostSection || !resultsSection || !noResultsMessage) {
             console.error("CORRECTED SCRIPT in toggleInputs: One or more critical UI elements are missing. Check initial logs.");
@@ -131,10 +125,10 @@ document.addEventListener('DOMContentLoaded', () => {
         resultsSection.classList.add('hidden');
         noResultsMessage.classList.add('hidden');
 
-        if (radioOpen.checked) { // This will error if radioOpen is null
+        if (radioOpen.checked) {
             openSystemInputs.classList.remove('hidden');
             electricalCostSection.classList.remove('hidden');
-        } else if (radioClosed.checked) { // This will error if radioClosed is null
+        } else if (radioClosed.checked) {
             closedSystemInputs.classList.remove('hidden');
             electricalCostSection.classList.remove('hidden');
         }
@@ -158,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            if (!electricalCostInput || !radioOpen || !radioClosed) { // Check core elements
+            if (!electricalCostInput || !radioOpen || !radioClosed) {
                  alert("Critical error: UI elements for calculation are missing.");
                  return;
             }
@@ -176,27 +170,27 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             let recircRateVal = NaN;
-            let openSystemVolumeVal = NaN;
+            let tonnageVal = NaN; 
             let closedSystemVolumeVal = NaN;
 
             if (systemType === 'open') {
-                if (!recircRateInput || !openSystemVolumeInput) {
+                if (!recircRateInput || !tonnageInput) { 
                     alert("Critical error: Open system input fields are missing.");
                     return;
                 }
                 recircRateVal = parseFloat(recircRateInput.value);
-                openSystemVolumeVal = parseFloat(openSystemVolumeInput.value);
+                tonnageVal = parseFloat(tonnageInput.value); 
 
-                if (isNaN(recircRateVal) && isNaN(openSystemVolumeVal)) {
-                    alert("For Open systems, please enter either Recirculation Rate or System Volume for Tonnage.");
+                if (isNaN(recircRateVal) && isNaN(tonnageVal)) { 
+                    alert("For Open systems, please enter either Recirculation Rate or Tonnage.");
                     return;
                 }
                 if (!isNaN(recircRateVal) && recircRateVal <= 0) {
                     alert("Recirculation Rate must be a positive number if entered.");
                     return;
                 }
-                if (!isNaN(openSystemVolumeVal) && openSystemVolumeVal <= 0) {
-                    alert("System Volume for Tonnage must be a positive number if entered.");
+                if (!isNaN(tonnageVal) && tonnageVal <= 0) { 
+                    alert("Tonnage must be a positive number if entered.");
                     return;
                 }
             } else { // closed system
@@ -210,19 +204,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
             }
-            findAndDisplayModels(systemType, recircRateVal, openSystemVolumeVal, closedSystemVolumeVal, electricalCost);
+            findAndDisplayModels(systemType, recircRateVal, tonnageVal, closedSystemVolumeVal, electricalCost);
         });
     } else {
         console.error("CORRECTED SCRIPT: Calculate button not found. Cannot add event listener.");
     }
 
-
-    function findAndDisplayModels(systemType, recircRate, openVolume, closedVolume, elecCost) {
+    function findAndDisplayModels(systemType, recircRate, tonnage, closedVolume, elecCost) {
         let separatorModel = null;
         let vafModel = null;
         let vortisandModel = null;
 
-        console.log(`CORRECTED SCRIPT: Searching models. Type: ${systemType}, Recirc: ${recircRate}, OpenVol: ${openVolume}, ClosedVol: ${closedVolume}`);
+        console.log(`CORRECTED SCRIPT: Searching models. Type: ${systemType}, Recirc: ${recircRate}, Tonnage: ${tonnage}, ClosedVol: ${closedVolume}`);
 
         for (const row of database) {
             if (!row) continue;
@@ -230,11 +223,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (systemType === 'open') {
                 const useRecirc = !isNaN(recircRate) && recircRate > 0;
-                const useTonnage = !isNaN(openVolume) && openVolume > 0;
+                const useTonnageInput = !isNaN(tonnage) && tonnage > 0; 
 
                 if (useRecirc && recircRate >= row["Min Recirc Rate (GPM)"] && recircRate <= row["Max Recirc Rate (GPM)"]) {
                     match = true;
-                } else if (useTonnage && openVolume >= row["Tonnage Min"] && openVolume <= row["Tonnage Max"]) {
+                } else if (useTonnageInput && tonnage >= row["Tonnage Min"] && tonnage <= row["Tonnage Max"]) { 
                     match = true;
                 }
             } else { // closed system
@@ -307,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (typeof toggleInputs === "function") {
-        toggleInputs(); // Initial call to set up visibility
+        toggleInputs();
         console.log("CORRECTED SCRIPT: Initial toggleInputs call performed.");
     } else {
         console.error("CORRECTED SCRIPT: toggleInputs function is not defined at the time of initial call. This shouldn't happen if script is intact.");

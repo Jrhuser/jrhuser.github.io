@@ -96,7 +96,7 @@ h2 {
     color: #555;
 }
 
-button#calculateButton { /* Made selector more specific just in case */
+button#calculateButton {
     display: block;
     width: 100%;
     padding: 12px 20px;
