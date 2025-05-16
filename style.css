@@ -68,7 +68,7 @@ h2 {
 }
 
 .input-group input[type="number"],
-.input-group input[type="text"] { /* Added text for potential future use */
+.input-group input[type="text"] {
     width: calc(100% - 22px); /* Adjust for padding and border */
     padding: 10px;
     border: 1px solid #ccc;
@@ -96,7 +96,7 @@ h2 {
     color: #555;
 }
 
-button {
+button#calculateButton { /* Made selector more specific just in case */
     display: block;
     width: 100%;
     padding: 12px 20px;
@@ -109,9 +109,15 @@ button {
     transition: background-color 0.3s ease;
 }
 
-button:hover {
+button#calculateButton:hover {
     background-color: #005f63; /* Darker shade on hover */
 }
+
+button#calculateButton:disabled {
+    background-color: grey;
+    cursor: not-allowed;
+}
+
 
 .hidden {
     display: none !important;
