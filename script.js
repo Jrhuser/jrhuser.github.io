@@ -17,9 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const electricalCostInput = document.getElementById('electricalCost');
 
     // --- Google Sheet Configuration ---
-    // IMPORTANT: Make sure your Google Sheet is published to the web as a CSV.
-    // File > Share > Publish to web > Select the relevant sheet > CSV > Publish
-    const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR5t5nZzFh8bL7jA6U8jW5fP3kY9vX_cM0bN7sA5fG6hJ8kL9oP7sQ4wZ1xR3cY_tI2pK_sS/pub?output=csv'; // **REPLACE WITH YOUR PUBLISHED CSV URL (ensure it's the one for gid=0 or your specific sheet if different)**
+    const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT216WTQadamMw4sIIFvBuWNWe69BCz3GedD5Ahcy3i187k9XGtiBve_yUiDc7jtqYZjtB4mrgDPnbK/pub?gid=0&single=true&output=csv';
     let database = [];
 
     // Function to fetch and parse CSV data
