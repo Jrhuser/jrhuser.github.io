@@ -181,138 +181,134 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // =================================================================================
-    // MODIFIED findMatchingModels for OPTION A
+    // MODIFIED findMatchingModels fromjayjhill
     // =================================================================================
-    function findMatchingModels(systemType, inputType, value, electricalCost) {
-        const matchedModels = {
-            separator: null,
-            vaf: null,
-            vortisand: null // Assuming these are the 'Filter Type' values you want to separate outputs for
+function findMatchingModels(systemType, inputType, value, electricalCost) {
+    const matchedModels = {
+        separator: null,
+        vaf: null,
+        vortisand: null
+    };
+
+    console.log(`[findMatchingModels] Adapted from JayHill Logic. UserSelectedSystem=${systemType}, UserInputType=${inputType}, UserValue=${value}`);
+    console.log(`[findMatchingModels] Total database entries: ${database.length}`);
+
+    let potentialFilters = []; // To hold all models that meet the criteria before picking one of each type
+
+    database.forEach((model, index) => {
+        const modelName = model['Model']?.trim();
+        // console.log(`\n[findMatchingModels] --- Entry ${index + 1}: Model Name = ${modelName} ---`); // Can be verbose
+
+        const modelFilterTypeRaw = model['Filter Type'];
+        const modelFilterType = modelFilterTypeRaw?.trim().toLowerCase();
+
+        const parseNumericValue = (str) => {
+            if (str === undefined || str === null || String(str).trim() === "") return NaN;
+            if (typeof str === 'number' && !isNaN(str)) return str;
+            if (typeof str === 'string') return parseFloat(String(str).replace(/,/g, ''));
+            return parseFloat(str);
         };
 
-        // CSV Headers from repo:
-        // ['Model', 'Filter Type', 'hp', 'Flow Rate', 'Min Recirc (gallons)', 'Max Recirc (gallons)', 
-        // 'Tonnage Min', 'Tonnage Max', 'Loop Min', 'Loop Max', 'OPEX']
+        const minRecirc = parseNumericValue(model['Min Recirc (gallons)']);
+        const maxRecirc = parseNumericValue(model['Max Recirc (gallons)']);
+        const loopMin = parseNumericValue(model['Loop Min (gallons)']); // Ensure your sheet has this header now
+        const loopMax = parseNumericValue(model['Loop Max (gallons)']); // Ensure your sheet has this header now
+        const hp = parseNumericValue(model['hp']);
+        const flowRate = parseNumericValue(model['Flowrate']); // Using 'Flowrate'
+        const description = model['Description']?.trim(); // Assuming 'Description' is now a header
 
-        console.log(`[findMatchingModels] Option A Logic. Searching for: UserSelectedSystem=${systemType}, UserInputType=${inputType}, UserValue=${value}, ElecCost=${electricalCost}`);
-        console.log(`[findMatchingModels] Total database entries: ${database.length}`);
+        // Log processed numeric values for a specific model if debugging is needed:
+        // if (modelName === 'CTS950') { // Example: Log specific model details
+        //     console.log(`[findMatchingModels] Details for ${modelName}: FilterType='${modelFilterType}', MinRecirc=${minRecirc}, MaxRecirc=${maxRecirc}, LoopMin=${loopMin}, LoopMax=${loopMax}, HP=${hp}, FlowRate=${flowRate}`);
+        // }
 
-        database.forEach((model, index) => {
-            const modelName = model['Model']?.trim();
-            console.log(`\n[findMatchingModels] --- Entry ${index + 1} / ${database.length}: Model Name = ${modelName} ---`);
+        let isMatch = false;
 
-            const modelFilterTypeRaw = model['Filter Type'];
-            const modelFilterType = modelFilterTypeRaw?.trim().toLowerCase();
+        if (systemType === 'open') {
+            if (inputType === 'recirc') { // User provided "Recirc Rate"
+                // console.log(`[findMatchingModels] OPEN/RECIRC: UserValue=${value} vs ModelRange MinRecirc/MaxRecirc=[${minRecirc}-${maxRecirc}] for ${modelName}`);
+                if (!isNaN(minRecirc) && !isNaN(maxRecirc) && value >= minRecirc && value <= maxRecirc) {
+                    isMatch = true;
+                }
+            } else if (inputType === 'volume') { // User provided "System Volume" for Open system
+                // Assumption: Compare open system volume against Min/Max Recirc (gallons) ranges
+                // console.log(`[findMatchingModels] OPEN/VOLUME: UserValue=${value} vs ModelRange MinRecirc/MaxRecirc=[${minRecirc}-${maxRecirc}] for ${modelName} (by assumption)`);
+                if (!isNaN(minRecirc) && !isNaN(maxRecirc) && value >= minRecirc && value <= maxRecirc) {
+                    isMatch = true;
+                }
+            }
+        } else if (systemType === 'closed') {
+            if (inputType === 'volume') { // User provided "System Volume" for Closed system
+                if (modelFilterType === 'vortisand') {
+                    // console.log(`[findMatchingModels] CLOSED/VOLUME (Vortisand): UserValue=${value} vs ModelRange LoopMin/LoopMax=[${loopMin}-${loopMax}] for ${modelName}`);
+                    // Check for NaN explicitly, similar to JayHill's non-null check
+                    if (!isNaN(loopMin) && !isNaN(loopMax) && value >= loopMin && value <= loopMax) {
+                        isMatch = true;
+                    } else if (isNaN(loopMin) || isNaN(loopMax)) {
+                         console.log(`[findMatchingModels] WARN: Loop Min/Max is NaN for Vortisand ${modelName}. Cannot compare.`);
+                    }
+                } else { // For other filter types (Separator, VAF) in a closed system
+                    // console.log(`[findMatchingModels] CLOSED/VOLUME (Non-Vortisand): UserValue=${value} vs ModelRange MinRecirc/MaxRecirc=[${minRecirc}-${maxRecirc}] for ${modelName}`);
+                    if (!isNaN(minRecirc) && !isNaN(maxRecirc) && value >= minRecirc && value <= maxRecirc) {
+                        isMatch = true;
+                    }
+                }
+            }
+        }
 
-            console.log(`[findMatchingModels]   Raw Sheet Data: FilterType='${modelFilterTypeRaw}'`);
-            console.log(`[findMatchingModels]   Parsed Values:  FilterType='${modelFilterType}'`);
+        if (isMatch) {
+            // console.log(`[findMatchingModels] !!! MATCH FOUND for ${modelName} !!!`);
+            const kw = !isNaN(hp) ? hp * 0.7457 : 0;
+            const annualHours = 8760;
+            const annualElectricalCost = kw * annualHours * electricalCost;
 
-            const parseNumericValue = (str) => {
-                if (str === undefined || str === null || String(str).trim() === "") return NaN;
-                if (typeof str === 'number' && !isNaN(str)) return str;
-                if (typeof str === 'string') return parseFloat(String(str).replace(/,/g, ''));
-                return parseFloat(str);
+            potentialFilters.push({
+                modelName: modelName || 'N/A',
+                filterType: modelFilterType || 'unknown',
+                flowRate: !isNaN(flowRate) ? flowRate : 'N/A',
+                description: description || 'N/A',
+                annualElectricalCost: annualElectricalCost.toFixed(2),
+                hp: !isNaN(hp) ? hp : 'N/A' // Store hp for sorting if needed
+            });
+        }
+    });
+
+    // Select one of each type from potentialFilters
+    const filterTypesToSelect = ['separator', 'vaf', 'vortisand'];
+
+    filterTypesToSelect.forEach(type => {
+        let candidatesForType = potentialFilters.filter(f => f.filterType === type);
+        if (candidatesForType.length > 0) {
+            // Sort candidates: JayHill sorts Open by Flow Rate, Closed by HP.
+            // We can implement a simple sort here, e.g., by HP for all for now, or flow rate.
+            // Or adapt to JayHill's specific sort if systemType is available here.
+            // For simplicity, let's sort by HP (ascending) for all matched types for now.
+            candidatesForType.sort((a, b) => {
+                const hpA = parseFloat(a.hp); // Ensure numeric comparison
+                const hpB = parseFloat(b.hp);
+                if (isNaN(hpA) && isNaN(hpB)) return 0;
+                if (isNaN(hpA)) return 1; // Put NaNs last
+                if (isNaN(hpB)) return -1;
+                return hpA - hpB;
+            });
+
+            const bestCandidate = candidatesForType[0];
+            const modelData = {
+                model: bestCandidate.modelName,
+                flowrate: bestCandidate.flowRate,
+                description: bestCandidate.description,
+                annualElectricalCost: bestCandidate.annualElectricalCost
             };
 
-            // Get raw values from the model object for logging alongside parsed values
-            const rawMinRecirc = model['Min Recirc (gallons)'];
-            const rawMaxRecirc = model['Max Recirc (gallons)'];
-            const rawLoopMin = model['Loop Min'];
-            const rawLoopMax = model['Loop Max'];
-            const rawHP = model['hp']; // Using 'hp' from CSV
-            const rawFlowRate = model['Flow Rate']; // Using 'Flow Rate' from CSV
+            if (type === 'separator') matchedModels.separator = modelData;
+            else if (type === 'vaf') matchedModels.vaf = modelData;
+            else if (type === 'vortisand') matchedModels.vortisand = modelData;
+        }
+    });
 
-            const minRecirc = parseNumericValue(rawMinRecirc);
-            const maxRecirc = parseNumericValue(rawMaxRecirc);
-            const loopMin = parseNumericValue(rawLoopMin);
-            const loopMax = parseNumericValue(rawLoopMax);
-            const hp = parseNumericValue(rawHP);
-            const flowRate = parseNumericValue(rawFlowRate); // This is model's own flow rate for display
-
-            console.log(`[findMatchingModels]   Numeric Values for ${modelName} (Parsed vs Raw from Sheet):`);
-            console.log(`     MinRecirc (gallons): ${minRecirc} (Raw: '${rawMinRecirc}')`);
-            console.log(`     MaxRecirc (gallons): ${maxRecirc} (Raw: '${rawMaxRecirc}')`);
-            console.log(`     Loop Min: ${loopMin} (Raw: '${rawLoopMin}')`);
-            console.log(`     Loop Max: ${loopMax} (Raw: '${rawLoopMax}')`);
-            console.log(`     hp: ${hp} (Raw: '${rawHP}')`);
-            console.log(`     Flow Rate: ${flowRate} (Raw: '${rawFlowRate}')`);
-
-            let isMatch = false; // Reset for each model
-
-            if (systemType === 'open') {
-                console.log(`[findMatchingModels]   User selected 'open' system.`);
-                if (inputType === 'recirc') {
-                    console.log(`[findMatchingModels]     Checking RECIRC input: UserValue=${value} against ModelRange ('Min/Max Recirc (gallons)')=[${minRecirc} - ${maxRecirc}]`);
-                    if (isNaN(minRecirc) || isNaN(maxRecirc)) {
-                        console.log(`[findMatchingModels]       WARN: Recirc range for ${modelName} has NaN value(s). Cannot compare.`);
-                    } else if (value >= minRecirc && value <= maxRecirc) {
-                        isMatch = true;
-                        console.log(`[findMatchingModels]       !!! RECIRC MATCH for OPEN system on ${modelName} !!!`);
-                    } else {
-                        console.log(`[findMatchingModels]       Recirc no match for OPEN system: ${value} is NOT within [${minRecirc} - ${maxRecirc}]`);
-                    }
-                } else if (inputType === 'volume') { // Open system, volume input
-                    console.log(`[findMatchingModels]     Checking VOLUME input for OPEN system: UserValue=${value}.`);
-                    console.log(`[findMatchingModels]       ASSUMPTION: Comparing UserValue against ModelRange ('Min/Max Recirc (gallons)')=[${minRecirc} - ${maxRecirc}]`);
-                    if (isNaN(minRecirc) || isNaN(maxRecirc)) {
-                        console.log(`[findMatchingModels]       WARN: Range for ${modelName} (using Min/Max Recirc) has NaN value(s). Cannot compare.`);
-                    } else if (value >= minRecirc && value <= maxRecirc) {
-                        isMatch = true;
-                        console.log(`[findMatchingModels]       !!! VOLUME MATCH for OPEN system on ${modelName} (using Min/Max Recirc) !!!`);
-                    } else {
-                        console.log(`[findMatchingModels]       Volume no match for OPEN system: ${value} is NOT within [${minRecirc} - ${maxRecirc}] (using Min/Max Recirc)`);
-                    }
-                }
-            } else if (systemType === 'closed') {
-                console.log(`[findMatchingModels]   User selected 'closed' system.`);
-                if (inputType === 'volume') { // Closed systems only take volume input in this design
-                    console.log(`[findMatchingModels]     Checking VOLUME input for CLOSED system: UserValue=${value} against ModelRange ('Loop Min/Max')=[${loopMin} - ${loopMax}]`);
-                    if (isNaN(loopMin) || isNaN(loopMax)) {
-                        console.log(`[findMatchingModels]       WARN: Loop range for ${modelName} has NaN value(s). Cannot compare.`);
-                    } else if (value >= loopMin && value <= loopMax) {
-                        isMatch = true;
-                        console.log(`[findMatchingModels]       !!! VOLUME MATCH for CLOSED system on ${modelName} !!!`);
-                    } else {
-                        console.log(`[findMatchingModels]       Volume no match for CLOSED system: ${value} is NOT within [${loopMin} - ${loopMax}]`);
-                    }
-                } else {
-                     console.log(`[findMatchingModels]     WARN: Closed system selected but inputType is not 'volume' (it's '${inputType}'). No matching logic defined for this combination.`);
-                }
-            }
-
-            if (isMatch) {
-                const description = model['Description']?.trim(); // 'Description' is NOT in the repo's CSV headers. Will be undefined.
-                const kw = !isNaN(hp) ? hp * 0.7457 : 0;
-                const annualHours = 8760;
-                const annualElectricalCost = kw * annualHours * electricalCost;
-
-                const modelData = {
-                    model: modelName || 'N/A',
-                    flowrate: !isNaN(flowRate) ? flowRate : 'N/A', // Using 'Flow Rate' from CSV
-                    description: description || 'N/A (Description column likely missing)',
-                    annualElectricalCost: annualElectricalCost.toFixed(2)
-                };
-
-                // Assign to output columns based on 'Filter Type'
-                // Ensure 'separator', 'vaf', 'vortisand' are lowercase matches for modelFilterType
-                if (modelFilterType === 'separator' && !matchedModels.separator) {
-                    matchedModels.separator = modelData;
-                    console.log(`[findMatchingModels]     --> Assigned ${modelName} to SEPARATOR output.`);
-                } else if (modelFilterType === 'vaf' && !matchedModels.vaf) {
-                    matchedModels.vaf = modelData;
-                    console.log(`[findMatchingModels]     --> Assigned ${modelName} to VAF output.`);
-                } else if (modelFilterType === 'vortisand' && !matchedModels.vortisand) {
-                    matchedModels.vortisand = modelData;
-                    console.log(`[findMatchingModels]     --> Assigned ${modelName} to VORTISAND output.`);
-                } else if (isMatch) {
-                    console.log(`[findMatchingModels]     --> Match for ${modelName} (FilterType: ${modelFilterType}), but SEPARATOR/VAF/VORTISAND slot for this type was already found or type not recognized for output.`);
-                }
-            }
-        });
-
-        console.log("\n[findMatchingModels] Final Matched models after loop:", matchedModels);
-        return matchedModels;
-    }
+    console.log("[findMatchingModels] Final Matched models after loop:", matchedModels);
+    return matchedModels;
+}
     // =================================================================================
 
     function displayResults(results) {
