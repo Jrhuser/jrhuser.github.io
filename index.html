@@ -3,185 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cooling Water Filtration Selector</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6; /* Light gray background */
-        }
-        .header-bar {
-            background-color: #008299; /* Dark teal color */
-            color: white;
-            padding: 0.5rem; /* Adjusted for a thinner bar appearance */
-        }
-        .content-box {
-            background-color: white;
-            border: 1px solid #d1d5db; /* gray-300 border */
-            /* padding: 1.5rem; /* p-6 */ /* Padding will be applied more specifically */
-            margin-top: 0; /* Remove margin-top if header-bar is directly above */
-            margin-bottom: 0; /* Remove margin-bottom if header-bar is directly below */
-        }
-        /* Custom style for input fields to somewhat mimic the 'input-line' but be actual inputs */
-        .styled-input {
-            border: none;
-            border-bottom: 1px solid #374151; /* gray-700 */
-            padding-top: 0.25rem;
-            padding-bottom: 0.25rem;
-            width: 100%; /* Make input take available width */
-        }
-        .styled-input:focus {
-            outline: none;
-            border-bottom: 2px solid #008299; /* Highlight color */
-        }
-        .placeholder-image {
-            background-color: #e5e7eb; /* gray-200 */
-            border: 1px dashed #9ca3af; /* gray-400 */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #6b7280; /* gray-500 */
-            font-size: 0.875rem; /* text-sm */
-            border-radius: 0.375rem; /* rounded-md */
-            height: 120px;
-            width: 100%;
-        }
-        /* Styling for radio buttons */
-        .radio-label {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            font-size: 1rem;
-            color: #374151; /* gray-700 */
-        }
-        .radio-label input[type="radio"] {
-            margin-right: 0.5rem;
-            /* TailwindCSS can be used for further styling if needed, or custom radio appearance */
-        }
-        .or-separator {
-            text-align: center;
-            font-style: italic;
-            color: #6b7280; /* gray-500 */
-            margin: 0.75rem 0;
-        }
-        .output-column h3 {
-             color: #008299; /* Match header bar color for consistency */
-             font-weight: 600; /* semibold */
-             border-bottom: 1px solid #e5e7eb; /* gray-200 */
-             padding-bottom: 0.5rem;
-             margin-bottom: 0.75rem;
-        }
-    </style>
+    <title>Cooling System Selector</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body class="p-4 md:p-8">
+<body>
+    <header>
+        <div class="container">
+            <h1>Cooling Water Filtration</h1>
+            </div>
+    </header>
 
-    <div class="max-w-4xl mx-auto">
+    <main class="container">
+        <section id="system-type-selection">
+            <div class="radio-group">
+                <input type="radio" id="open-system" name="system_type" value="open">
+                <label for="open-system">Open</label>
+                <input type="radio" id="closed-system" name="system_type" value="closed">
+                <label for="closed-system">Closed</label>
+            </div>
+        </section>
 
-        <div class="header-bar rounded-t-md">
-            &nbsp; </div>
-
-        <div class="bg-white shadow"> <div class="p-6 pt-4"> <h1 class="text-2xl font-semibold text-gray-800 mb-6 text-center md:text-left">Cooling Water Filtration</h1>
-
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                    <div class="placeholder-image"><span>Filter Image 1</span></div>
-                    <div class="placeholder-image"><span>V-2000H System</span></div>
-                    <div class="placeholder-image"><span>Filtration Unit</span></div>
+        <section id="open-system-inputs" class="hidden input-section">
+            <div class="input-row">
+                <div class="input-field">
+                    <label for="recirc-rate">Recirc Rate (GPM)</label>
+                    <input type="number" id="recirc-rate" name="recirc_rate">
+                </div>
+                <div class="input-field">
+                    <label for="open-system-tonnage">System Tonnage</label>
+                    <input type="number" id="open-system-tonnage" name="open_system_tonnage">
                 </div>
             </div>
+        </section>
 
-            <div id="systemTypeSelectionBox">
-                <div class="header-bar"></div>
-                <div class="content-box p-6">
-                    <div class="flex flex-col sm:flex-row justify-around items-center space-y-2 sm:space-y-0">
-                        <label for="openSystem" class="radio-label">
-                            <input type="radio" id="openSystem" name="systemType" value="open" class="form-radio text-teal-600">
-                            <span>Open</span>
-                        </label>
-                        <label for="closedSystem" class="radio-label">
-                            <input type="radio" id="closedSystem" name="systemType" value="closed" class="form-radio text-teal-600">
-                            <span>Closed</span>
-                        </label>
-                    </div>
+        <section id="closed-system-inputs" class="hidden input-section">
+            <div class="input-row">
+                <div class="input-field">
+                    <label for="closed-system-volume">System Volume (Gallons)</label>
+                    <input type="number" id="closed-system-volume" name="closed_system_volume">
                 </div>
             </div>
+        </section>
 
-            <div id="conditionalPrompts" style="display: none;">
-                <section id="openInputsSection" style="display: none;">
-                    <div class="header-bar"></div>
-                    <div class="content-box p-6">
-                        <h3 class="text-lg font-semibold text-gray-700 mb-4">Open System Inputs</h3>
-                        <div class="space-y-4">
-                            <div>
-                                <label for="recircRate" class="block text-sm font-medium text-gray-700 mb-1">Recirc Rate (GPM)</label>
-                                <input type="number" id="recircRate" name="recircRate" class="styled-input" placeholder="Enter GPM">
-                            </div>
-                            <div class="or-separator">OR</div>
-                            <div>
-                                <label for="openSystemVolume" class="block text-sm font-medium text-gray-700 mb-1">System Volume (Gallons)</label>
-                                <input type="number" id="openSystemVolume" name="openSystemVolume" class="styled-input" placeholder="Enter Gallons">
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="closedInputsSection" style="display: none;">
-                    <div class="header-bar"></div>
-                    <div class="content-box p-6">
-                        <h3 class="text-lg font-semibold text-gray-700 mb-4">Closed System Inputs</h3>
-                        <div>
-                            <label for="closedSystemVolume" class="block text-sm font-medium text-gray-700 mb-1">System Volume (Gallons)</label>
-                            <input type="number" id="closedSystemVolume" name="closedSystemVolume" class="styled-input" placeholder="Enter Gallons">
-                        </div>
-                    </div>
-                </section>
-
-                <section id="electricalCostSection" style="display: none;"> <div class="header-bar"></div>
-                    <div class="content-box p-6">
-                         <h3 class="text-lg font-semibold text-gray-700 mb-4">Energy Input</h3>
-                        <div>
-                            <label for="electricalCost" class="block text-sm font-medium text-gray-700 mb-1">Electrical Cost ($/kWh)</label>
-                            <input type="number" id="electricalCost" name="electricalCost" step="0.01" class="styled-input" placeholder="e.g., 0.12">
-                        </div>
-                    </div>
-                </section>
-
-                <div class="p-6">
-                    <button id="calculateButton" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 px-4 rounded-md transition duration-150 ease-in-out">
-                        Calculate
-                    </button>
+        <section id="common-inputs" class="hidden input-section">
+            <div class="input-row">
+                <div class="input-field">
+                    <label for="electrical-cost">Electrical Cost ($/kWh)</label>
+                    <input type="number" id="electrical-cost" name="electrical_cost" step="0.01">
                 </div>
-            </div> <hr id="outputSeparator" class="my-6 border-gray-300" style="display: none;">
+            </div>
+            <button id="calculate-button">Calculate Selection</button>
+        </section>
 
-            <section id="outputSection" class="p-6" style="display: none;">
-                <h2 class="text-xl font-semibold text-gray-800 mb-6 text-center">Recommended Systems</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="output-column bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <h3>Separator</h3>
-                        <p><strong>Model:</strong> <span id="separatorModel">N/A</span></p>
-                        <p><strong>Flowrate (GPM):</strong> <span id="separatorFlowrate">N/A</span></p>
-                        <p><strong>Description:</strong> <span id="separatorDescription">N/A</span></p>
-                        <p><strong>Annual Electrical Cost:</strong> $<span id="separatorAnnualCost">N/A</span></p>
-                    </div>
-                    <div class="output-column bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <h3>VAF</h3>
-                        <p><strong>Model:</strong> <span id="vafModel">N/A</span></p>
-                        <p><strong>Flowrate (GPM):</strong> <span id="vafFlowrate">N/A</span></p>
-                        <p><strong>Description:</strong> <span id="vafDescription">N/A</span></p>
-                        <p><strong>Annual Electrical Cost:</strong> $<span id="vafAnnualCost">N/A</span></p>
-                    </div>
-                    <div class="output-column bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <h3>Vortisand</h3>
-                        <p><strong>Model:</strong> <span id="vortisandModel">N/A</span></p>
-                        <p><strong>Flowrate (GPM):</strong> <span id="vortisandFlowrate">N/A</span></p>
-                        <p><strong>Description:</strong> <span id="vortisandDescription">N/A</span></p>
-                        <p><strong>Annual Electrical Cost:</strong> $<span id="vortisandAnnualCost">N/A</span></p>
-                    </div>
+        <section id="results" class="hidden">
+            <h2>Recommended Equipment</h2>
+            <div class="results-grid">
+                <div class="result-column" id="separator-column">
+                    <h3>Separator</h3>
+                    <p><strong>Model:</strong> <span id="separator-model">-</span></p>
+                    <p><strong>Flowrate (GPM):</strong> <span id="separator-flowrate">-</span></p>
+                    <p><strong>Description:</strong> <span id="separator-description">-</span></p>
+                    <p><strong>Est. Operating Cost ($/yr):</strong> <span id="separator-op-cost">-</span></p>
                 </div>
-            </section>
+                <div class="result-column" id="vaf-column">
+                    <h3>VAF</h3>
+                    <p><strong>Model:</strong> <span id="vaf-model">-</span></p>
+                    <p><strong>Flowrate (GPM):</strong> <span id="vaf-flowrate">-</span></p>
+                    <p><strong>Description:</strong> <span id="vaf-description">-</span></p>
+                    <p><strong>Est. Operating Cost ($/yr):</strong> <span id="vaf-op-cost">-</span></p>
+                </div>
+                <div class="result-column" id="vortisand-column">
+                    <h3>Vortisand</h3>
+                    <p><strong>Model:</strong> <span id="vortisand-model">-</span></p>
+                    <p><strong>Flowrate (GPM):</strong> <span id="vortisand-flowrate">-</span></p>
+                    <p><strong>Description:</strong> <span id="vortisand-description">-</span></p>
+                    <p><strong>Est. Operating Cost ($/yr):</strong> <span id="vortisand-op-cost">-</span></p>
+                </div>
+            </div>
+        </section>
+    </main>
 
-        </div> <div class="header-bar rounded-b-md mt-0"> &nbsp; </div>
-    </div>
+    <footer>
+        <div class="container">
+            <p>&copy; <span id="current-year"></span> Your Company Name</p>
+        </div>
+    </footer>
 
     <script src="script.js"></script>
 </body>
