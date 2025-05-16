@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOM fully loaded and parsed - using CORRECTED script (for new Tonnage input).");
+    console.log("DOM fully loaded and parsed - using CORRECTED script (for new Tonnage input, debug line removed).");
 
     // --- Element Selection ---
     const radioOpen = document.getElementById('radioOpen');
