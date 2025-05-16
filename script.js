@@ -78,9 +78,10 @@ document.addEventListener('DOMContentLoaded', () => {
             dbData = parseCSV(csvText); // Parse the CSV text into structured data
 
             if (dbData.length === 0) {
-                console.warn('Database is empty or only contains headers. Check CSV format and content.');
-                // Optionally, alert the user if the database is critical and empty
-                // alert("Warning: The equipment database is currently empty or could not be loaded. Please check the spreadsheet.");
+                console.warn('[DEBUG] Database is empty or only contains headers after parsing. Check CSV format and content.');
+            } else {
+                console.log('[DEBUG] Database loaded successfully. Number of rows (excluding header):', dbData.length);
+                // console.log('[DEBUG] First few rows of data:', dbData.slice(0, 3)); // Log first few rows for inspection
             }
         } catch (error) {
             console.error('Error fetching or parsing spreadsheet data:', error);
@@ -100,12 +101,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // Split CSV text into lines, filtering out any empty lines
         const lines = csvText.split(/\r\n|\n/).filter(line => line.trim() !== '');
         if (lines.length < 2) { // Check for at least a header row and one data row
-            console.warn("CSV data has less than 2 lines (expected header + data).");
+            console.warn("[DEBUG] CSV data has less than 2 lines (expected header + data).");
             return [];
         }
 
         // Extract headers from the first line, trimming whitespace
         const headers = lines[0].split(',').map(header => header.trim());
+        console.log("[DEBUG] CSV Headers:", headers); // Log detected headers
         const data = [];
 
         // Process each subsequent line as a data row
@@ -125,14 +127,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     ];
                     if (numericHeaders.includes(header)) {
                         // Convert to float; store as null if empty or not a valid number
-                        row[header] = (value === '' || isNaN(parseFloat(value))) ? null : parseFloat(value);
+                        const parsedNum = parseFloat(value);
+                        row[header] = (value === '' || isNaN(parsedNum)) ? null : parsedNum;
                     } else {
                         row[header] = value; // Store as string for non-numeric columns
                     }
                 });
                 data.push(row);
             } else {
-                console.warn(`Skipping malformed CSV line ${i + 1} (incorrect number of columns): ${lines[i]}`);
+                console.warn(`[DEBUG] Skipping malformed CSV line ${i + 1} (incorrect number of columns): ${lines[i]}. Expected ${headers.length}, got ${values.length}`);
             }
         }
         return data;
@@ -143,6 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
      * Validates inputs, searches the database, and triggers result display.
      */
     calculateButton.addEventListener('click', () => {
+        console.log('[DEBUG] Calculate button clicked.'); // Log button click
+
         if (dbData.length === 0) {
             alert("Equipment data is not loaded or is empty. Cannot perform calculation. Please check the Google Sheet or refresh the page.");
             return;
@@ -154,6 +159,8 @@ document.addEventListener('DOMContentLoaded', () => {
             electricalCostInput.focus();
             return;
         }
+        console.log('[DEBUG] Electrical Cost:', electricalCost);
+
 
         let foundSeparator = null;
         let foundVAF = null;
@@ -161,8 +168,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Logic for Open Systems
         if (openSystemRadio.checked) {
+            console.log('[DEBUG] Open System selected.');
             const recircRate = parseFloat(recircRateInput.value);
             const tonnage = parseFloat(openSystemTonnageInput.value);
+
+            console.log(`[DEBUG] Input Recirc Rate: ${recircRate} (type: ${typeof recircRate}), Input Tonnage: ${tonnage} (type: ${typeof tonnage})`);
 
             // Validate inputs for Open Systems: at least one must be a positive number
             if ((isNaN(recircRate) || recircRate <= 0) && (isNaN(tonnage) || tonnage <= 0)) {
@@ -173,72 +183,122 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Iterate through the database to find matching equipment
-            for (const row of dbData) {
+            dbData.forEach((row, rowIndex) => { // Added rowIndex for easier debugging
+                console.log(`[DEBUG] Processing Row ${rowIndex}:`, JSON.parse(JSON.stringify(row))); // Deep copy for logging
                 let matches = false; // Initialize matches to false for each row
-                const rowRecircMin = row['Recirc Min']; // Already parsed as float or null
+
+                const rowRecircMin = row['Recirc Min'];
                 const rowRecircMax = row['Recirc Max'];
                 const rowTonnageMin = row['Tonnage Min'];
                 const rowTonnageMax = row['Tonnage Max'];
 
+                console.log(`[DEBUG] Row ${rowIndex} Values - RecircMin: ${rowRecircMin} (type: ${typeof rowRecircMin}), RecircMax: ${rowRecircMax} (type: ${typeof rowRecircMax}), TonnageMin: ${rowTonnageMin} (type: ${typeof rowTonnageMin}), TonnageMax: ${rowTonnageMax} (type: ${typeof rowTonnageMax})`);
+
                 // Check Recirc Rate condition if Recirc Rate input is valid
+                let recircMatch = false;
                 if (!isNaN(recircRate) && recircRate > 0) {
                     if (rowRecircMin !== null && rowRecircMax !== null &&
                         recircRate >= rowRecircMin && recircRate <= rowRecircMax) {
-                        matches = true;
+                        recircMatch = true;
+                        console.log(`[DEBUG] Row ${rowIndex} Recirc Check: Input (${recircRate}) >= Row Min (${rowRecircMin}) is ${recircRate >= rowRecircMin}. Input (${recircRate}) <= Row Max (${rowRecircMax}) is ${recircRate <= rowRecircMax}. RECIRC MATCH!`);
+                    } else {
+                        console.log(`[DEBUG] Row ${rowIndex} Recirc Check: Input (${recircRate}) vs Row Min (${rowRecircMin}), Row Max (${rowRecircMax}). NO RECIRC MATCH. (Min/Max null? ${rowRecircMin === null}/${rowRecircMax === null})`);
                     }
                 }
 
                 // Check Tonnage condition if Tonnage input is valid
-                // This 'if' is separate from the Recirc Rate 'if' to implement OR logic
+                let tonnageMatch = false;
                 if (!isNaN(tonnage) && tonnage > 0) {
                     if (rowTonnageMin !== null && rowTonnageMax !== null &&
                         tonnage >= rowTonnageMin && tonnage <= rowTonnageMax) {
-                        matches = true; // If tonnage matches, set matches to true, regardless of recirc outcome
+                        tonnageMatch = true;
+                        console.log(`[DEBUG] Row ${rowIndex} Tonnage Check: Input (${tonnage}) >= Row Min (${rowTonnageMin}) is ${tonnage >= rowTonnageMin}. Input (${tonnage}) <= Row Max (${rowTonnageMax}) is ${tonnage <= rowTonnageMax}. TONNAGE MATCH!`);
+                    } else {
+                        console.log(`[DEBUG] Row ${rowIndex} Tonnage Check: Input (${tonnage}) vs Row Min (${rowTonnageMin}), Row Max (${rowTonnageMax}). NO TONNAGE MATCH. (Min/Max null? ${rowTonnageMin === null}/${rowTonnageMax === null})`);
                     }
                 }
+
+                if (recircMatch || tonnageMatch) {
+                    matches = true;
+                    console.log(`[DEBUG] Row ${rowIndex} OVERALL MATCHES: true (Recirc: ${recircMatch}, Tonnage: ${tonnageMatch}) for row with SEP Model: ${row['SEP Model'] || 'N/A'}`);
+                } else {
+                    console.log(`[DEBUG] Row ${rowIndex} OVERALL MATCHES: false (Recirc: ${recircMatch}, Tonnage: ${tonnageMatch}) for row with SEP Model: ${row['SEP Model'] || 'N/A'}`);
+                }
+
 
                 if (matches) {
                     // Assign equipment if a match is found for the row based on EITHER Recirc OR Tonnage
                     // It will take the first matching row for each equipment type.
-                    if (row['SEP Model'] && !foundSeparator) foundSeparator = row;
-                    if (row['VAF Model'] && !foundVAF) foundVAF = row;
-                    if (row['Vortisand Model'] && !foundVortisand) foundVortisand = row;
+                    if (row['SEP Model'] && !foundSeparator) {
+                        foundSeparator = row;
+                        console.log(`[DEBUG] Row ${rowIndex} Found Separator:`, row['SEP Model']);
+                    }
+                    if (row['VAF Model'] && !foundVAF) {
+                        foundVAF = row;
+                        console.log(`[DEBUG] Row ${rowIndex} Found VAF:`, row['VAF Model']);
+                    }
+                    if (row['Vortisand Model'] && !foundVortisand) {
+                        foundVortisand = row;
+                        console.log(`[DEBUG] Row ${rowIndex} Found Vortisand:`, row['Vortisand Model']);
+                    }
                 }
-            }
+            }); // End of dbData.forEach
         }
         // Logic for Closed Systems
         else if (closedSystemRadio.checked) {
+            console.log('[DEBUG] Closed System selected.');
             const systemVolume = parseFloat(closedSystemVolumeInput.value);
+            console.log(`[DEBUG] Input System Volume: ${systemVolume} (type: ${typeof systemVolume})`);
+
             if (isNaN(systemVolume) || systemVolume <= 0) {
                 alert('Please enter a valid positive System Volume for Closed Systems.');
                 closedSystemVolumeInput.focus();
                 return;
             }
 
-            for (const row of dbData) {
-                const rowLoopMin = row['Loop Min']; // Already parsed as float or null
+            dbData.forEach((row, rowIndex) => { // Added rowIndex for easier debugging
+                console.log(`[DEBUG] Processing Row ${rowIndex} (Closed System):`, JSON.parse(JSON.stringify(row)));
+                const rowLoopMin = row['Loop Min'];
                 const rowLoopMax = row['Loop Max'];
+                console.log(`[DEBUG] Row ${rowIndex} Values - LoopMin: ${rowLoopMin} (type: ${typeof rowLoopMin}), LoopMax: ${rowLoopMax} (type: ${typeof rowLoopMax})`);
+
 
                 if (rowLoopMin !== null && rowLoopMax !== null &&
                     systemVolume >= rowLoopMin && systemVolume <= rowLoopMax) {
+                    console.log(`[DEBUG] Row ${rowIndex} Closed System Row MATCHES for Loop Volume. SEP Model: ${row['SEP Model'] || 'N/A'}`);
                     // For closed systems, a single condition match is enough for the row
-                    if (row['SEP Model'] && !foundSeparator) foundSeparator = row;
-                    if (row['VAF Model'] && !foundVAF) foundVAF = row;
-                    if (row['Vortisand Model'] && !foundVortisand) foundVortisand = row;
+                    if (row['SEP Model'] && !foundSeparator) {
+                        foundSeparator = row;
+                        console.log(`[DEBUG] Row ${rowIndex} Found Separator (Closed):`, row['SEP Model']);
+                    }
+                    if (row['VAF Model'] && !foundVAF) {
+                        foundVAF = row;
+                        console.log(`[DEBUG] Row ${rowIndex} Found VAF (Closed):`, row['VAF Model']);
+                    }
+                    if (row['Vortisand Model'] && !foundVortisand) {
+                        foundVortisand = row;
+                        console.log(`[DEBUG] Row ${rowIndex} Found Vortisand (Closed):`, row['Vortisand Model']);
+                    }
+                } else {
+                    console.log(`[DEBUG] Row ${rowIndex} Closed System Row NO MATCH for Loop Volume. SEP Model: ${row['SEP Model'] || 'N/A'}`);
                 }
-            }
+            }); // End of dbData.forEach
         } else {
             alert('Please select a system type (Open or Closed).');
             return;
         }
 
         // Display the results or a message if no equipment is found
+        console.log('[DEBUG] Final Found Equipment - Separator:', foundSeparator ? foundSeparator['SEP Model'] : 'None',
+                                                 'VAF:', foundVAF ? foundVAF['VAF Model'] : 'None',
+                                                 'Vortisand:', foundVortisand ? foundVortisand['Vortisand Model'] : 'None');
+
         displayResults(foundSeparator, foundVAF, foundVortisand, electricalCost);
         if (foundSeparator || foundVAF || foundVortisand) {
             resultsSection.classList.remove('hidden'); // Show results section
         } else {
             resultsSection.classList.add('hidden'); // Keep results section hidden
-            alert("No matching equipment found for the provided parameters. Please check your input values or the database ranges.");
+            alert("No matching equipment found for the provided parameters. Please check your input values or the database ranges. Review console logs for details.");
         }
     });
 
