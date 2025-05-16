@@ -6,11 +6,10 @@
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4; }
     header { background-color: #004080; color: white; padding: 10px 20px; text-align: center; }
-    nav { margin: 20px 0; text-align: center; }
-    nav a { margin: 0 15px; text-decoration: none; color: #004080; font-weight: bold; }
-    nav a:hover { text-decoration: underline; }
     .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
     label, select, input { display: block; margin: 10px 0; width: 100%; padding: 8px; }
+    .radio-group { display: flex; gap: 20px; margin: 10px 0; }
+    .radio-group label { display: flex; align-items: center; gap: 5px; width: auto; }
     button { background-color: #004080; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
     button:hover { background-color: #003060; }
     .result { border: 1px solid #ccc; padding: 10px; margin-top: 10px; border-radius: 4px; background: #f9f9f9; }
@@ -22,20 +21,19 @@
   <h1>Cooling System Selector</h1>
 </header>
 
-<nav>
-  <a href="#">PRODUCTS</a>
-  <a href="#">LITERATURE</a>
-  <a href="#">TRAINING & EDUCATION</a>
-</nav>
-
 <div class="container">
   <form id="filter-form">
-    <label for="systemType">Cooling System Type:</label>
-    <select id="systemType" required>
-      <option value="">-- Select Type --</option>
-      <option value="Open">Open Loop</option>
-      <option value="Closed">Closed Loop</option>
-    </select>
+    <label>Cooling System Type:</label>
+    <div class="radio-group">
+      <label>
+        <input type="radio" name="systemType" value="Open" required>
+        Open Loop
+      </label>
+      <label>
+        <input type="radio" name="systemType" value="Closed" required>
+        Closed Loop
+      </label>
+    </div>
 
     <div id="openLoopOptions" style="display: none;">
       <label for="openLoopChoice">Select Input Type:</label>
@@ -75,7 +73,7 @@
     .then(response => response.json())
     .then(json => data = json);
 
-  const systemType = document.getElementById('systemType');
+  const systemTypeRadios = document.querySelectorAll('input[name="systemType"]');
   const openLoopOptions = document.getElementById('openLoopOptions');
   const closedLoopOptions = document.getElementById('closedLoopOptions');
   const openLoopChoice = document.getElementById('openLoopChoice');
@@ -83,11 +81,18 @@
   const tonnageInput = document.getElementById('tonnageInput');
   const resultsDiv = document.getElementById('results');
 
-  systemType.addEventListener('change', () => {
-    openLoopOptions.style.display = systemType.value === 'Open' ? 'block' : 'none';
-    closedLoopOptions.style.display = systemType.value === 'Closed' ? 'block' : 'none';
-    recircInput.style.display = 'none';
-    tonnageInput.style.display = 'none';
+  systemTypeRadios.forEach(radio => {
+    radio.addEventListener('change', () => {
+      if (radio.value === 'Open') {
+        openLoopOptions.style.display = 'block';
+        closedLoopOptions.style.display = 'none';
+      } else if (radio.value === 'Closed') {
+        openLoopOptions.style.display = 'none';
+        closedLoopOptions.style.display = 'block';
+        recircInput.style.display = 'none';
+        tonnageInput.style.display = 'none';
+      }
+    });
   });
 
   openLoopChoice.addEventListener('change', () => {
@@ -99,7 +104,7 @@
     e.preventDefault();
     resultsDiv.innerHTML = '';
 
-    const type = systemType.value;
+    const type = document.querySelector('input[name="systemType"]:checked').value;
     let filtered = [];
 
     if (type === 'Open') {
