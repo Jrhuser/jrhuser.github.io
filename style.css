@@ -1,146 +1,211 @@
 body {
-    font-family: Arial, sans-serif; /* Or your preferred sans-serif font */
+    font-family: 'Arial', sans-serif; /* Example: Arial, or your preferred sans-serif font */
     margin: 0;
-    background-color: #f4f4f4; /* Light grey background for the page */
+    background-color: #f8f9fa; /* Light gray background for the page, can be white too */
     color: #333;
+    line-height: 1.6;
 }
 
 header {
-    background-color: #0077A2; /* Adjust to the blue from the image */
+    background-color: #0077A2; /* Blue from the image */
     color: white;
-    padding: 20px;
-    text-align: left; /* As per image */
+    padding: 20px 40px; /* Added more padding */
+    text-align: left;
+    border-bottom: 3px solid #005A7C; /* Slightly darker blue for accent */
 }
 
 header h1 {
     margin: 0;
-    font-weight: normal; /* As per image */
+    font-weight: 300; /* Lighter font weight if desired */
+    font-size: 2em;
 }
 
+/* Optional: Styles for product images in header */
+/* .product-images {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding-top: 15px;
+}
+.product-images img {
+    max-height: 80px;
+    border-radius: 4px;
+    background-color: white;
+    padding: 5px;
+} */
+
 main {
-    padding: 20px;
+    padding: 20px 40px; /* Added more padding */
+    max-width: 1200px; /* Limit max width for better readability on large screens */
+    margin: 0 auto; /* Center the main content */
 }
 
 .selection-box {
     background-color: white;
-    margin-bottom: 20px;
-    border: 1px solid #ddd; /* Light border for the box */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow */
+    margin-bottom: 25px;
+    border: 1px solid #dee2e6; /* Lighter border for the box */
+    border-radius: 4px; /* Slightly rounded corners */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Softer shadow */
 }
 
 .box-header {
     background-color: #0077A2; /* Blue header bar */
-    height: 10px; /* Thin blue header */
-    border-bottom: 1px solid #005A7C; /* Slightly darker border for definition */
+    height: 8px; /* Thin blue header */
+    border-top-left-radius: 3px; /* Match box radius */
+    border-top-right-radius: 3px; /* Match box radius */
 }
 
 .box-content {
-    padding: 20px;
+    padding: 25px;
 }
 
-.box-content label {
-    margin-right: 10px;
+.box-content strong { /* For section titles like "Open System Inputs" */
+    display: block;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+    color: #005A7C;
+}
+
+
+.box-content label { /* General labels */
+    margin-right: 15px;
+    font-weight: normal;
 }
 
 .box-content input[type="radio"] {
     margin-right: 5px;
+    vertical-align: middle;
 }
 
 .input-section .input-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
-.input-section label {
+.input-section .input-group label { /* Labels for input fields */
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     font-weight: bold;
+    color: #495057;
 }
 
 .input-section input[type="number"] {
-    width: calc(100% - 22px); /* Adjust for padding and border */
+    width: calc(100% - 24px); /* Account for padding */
     padding: 10px;
-    border: none;
-    border-bottom: 1px solid #ccc; /* Underline style */
-    margin-bottom: 5px; /* Space below underline */
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 1em;
 }
 
 .input-section input[type="number"]:focus {
     outline: none;
-    border-bottom: 2px solid #0077A2; /* Highlight on focus */
+    border-color: #0077A2;
+    box-shadow: 0 0 0 0.2rem rgba(0,119,162,.25);
 }
 
 .or-separator {
     text-align: center;
     font-style: italic;
-    margin: 10px 0;
+    color: #6c757d;
+    margin: 15px 0;
 }
 
 #calculateButton {
     background-color: #0077A2;
     color: white;
-    padding: 10px 20px;
+    padding: 12px 25px;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 1.1em;
     display: block;
-    margin: 20px auto; /* Center the button */
+    margin: 30px auto 20px auto; /* Center the button */
+    transition: background-color 0.2s ease-in-out;
 }
 
 #calculateButton:hover {
-    background-color: #005A7C;
+    background-color: #005A7C; /* Darker blue on hover */
 }
 
 .output-separator {
     border: 0;
     height: 1px;
-    background: #ccc;
-    margin: 30px 0;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0));
+    margin: 40px 0;
 }
 
 #outputSection h2 {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    color: #005A7C;
+    font-weight: 300;
+    font-size: 1.8em;
 }
 
 .results-grid {
     display: flex;
-    justify-content: space-around; /* Distributes columns */
-    gap: 20px; /* Space between columns */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    justify-content: space-between;
+    gap: 25px; /* Space between columns */
 }
 
 .column {
-    background-color: #f9f9f9; /* Light background for each column */
-    padding: 15px;
-    border: 1px solid #eee;
-    border-radius: 5px;
-    width: 30%; /* Adjust as needed for responsiveness */
-    box-sizing: border-box; /* Important for width calculation */
+    background-color: #ffffff;
+    padding: 20px;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    width: calc(33.333% - 20px); /* Adjust for gap, minus a bit more for safety */
+    box-sizing: border-box;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    margin-bottom: 20px; /* For wrapped items */
 }
 
 .column h3 {
     color: #0077A2;
     margin-top: 0;
+    margin-bottom: 15px;
     border-bottom: 1px solid #eee;
-    padding-bottom: 5px;
+    padding-bottom: 10px;
+    font-size: 1.3em;
 }
 
 .column p {
-    margin: 10px 0;
-    font-size: 0.9em;
+    margin: 8px 0;
+    font-size: 0.95em;
+    color: #495057;
 }
 
 .column p strong {
-    color: #555;
+    color: #343a40;
+    font-weight: 600;
 }
 
 /* Responsive adjustments */
+@media (max-width: 992px) {
+    .column {
+        width: calc(50% - 15px); /* Two columns */
+    }
+}
+
 @media (max-width: 768px) {
+    header {
+        padding: 15px 20px;
+        text-align: center;
+    }
+    header h1 {
+        font-size: 1.8em;
+    }
+    main {
+        padding: 15px 20px;
+    }
     .results-grid {
-        flex-direction: column; /* Stack columns on smaller screens */
+        flex-direction: column; /* Stack columns */
     }
     .column {
         width: 100%; /* Full width for stacked columns */
-        margin-bottom: 15px;
+        margin-bottom: 20px;
+    }
+    #calculateButton {
+        width: 100%;
+        padding: 15px;
     }
 }
