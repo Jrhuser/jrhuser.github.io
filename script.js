@@ -1,259 +1,239 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM fully loaded and parsed'); // 1. Check if DOMContentLoaded fires
-
-    const openSystemRadio = document.getElementById('openSystem');
-    const closedSystemRadio = document.getElementById('closedSystem');
-    const openSystemPrompts = document.getElementById('openSystemPrompts');
-    const closedSystemPrompts = document.getElementById('closedSystemPrompts');
+    const radioOpen = document.getElementById('radioOpen');
+    const radioClosed = document.getElementById('radioClosed');
+    const openSystemInputs = document.getElementById('openSystemInputs');
+    const closedSystemInputs = document.getElementById('closedSystemInputs');
+    const electricalCostSection = document.getElementById('electricalCostSection');
     const calculateButton = document.getElementById('calculateButton');
-    const resultsArea = document.getElementById('resultsArea');
+    const resultsSection = document.getElementById('resultsSection');
+    const noResultsMessage = document.getElementById('noResultsMessage');
 
-    // 2. Check if elements are found
-    console.log('openSystemRadio element:', openSystemRadio);
-    console.log('closedSystemRadio element:', closedSystemRadio);
-    console.log('openSystemPrompts element:', openSystemPrompts);
-    console.log('closedSystemPrompts element:', closedSystemPrompts);
-
+    const recircRateInput = document.getElementById('recircRate');
+    const openSystemVolumeInput = document.getElementById('openSystemVolume'); // For tonnage
+    const closedSystemVolumeInput = document.getElementById('closedSystemVolume');
+    const electricalCostInput = document.getElementById('electricalCost');
 
     const dbUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT216WTQadamMw4sIIFvBuWNWe69BCz3GedD5Ahcy3i187k9XGtiBve_yUiDc7jtqYZjtB4mrgDPnbK/pub?gid=0&single=true&output=csv';
     let database = [];
 
-    async function fetchData() {
-        // ... (fetchData function remains the same as the previous version)
+    // Fetch and parse CSV data
+    async function loadDatabase() {
         try {
             const response = await fetch(dbUrl);
             if (!response.ok) {
-                throw new Error(`Network response was not ok: ${response.statusText}`);
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
             const csvText = await response.text();
-            const parseResult = Papa.parse(csvText, {
-                header: true,
-                dynamicTyping: true,
-                skipEmptyLines: true
-            });
-            database = parseResult.data;
-            console.log('Database loaded. Number of rows:', database.length);
-            if (database.length > 0) {
-                console.log('First row of database:', database[0]);
-            }
-            if (parseResult.errors.length > 0) {
-                console.warn('CSV parsing errors:', parseResult.errors);
-            }
+            database = Papa.parse(csvText, { header: true, skipEmptyLines: true }).data;
+            // Convert relevant numeric fields from string to number
+            database = database.map(row => ({
+                ...row,
+                "Min Recirc Rate (GPM)": parseFloat(row["Min Recirc Rate (GPM)"]),
+                "Max Recirc Rate (GPM)": parseFloat(row["Max Recirc Rate (GPM)"]),
+                "Tonnage Min": parseFloat(row["Tonnage Min"]),
+                "Tonnage Max": parseFloat(row["Tonnage Max"]),
+                "Loop Min (gal)": parseFloat(row["Loop Min (gal)"]),
+                "Loop Max (gal)": parseFloat(row["Loop Max (gal)"]),
+                "Electrical Usage (kWh)": parseFloat(row["Electrical Usage (kWh)"]),
+                "Flowrate (GPM)": parseFloat(row["Flowrate (GPM)"]) // Assuming a general flowrate column for display
+            }));
+            console.log("Database loaded and parsed:", database);
         } catch (error) {
-            console.error('Error fetching or parsing database:', error);
-            resultsArea.innerHTML = `<p style="color: red;">Error loading database: ${error.message}. Please check the console and ensure the CSV URL is correct and publicly accessible.</p>`;
-            resultsArea.classList.remove('hidden');
+            console.error("Failed to load or parse database:", error);
+            resultsSection.classList.remove('hidden');
+            noResultsMessage.textContent = "Error: Could not load filtration database.";
+            noResultsMessage.classList.remove('hidden');
+            // Disable button if DB fails to load
+            calculateButton.disabled = true;
+            calculateButton.style.backgroundColor = 'grey';
+
         }
     }
+    // Call loadDatabase on script load
+    // Need to include PapaParse library for this to work directly in browser
+    // For now, assuming PapaParse is loaded (e.g. via CDN in HTML)
+    // <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    // Make sure to add the above line in your HTML <head> or before your script.js
+    if (typeof Papa === 'undefined') {
+        console.error("PapaParse library is not loaded. Please include it in your HTML.");
+        alert("Critical error: CSV parsing library not found. The application cannot function.");
+        // Display error to user in a more friendly way
+        resultsSection.classList.remove('hidden');
+        noResultsMessage.textContent = "Critical Error: Application component missing (PapaParse).";
+        noResultsMessage.classList.remove('hidden');
+        calculateButton.disabled = true;
+        calculateButton.style.backgroundColor = 'grey';
 
-    fetchData();
-
-    function validateAndGetElectricalCost(inputElement) {
-        // ... (validateAndGetElectricalCost function remains the same)
-        const cost = parseFloat(inputElement.value);
-        if (isNaN(cost) || cost < 0) {
-            alert('Please enter a valid, non-negative Electrical Cost.');
-            inputElement.focus();
-            return null;
-        }
-        return cost;
-    }
-
-    function togglePrompts() {
-        console.log('togglePrompts function called.'); // 4. Check if togglePrompts is called
-
-        const openSelected = openSystemRadio.checked;
-        const closedSelected = closedSystemRadio.checked;
-
-        console.log('In togglePrompts - Open selected:', openSelected, 'Closed selected:', closedSelected); // 5. Check radio state
-
-        if (openSystemPrompts && closedSystemPrompts) { // Ensure elements exist before trying to modify classList
-            console.log('openSystemPrompts classList before:', openSystemPrompts.classList.toString());
-            openSystemPrompts.classList.toggle('hidden', !openSelected);
-            console.log('openSystemPrompts classList after:', openSystemPrompts.classList.toString());
-
-            console.log('closedSystemPrompts classList before:', closedSystemPrompts.classList.toString());
-            closedSystemPrompts.classList.toggle('hidden', !closedSelected);
-            console.log('closedSystemPrompts classList after:', closedSystemPrompts.classList.toString());
-        } else {
-            console.error('Error in togglePrompts: openSystemPrompts or closedSystemPrompts element not found!');
-        }
-
-
-        if (calculateButton) {
-            calculateButton.disabled = !(openSelected || closedSelected);
-        } else {
-            console.error('Error in togglePrompts: calculateButton element not found!');
-        }
-
-        if (resultsArea) {
-            resultsArea.classList.add('hidden');
-        } else {
-            console.error('Error in togglePrompts: resultsArea element not found!');
-        }
-        clearResults();
-    }
-
-    if (openSystemRadio && closedSystemRadio) {
-        console.log('Adding event listeners to radio buttons.'); // 3. Check if listeners are being added
-        openSystemRadio.addEventListener('change', togglePrompts);
-        closedSystemRadio.addEventListener('change', togglePrompts);
     } else {
-        console.error('Could not add event listeners: openSystemRadio or closedSystemRadio element not found!');
+         loadDatabase();
     }
 
+
+    function toggleInputs() {
+        openSystemInputs.classList.add('hidden');
+        closedSystemInputs.classList.add('hidden');
+        electricalCostSection.classList.add('hidden');
+        resultsSection.classList.add('hidden'); // Hide results when inputs change
+        noResultsMessage.classList.add('hidden');
+
+
+        if (radioOpen.checked) {
+            openSystemInputs.classList.remove('hidden');
+            electricalCostSection.classList.remove('hidden');
+        } else if (radioClosed.checked) {
+            closedSystemInputs.classList.remove('hidden');
+            electricalCostSection.classList.remove('hidden');
+        }
+    }
+
+    radioOpen.addEventListener('change', toggleInputs);
+    radioClosed.addEventListener('change', toggleInputs);
 
     calculateButton.addEventListener('click', () => {
-        // ... (calculateButton click listener remains the same as the previous version)
         if (database.length === 0) {
-            alert('Database is not loaded or is empty. Please wait or try refreshing.');
+            noResultsMessage.textContent = "Database is not loaded. Please try again later or check console for errors.";
+            noResultsMessage.classList.remove('hidden');
+            resultsSection.classList.add('hidden'); // Ensure results grid is hidden
+            return;
+        }
+        const systemType = radioOpen.checked ? 'open' : (radioClosed.checked ? 'closed' : null);
+        const electricalCost = parseFloat(electricalCostInput.value);
+
+        if (!systemType) {
+            alert("Please select a system type (Open or Closed).");
+            return;
+        }
+        if (isNaN(electricalCost) || electricalCost <= 0) {
+            alert("Please enter a valid Electrical Cost (must be a positive number).");
             return;
         }
 
-        resultsArea.classList.remove('hidden');
-        clearResults();
-
-        const systemType = openSystemRadio.checked ? 'open' : 'closed';
-        let electricalCost = null;
-        let selectedSeparator = null;
-        let selectedVaf = null;
-        let selectedVortisand = null;
+        let recircRate = NaN;
+        let systemVolumeOpen = NaN; // For tonnage comparison
+        let systemVolumeClosed = NaN;
 
         if (systemType === 'open') {
-            electricalCost = validateAndGetElectricalCost(openElectricalCostInput);
-            if (electricalCost === null) return;
-
-            const inputRecircRate = parseFloat(recircRateInput.value);
-            const inputOpenTonnageOrVolume = parseFloat(openSystemTonnageInput.value);
-
-            if (isNaN(inputRecircRate) && isNaN(inputOpenTonnageOrVolume)) {
-                alert('For Open Systems, please enter either "Recirc Rate" or "Tonnage / System Volume".');
+            recircRate = parseFloat(recircRateInput.value);
+            systemVolumeOpen = parseFloat(openSystemVolumeInput.value);
+            if (isNaN(recircRate) && isNaN(systemVolumeOpen)) {
+                alert("For Open systems, please enter either Recirculation Rate or System Volume for Tonnage.");
                 return;
             }
-            console.log(`[DEBUG] Open System Input - Recirc Rate: ${inputRecircRate}, Tonnage/Volume: ${inputOpenTonnageOrVolume}`);
-
-
-            database.forEach((item, index) => {
-                const itemRecircMin = item['Min Recirc Rate (gpm)'];
-                const itemRecircMax = item['Max Recirc Rate (gpm)']; //  MAKE SURE THIS HEADER IS 100% CORRECT
-                const itemTonnageMin = item['TONNAGE Min'];
-                const itemTonnageMax = item['TONNAGE Max'];
-                const itemTypeRaw = item.Type;
-                const itemSystemTypeRaw = item['System Type'];
-
-                if (itemSystemTypeRaw?.trim().toLowerCase() !== 'open') return;
-
-                let recircMatch = false;
-                let tonnageMatch = false;
-
-                if (!isNaN(inputRecircRate) && typeof itemRecircMin === 'number' && typeof itemRecircMax === 'number') {
-                    if (inputRecircRate >= itemRecircMin && inputRecircRate <= itemRecircMax) {
-                        recircMatch = true;
-                    }
-                }
-
-                if (!isNaN(inputOpenTonnageOrVolume) && typeof itemTonnageMin === 'number' && typeof itemTonnageMax === 'number') {
-                    if (inputOpenTonnageOrVolume >= itemTonnageMin && inputOpenTonnageOrVolume <= itemTonnageMax) {
-                        tonnageMatch = true;
-                    }
-                }
-
-                if (recircMatch || tonnageMatch) {
-                    const currentItemType = itemTypeRaw?.trim().toLowerCase();
-                    if (currentItemType === 'separator' && !selectedSeparator) selectedSeparator = item;
-                    else if (currentItemType === 'vaf' && !selectedVaf) selectedVaf = item;
-                    else if (currentItemType === 'vortisand' && !selectedVortisand) selectedVortisand = item;
-                }
-            });
-
-        } else if (systemType === 'closed') {
-            electricalCost = validateAndGetElectricalCost(closedElectricalCostInput);
-            if (electricalCost === null) return;
-
-            const systemVolumeClosed = parseFloat(closedSystemVolumeInput.value);
-
+             if (!isNaN(recircRate) && recircRate <= 0) {
+                alert("Recirculation Rate must be a positive number.");
+                return;
+            }
+            if (!isNaN(systemVolumeOpen) && systemVolumeOpen <= 0) {
+                alert("System Volume for Tonnage must be a positive number.");
+                return;
+            }
+        } else { // closed system
+            systemVolumeClosed = parseFloat(closedSystemVolumeInput.value);
             if (isNaN(systemVolumeClosed) || systemVolumeClosed <= 0) {
-                alert('Please enter a valid System Volume for the Closed System.');
-                closedSystemVolumeInput.focus();
+                alert("For Closed systems, please enter a valid System Volume (must be a positive number).");
                 return;
             }
-            console.log(`[DEBUG] Closed System Input - Volume: ${systemVolumeClosed}`);
-
-            database.forEach((item, index) => {
-                const itemLoopMin = item['Loop Min GPM'];
-                const itemLoopMax = item['Loop Max GPM'];
-                const itemTypeRaw = item.Type;
-                const itemSystemTypeRaw = item['System Type'];
-
-                if (itemSystemTypeRaw?.trim().toLowerCase() !== 'closed') return;
-
-                let loopMatch = false;
-                if (typeof itemLoopMin === 'number' && typeof itemLoopMax === 'number') {
-                    if (systemVolumeClosed >= itemLoopMin && systemVolumeClosed <= itemLoopMax) {
-                        loopMatch = true;
-                    }
-                }
-
-                if (loopMatch) {
-                    const currentItemType = itemTypeRaw?.trim().toLowerCase();
-                    if (currentItemType === 'separator' && !selectedSeparator) selectedSeparator = item;
-                    else if (currentItemType === 'vaf' && !selectedVaf) selectedVaf = item;
-                    else if (currentItemType === 'vortisand' && !selectedVortisand) selectedVortisand = item;
-                }
-            });
         }
-        console.log(`[DEBUG] Final Found Equipment - Separator: ${selectedSeparator ? selectedSeparator.Model : 'None'}, VAF: ${selectedVaf ? selectedVaf.Model : 'None'}, Vortisand: ${selectedVortisand ? selectedVortisand.Model : 'None'}`);
-        displayResults(selectedSeparator, selectedVaf, selectedVortisand, electricalCost);
+
+        findAndDisplayModels(systemType, recircRate, systemVolumeOpen, systemVolumeClosed, electricalCost);
     });
 
+    function findAndDisplayModels(systemType, recircRate, openVolume, closedVolume, elecCost) {
+        let separatorModel = null;
+        let vafModel = null;
+        let vortisandModel = null;
+
+        for (const row of database) {
+            let match = false;
+            if (systemType === 'open') {
+                // Check Recirc Rate OR Tonnage (using openVolume as proxy for Tonnage input)
+                const useRecirc = !isNaN(recircRate);
+                const useTonnage = !isNaN(openVolume);
+
+                if (useRecirc && recircRate >= row["Min Recirc Rate (GPM)"] && recircRate <= row["Max Recirc Rate (GPM)"]) {
+                    match = true;
+                } else if (useTonnage && openVolume >= row["Tonnage Min"] && openVolume <= row["Tonnage Max"]) {
+                    match = true;
+                }
+            } else { // closed system
+                if (!isNaN(closedVolume) && closedVolume >= row["Loop Min (gal)"] && closedVolume <= row["Loop Max (gal)"]) {
+                    match = true;
+                }
+            }
+
+            if (match) {
+                const type = row["Type"] ? row["Type"].toLowerCase() : '';
+                if (type.includes('separator') && !separatorModel) {
+                    separatorModel = row;
+                } else if (type.includes('vaf') && !vafModel) {
+                    vafModel = row;
+                } else if (type.includes('vortisand') && !vortisandModel) {
+                    vortisandModel = row;
+                }
+            }
+            // If all three types are found, no need to iterate further (optimisation)
+            // if (separatorModel && vafModel && vortisandModel) break;
+            // Removed break to find potentially different matching models if first ones are not distinct enough.
+            // The prompt asks for *a* separator, vaf, and vortisand. The first match of each type will be taken.
+        }
+
+        displayResults(separatorModel, vafModel, vortisandModel, elecCost);
+    }
+
     function displayResults(separator, vaf, vortisand, elecCost) {
-        // ... (displayResults function remains the same)
-        const calculateOpCost = (item, cost) => {
-            if (!item || item['Electrical Usage (kWh)'] === undefined || item['Electrical Usage (kWh)'] === null || isNaN(parseFloat(item['Electrical Usage (kWh)'])) || cost === null || isNaN(cost)) {
-                return 'N/A';
-            }
-            const usage = parseFloat(item['Electrical Usage (kWh)']);
-            return (usage * cost).toFixed(2);
-        };
+        resultsSection.classList.remove('hidden');
+        noResultsMessage.classList.add('hidden');
+        let modelsFound = false;
 
-        const populateColumn = (item, type, elecCostToUse) => {
-            const modelEl = document.getElementById(`${type}Model`);
-            const flowrateEl = document.getElementById(`${type}Flowrate`);
-            const descriptionEl = document.getElementById(`${type}Description`);
-            const opCostEl = document.getElementById(`${type}OpCost`);
+        // Separator
+        if (separator) {
+            document.getElementById('separatorModel').textContent = separator["Model"] || 'N/A';
+            document.getElementById('separatorFlowrate').textContent = separator["Flowrate (GPM)"] || 'N/A';
+            document.getElementById('separatorDescription').textContent = separator["Description"] || 'N/A';
+            const opCostSep = !isNaN(separator["Electrical Usage (kWh)"]) && !isNaN(elecCost) ? (separator["Electrical Usage (kWh)"] * elecCost).toFixed(2) : 'N/A';
+            document.getElementById('separatorOpCost').textContent = opCostSep + (opCostSep !== 'N/A' ? '/year' : '');
+            modelsFound = true;
+        } else {
+            document.getElementById('separatorModel').textContent = '-';
+            document.getElementById('separatorFlowrate').textContent = '-';
+            document.getElementById('separatorDescription').textContent = 'No suitable model found';
+            document.getElementById('separatorOpCost').textContent = '-';
+        }
 
-            if (item) {
-                modelEl.textContent = item.Model || 'N/A';
-                flowrateEl.textContent = item['Flow Rate (GPM)'] !== undefined && item['Flow Rate (GPM)'] !== null ? item['Flow Rate (GPM)'] : 'N/A';
-                descriptionEl.textContent = item.Description || 'N/A';
-                opCostEl.textContent = calculateOpCost(item, elecCostToUse);
-            } else {
-                modelEl.textContent = 'No suitable model';
-                flowrateEl.textContent = '-';
-                descriptionEl.textContent = '-';
-                opCostEl.textContent = '-';
-            }
-        };
+        // VAF
+        if (vaf) {
+            document.getElementById('vafModel').textContent = vaf["Model"] || 'N/A';
+            document.getElementById('vafFlowrate').textContent = vaf["Flowrate (GPM)"] || 'N/A';
+            document.getElementById('vafDescription').textContent = vaf["Description"] || 'N/A';
+            const opCostVaf = !isNaN(vaf["Electrical Usage (kWh)"]) && !isNaN(elecCost) ? (vaf["Electrical Usage (kWh)"] * elecCost).toFixed(2) : 'N/A';
+            document.getElementById('vafOpCost').textContent = opCostVaf + (opCostVaf !== 'N/A' ? '/year' : '');
+            modelsFound = true;
+        } else {
+            document.getElementById('vafModel').textContent = '-';
+            document.getElementById('vafFlowrate').textContent = '-';
+            document.getElementById('vafDescription').textContent = 'No suitable model found';
+            document.getElementById('vafOpCost').textContent = '-';
+        }
 
-        populateColumn(separator, 'separator', elecCost);
-        populateColumn(vaf, 'vaf', elecCost);
-        populateColumn(vortisand, 'vortisand', elecCost);
+        // Vortisand
+        if (vortisand) {
+            document.getElementById('vortisandModel').textContent = vortisand["Model"] || 'N/A';
+            document.getElementById('vortisandFlowrate').textContent = vortisand["Flowrate (GPM)"] || 'N/A';
+            document.getElementById('vortisandDescription').textContent = vortisand["Description"] || 'N/A';
+            const opCostVor = !isNaN(vortisand["Electrical Usage (kWh)"]) && !isNaN(elecCost) ? (vortisand["Electrical Usage (kWh)"] * elecCost).toFixed(2) : 'N/A';
+            document.getElementById('vortisandOpCost').textContent = opCostVor + (opCostVor !== 'N/A' ? '/year' : '');
+            modelsFound = true;
+        } else {
+            document.getElementById('vortisandModel').textContent = '-';
+            document.getElementById('vortisandFlowrate').textContent = '-';
+            document.getElementById('vortisandDescription').textContent = 'No suitable model found';
+            document.getElementById('vortisandOpCost').textContent = '-';
+        }
+        
+        if (!modelsFound) {
+            noResultsMessage.classList.remove('hidden');
+            // Optionally hide the grid if truly nothing is found for any category
+            // resultsSection.classList.add('hidden'); // Or just keep showing the grid with "no model found"
+        }
     }
-
-     function clearResults() {
-        // ... (clearResults function remains the same)
-        const types = ['separator', 'vaf', 'vortisand'];
-        types.forEach(type => {
-            if (document.getElementById(`${type}Model`)) { // Check if element exists
-                document.getElementById(`${type}Model`).textContent = '-';
-                document.getElementById(`${type}Flowrate`).textContent = '-';
-                document.getElementById(`${type}Description`).textContent = '-';
-                document.getElementById(`${type}OpCost`).textContent = '-';
-            }
-        });
-    }
-
-    // Initial call to set up the page correctly
-    console.log('Initial call to togglePrompts.'); // 6. Check if togglePrompts is called initially
-    togglePrompts();
 });
