@@ -48,30 +48,43 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function parseCSV(csvText) {
-        // ... (parseCSV function remains the same as previously provided)
-        const lines = csvText.trim().split(/\r?\n/);
-        if (lines.length < 2) {
-            console.warn("CSV data has less than 2 lines (no data or only headers).");
-            return [];
-        }
-        const headers = lines[0].split(',').map(header => header.trim().replace(/"/g, ''));
-        const data = [];
-        for (let i = 1; i < lines.length; i++) {
-            if (lines[i].trim() === '') continue;
-            const values = lines[i].split(',').map(value => value.trim().replace(/"/g, ''));
-            if (values.length === headers.length) {
-                const entry = {};
-                headers.forEach((header, index) => {
-                    entry[header] = values[index];
-                });
-                data.push(entry);
-            } else {
-                console.warn(`Row ${i+1} in CSV has incorrect number of columns. Expected ${headers.length}, got ${values.length}. Line: "${lines[i]}"`);
-            }
-        }
-        return data;
+function parseCSV(csvText) {
+    const lines = csvText.trim().split(/\r?\n/);
+    if (lines.length < 2) {
+        console.warn("CSV data has less than 2 lines (no data or only headers).");
+        return [];
     }
+    // THIS IS THE LINE WHERE HEADERS ARE DETERMINED:
+    const headers = lines[0].split(',').map(header => header.trim().replace(/"/g, ''));
+
+    console.log("[parseCSV] Detected CSV Headers from Sheet:", headers); // <-- ADD THIS LINE
+
+    const data = [];
+    for (let i = 1; i < lines.length; i++) {
+        if (lines[i].trim() === '') continue;
+        // A more robust way to split CSV lines, especially if some fields might be quoted and contain commas
+        // This is a basic version; for truly complex CSVs, a library might be better
+        const values = lines[i].split(',').map(value => {
+            let V = value.trim();
+            // Remove quotes only if they are at the very start and end
+            if (V.startsWith('"') && V.endsWith('"')) {
+                V = V.substring(1, V.length - 1);
+            }
+            return V.replace(/""/g, '"'); // Handle escaped quotes within quoted fields
+        });
+
+        if (values.length === headers.length) {
+            const entry = {};
+            headers.forEach((header, index) => {
+                entry[header] = values[index]; // Property names on 'entry' will be exactly what's in 'headers'
+            });
+            data.push(entry);
+        } else {
+            console.warn(`[parseCSV] Row ${i+1} (data line ${i}) has incorrect column count. Expected ${headers.length}, got <span class="math-inline">\{values\.length\}\. Line\: "</span>{lines[i]}"`);
+        }
+    }
+    return data;
+}
 
     function handleSystemTypeChange() {
         console.log("handleSystemTypeChange called"); // Debug: Check if function is triggered
