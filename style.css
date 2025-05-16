@@ -1,0 +1,146 @@
+body {
+    font-family: Arial, sans-serif; /* Or your preferred sans-serif font */
+    margin: 0;
+    background-color: #f4f4f4; /* Light grey background for the page */
+    color: #333;
+}
+
+header {
+    background-color: #0077A2; /* Adjust to the blue from the image */
+    color: white;
+    padding: 20px;
+    text-align: left; /* As per image */
+}
+
+header h1 {
+    margin: 0;
+    font-weight: normal; /* As per image */
+}
+
+main {
+    padding: 20px;
+}
+
+.selection-box {
+    background-color: white;
+    margin-bottom: 20px;
+    border: 1px solid #ddd; /* Light border for the box */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow */
+}
+
+.box-header {
+    background-color: #0077A2; /* Blue header bar */
+    height: 10px; /* Thin blue header */
+    border-bottom: 1px solid #005A7C; /* Slightly darker border for definition */
+}
+
+.box-content {
+    padding: 20px;
+}
+
+.box-content label {
+    margin-right: 10px;
+}
+
+.box-content input[type="radio"] {
+    margin-right: 5px;
+}
+
+.input-section .input-group {
+    margin-bottom: 15px;
+}
+
+.input-section label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.input-section input[type="number"] {
+    width: calc(100% - 22px); /* Adjust for padding and border */
+    padding: 10px;
+    border: none;
+    border-bottom: 1px solid #ccc; /* Underline style */
+    margin-bottom: 5px; /* Space below underline */
+}
+
+.input-section input[type="number"]:focus {
+    outline: none;
+    border-bottom: 2px solid #0077A2; /* Highlight on focus */
+}
+
+.or-separator {
+    text-align: center;
+    font-style: italic;
+    margin: 10px 0;
+}
+
+#calculateButton {
+    background-color: #0077A2;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    display: block;
+    margin: 20px auto; /* Center the button */
+}
+
+#calculateButton:hover {
+    background-color: #005A7C;
+}
+
+.output-separator {
+    border: 0;
+    height: 1px;
+    background: #ccc;
+    margin: 30px 0;
+}
+
+#outputSection h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.results-grid {
+    display: flex;
+    justify-content: space-around; /* Distributes columns */
+    gap: 20px; /* Space between columns */
+}
+
+.column {
+    background-color: #f9f9f9; /* Light background for each column */
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    width: 30%; /* Adjust as needed for responsiveness */
+    box-sizing: border-box; /* Important for width calculation */
+}
+
+.column h3 {
+    color: #0077A2;
+    margin-top: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+.column p {
+    margin: 10px 0;
+    font-size: 0.9em;
+}
+
+.column p strong {
+    color: #555;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .results-grid {
+        flex-direction: column; /* Stack columns on smaller screens */
+    }
+    .column {
+        width: 100%; /* Full width for stacked columns */
+        margin-bottom: 15px;
+    }
+}
