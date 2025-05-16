@@ -190,7 +190,216 @@ button#calculate-button:hover {
 
 .result-column p strong {
     color: #333;
-    min-width: 120px; /* Align values somewhat */
+    min-width: 120px; /* Align values somewhat */body {
+    /* Attempting to match the font from the image - likely a sans-serif like Arial or Helvetica */
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin: 0;
+    background-color: #EFEFEF; /* Light grey background, common for such tools */
+    color: #333333;
+    font-size: 14px; /* Base font size, can be adjusted */
+}
+
+header {
+    background-color: #0077B6; /* Dominant blue from the top bar of the image */
+    color: white;
+    padding: 15px 30px; /* Adjusted padding */
+    text-align: left;
+}
+
+header h1 {
+    margin: 0;
+    font-weight: 300; /* Lighter font weight for the header */
+    font-size: 24px;
+}
+
+.container {
+    width: 90%;
+    max-width: 1000px; /* Max width for larger screens */
+    margin: 20px auto;
+    background-color: white; /* Assuming main content area is white */
+    padding: 25px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 3px; /* Slight rounding of corners */
+}
+
+.selection-box, .prompts-box {
+    border: 2px solid #0077B6; /* Blue border for selection boxes */
+    padding: 20px;
+    margin-bottom: 25px;
+    background-color: #FFFFFF; /* White background for these boxes */
+}
+
+.radio-group {
+    display: flex;
+    justify-content: flex-start; /* Align to the start */
+    align-items: center;
+}
+
+.radio-group label {
+    margin-right: 10px; /* Space between radio and label */
+    padding: 8px 12px;
+    border: 1px solid #CCCCCC; /* Light grey border for labels */
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    color: #333333;
+    background-color: #F7F7F7; /* Light background for unselected radio labels */
+}
+
+.radio-group input[type="radio"] {
+    display: none; /* Hide default radio button */
+}
+
+.radio-group input[type="radio"]:checked + label {
+    background-color: #0077B6; /* Blue background for selected label */
+    color: white;
+    border-color: #005B8E; /* Darker blue border for selected */
+}
+
+.prompts-box .input-section {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #EEEEEE; /* Light separator line between sections within a box */
+}
+.prompts-box .input-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+
+.section-title {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #333333;
+    margin-right: 15px; /* Space between title like "Open" and the first input */
+    display: inline-block; /* To allow side-by-side with inputs if needed */
+    min-width: 50px; /* Ensure consistent alignment */
+}
+
+.input-group, .input-group-inline {
+    margin-bottom: 10px; /* Space below each input line */
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+
+.input-group-inline {
+    display: inline-flex; /* For side-by-side inputs like Tonnage and Recirc */
+    margin-right: 30px; /* Space between inline groups */
+}
+
+
+.input-group label, .input-group-inline label {
+    margin-right: 8px;
+    color: #555555;
+    font-size: 0.95em;
+    white-space: nowrap; /* Prevent label text from wrapping */
+}
+
+.input-group input[type="number"], .input-group-inline input[type="number"] {
+    border: none;
+    border-bottom: 1.5px solid #AAAAAA; /* Grey line for input fields */
+    border-radius: 0;
+    padding: 6px 2px; /* Reduced padding for a sleeker line */
+    font-size: 1em;
+    background-color: transparent;
+    width: 120px; /* Default width, adjust as needed */
+}
+.electrical-cost-section .input-group input[type="number"]{
+     width: 80px; /* Shorter width for $/kWh */
+}
+
+
+.input-group input[type="number"]:focus, .input-group-inline input[type="number"]:focus {
+    outline: none;
+    border-bottom: 2px solid #0077B6; /* Blue line on focus */
+}
+
+button#calculateButton {
+    background-color: #0077B6; /* Blue button */
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.05em;
+    margin-top: 10px; /* Reduced margin from image */
+    display: block;
+}
+
+button#calculateButton:disabled {
+    background-color: #B0B0B0; /* Grey out button when disabled */
+    cursor: not-allowed;
+}
+
+.hidden {
+    display: none !important;
+}
+
+#resultsArea {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid #0077B6; /* Blue line above results */
+}
+#resultsArea h2{
+    font-size: 1.4em;
+    color: #333333;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+.result-column {
+    border: 1px solid #DDDDDD;
+    padding: 18px;
+    border-radius: 4px;
+    background-color: #F9F9F9;
+}
+
+.result-column h3 {
+    color: #0077B6; /* Blue for filter type headings */
+    margin-top: 0;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #EEEEEE;
+    padding-bottom: 10px;
+    font-size: 1.15em;
+}
+
+.result-column p {
+    margin: 6px 0;
+    line-height: 1.5;
+    font-size: 0.9em;
+}
+
+.result-column p strong {
+    color: #333333;
+    font-weight: 600;
+}
+
+/* Ensure "Open" title and its inputs are more in line */
+#openSystemPrompts .input-section:first-child {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+#openSystemPrompts .input-section:first-child .section-title {
+    margin-bottom: 10px; /* Align with potential wrapping of inputs */
+}
+
+/* Specific styling for the Electrical Cost section based on image */
+.electrical-cost-section .input-group {
+    justify-content: flex-start; /* Align Electrical Cost input to the left */
+}
+.electrical-cost-section .section-title {
+     min-width: 120px; /* Give "Electrical Cost" title more space */
+}
     display: inline-block;
 }
 

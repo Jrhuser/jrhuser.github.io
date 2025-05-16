@@ -3,93 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cooling System Selector</title>
+    <title>Cooling Water Filtration Selector</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 </head>
 <body>
     <header>
-        <div class="container">
-            <h1>Cooling Water Filtration</h1>
-            </div>
+        <h1>Cooling Water Filtration</h1>
     </header>
-
-    <main class="container">
-        <section id="system-type-selection">
-            <div class="radio-group">
-                <input type="radio" id="open-system" name="system_type" value="open">
-                <label for="open-system">Open</label>
-                <input type="radio" id="closed-system" name="system_type" value="closed">
-                <label for="closed-system">Closed</label>
-            </div>
-        </section>
-
-        <section id="open-system-inputs" class="hidden input-section">
-            <div class="input-row">
-                <div class="input-field">
-                    <label for="recirc-rate">Recirc Rate (GPM)</label>
-                    <input type="number" id="recirc-rate" name="recirc_rate">
-                </div>
-                <div class="input-field">
-                    <label for="open-system-tonnage">System Tonnage</label>
-                    <input type="number" id="open-system-tonnage" name="open_system_tonnage">
-                </div>
-            </div>
-        </section>
-
-        <section id="closed-system-inputs" class="hidden input-section">
-            <div class="input-row">
-                <div class="input-field">
-                    <label for="closed-system-volume">System Volume (Gallons)</label>
-                    <input type="number" id="closed-system-volume" name="closed_system_volume">
-                </div>
-            </div>
-        </section>
-
-        <section id="common-inputs" class="hidden input-section">
-            <div class="input-row">
-                <div class="input-field">
-                    <label for="electrical-cost">Electrical Cost ($/kWh)</label>
-                    <input type="number" id="electrical-cost" name="electrical_cost" step="0.01">
-                </div>
-            </div>
-            <button id="calculate-button">Calculate Selection</button>
-        </section>
-
-        <section id="results" class="hidden">
-            <h2>Recommended Equipment</h2>
-            <div class="results-grid">
-                <div class="result-column" id="separator-column">
-                    <h3>Separator</h3>
-                    <p><strong>Model:</strong> <span id="separator-model">-</span></p>
-                    <p><strong>Flowrate (GPM):</strong> <span id="separator-flowrate">-</span></p>
-                    <p><strong>Description:</strong> <span id="separator-description">-</span></p>
-                    <p><strong>Est. Operating Cost ($/yr):</strong> <span id="separator-op-cost">-</span></p>
-                </div>
-                <div class="result-column" id="vaf-column">
-                    <h3>VAF</h3>
-                    <p><strong>Model:</strong> <span id="vaf-model">-</span></p>
-                    <p><strong>Flowrate (GPM):</strong> <span id="vaf-flowrate">-</span></p>
-                    <p><strong>Description:</strong> <span id="vaf-description">-</span></p>
-                    <p><strong>Est. Operating Cost ($/yr):</strong> <span id="vaf-op-cost">-</span></p>
-                </div>
-                <div class="result-column" id="vortisand-column">
-                    <h3>Vortisand</h3>
-                    <p><strong>Model:</strong> <span id="vortisand-model">-</span></p>
-                    <p><strong>Flowrate (GPM):</strong> <span id="vortisand-flowrate">-</span></p>
-                    <p><strong>Description:</strong> <span id="vortisand-description">-</span></p>
-                    <p><strong>Est. Operating Cost ($/yr):</strong> <span id="vortisand-op-cost">-</span></p>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer>
+    <main>
         <div class="container">
-            <p>&copy; <span id="current-year"></span> Your Company Name</p>
-        </div>
-    </footer>
+            <div class="selection-box">
+                <div class="radio-group">
+                    <input type="radio" id="openSystem" name="systemType" value="open">
+                    <label for="openSystem">Open</label>
+                    <input type="radio" id="closedSystem" name="systemType" value="closed">
+                    <label for="closedSystem">Closed</label>
+                </div>
+            </div>
 
+            <div id="openSystemPrompts" class="hidden prompts-box">
+                <div class="input-section">
+                    <span class="section-title">Open</span>
+                    <div class="input-group-inline">
+                        <label for="recircRate">Recirc Rate (GPM):</label>
+                        <input type="number" id="recircRate" name="recircRate">
+                    </div>
+                    <div class="input-group-inline">
+                        <label for="openSystemTonnage">Tonnage / System Volume (Gallons):</label>
+                        <input type="number" id="openSystemTonnage" name="openSystemTonnage">
+                    </div>
+                </div>
+                <div class="input-section electrical-cost-section">
+                    <span class="section-title">Electrical Cost</span>
+                    <div class="input-group">
+                        <label for="openElectricalCost">$/kWh:</label>
+                        <input type="number" id="openElectricalCost" name="openElectricalCost" step="0.01">
+                    </div>
+                </div>
+            </div>
+
+            <div id="closedSystemPrompts" class="hidden prompts-box">
+                 <div class="input-section">
+                    <span class="section-title">Closed</span>
+                     <div class="input-group">
+                        <label for="closedSystemVolume">System Volume (Gallons):</label>
+                        <input type="number" id="closedSystemVolume" name="closedSystemVolume">
+                    </div>
+                </div>
+                <div class="input-section electrical-cost-section">
+                    <span class="section-title">Electrical Cost</span>
+                    <div class="input-group">
+                        <label for="closedElectricalCost">$/kWh:</label>
+                        <input type="number" id="closedElectricalCost" name="closedElectricalCost" step="0.01">
+                    </div>
+                </div>
+            </div>
+
+            <button id="calculateButton" disabled>Calculate</button>
+
+            <div id="resultsArea" class="hidden">
+                <h2>Recommended Filters</h2>
+                <div class="results-grid">
+                    <div class="result-column">
+                        <h3>Separator</h3>
+                        <p><strong>Model:</strong> <span id="separatorModel">-</span></p>
+                        <p><strong>Flowrate:</strong> <span id="separatorFlowrate">-</span> GPM</p>
+                        <p><strong>Description:</strong> <span id="separatorDescription">-</span></p>
+                        <p><strong>Operating Cost:</strong> $<span id="separatorOpCost">-</span></p>
+                    </div>
+                    <div class="result-column">
+                        <h3>VAF</h3>
+                        <p><strong>Model:</strong> <span id="vafModel">-</span></p>
+                        <p><strong>Flowrate:</strong> <span id="vafFlowrate">-</span> GPM</p>
+                        <p><strong>Description:</strong> <span id="vafDescription">-</span></p>
+                        <p><strong>Operating Cost:</strong> $<span id="vafOpCost">-</span></p>
+                    </div>
+                    <div class="result-column">
+                        <h3>Vortisand</h3>
+                        <p><strong>Model:</strong> <span id="vortisandModel">-</span></p>
+                        <p><strong>Flowrate:</strong> <span id="vortisandFlowrate">-</span> GPM</p>
+                        <p><strong>Description:</strong> <span id="vortisandDescription">-</span></p>
+                        <p><strong>Operating Cost:</strong> $<span id="vortisandOpCost">-</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
     <script src="script.js"></script>
 </body>
 </html>
