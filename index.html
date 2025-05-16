@@ -4,51 +4,68 @@
   <meta charset="UTF-8">
   <title>Cooling System Selector</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    label, select, input { display: block; margin: 10px 0; }
-    .result { border: 1px solid #ccc; padding: 10px; margin-top: 10px; }
+    body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4; }
+    header { background-color: #004080; color: white; padding: 10px 20px; text-align: center; }
+    nav { margin: 20px 0; text-align: center; }
+    nav a { margin: 0 15px; text-decoration: none; color: #004080; font-weight: bold; }
+    nav a:hover { text-decoration: underline; }
+    .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    label, select, input { display: block; margin: 10px 0; width: 100%; padding: 8px; }
+    button { background-color: #004080; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background-color: #003060; }
+    .result { border: 1px solid #ccc; padding: 10px; margin-top: 10px; border-radius: 4px; background: #f9f9f9; }
   </style>
 </head>
 <body>
 
-<h2>Cooling System Selector</h2>
+<header>
+  <h1>Cooling System Selector</h1>
+</header>
 
-<form id="filter-form">
-  <label for="systemType">Cooling System Type:</label>
-  <select id="systemType" required>
-    <option value="">-- Select Type --</option>
-    <option value="Open">Open Loop</option>
-    <option value="Closed">Closed Loop</option>
-  </select>
+<nav>
+  <a href="#">PRODUCTS</a>
+  <a href="#">LITERATURE</a>
+  <a href="#">TRAINING & EDUCATION</a>
+</nav>
 
-  <div id="openLoopOptions" style="display: none;">
-    <label for="openLoopChoice">Select Input Type:</label>
-    <select id="openLoopChoice">
-      <option value="">-- Select --</option>
-      <option value="recirc">Recirc Rate (GPM)</option>
-      <option value="tonnage">Tonnage (Tons)</option>
+<div class="container">
+  <form id="filter-form">
+    <label for="systemType">Cooling System Type:</label>
+    <select id="systemType" required>
+      <option value="">-- Select Type --</option>
+      <option value="Open">Open Loop</option>
+      <option value="Closed">Closed Loop</option>
     </select>
 
-    <div id="recircInput" style="display: none;">
-      <label for="recircRate">Recirc Rate (GPM):</label>
-      <input type="number" id="recircRate" min="0">
+    <div id="openLoopOptions" style="display: none;">
+      <label for="openLoopChoice">Select Input Type:</label>
+      <select id="openLoopChoice">
+        <option value="">-- Select --</option>
+        <option value="recirc">Recirc Rate (GPM)</option>
+        <option value="tonnage">Tonnage (Tons)</option>
+      </select>
+
+      <div id="recircInput" style="display: none;">
+        <label for="recircRate">Recirc Rate (GPM):</label>
+        <input type="number" id="recircRate" min="0">
+      </div>
+
+      <div id="tonnageInput" style="display: none;">
+        <label for="tonnage">Tonnage (Tons):</label>
+        <input type="number" id="tonnage" min="0">
+      </div>
     </div>
 
-    <div id="tonnageInput" style="display: none;">
-      <label for="tonnage">Tonnage (Tons):</label>
-      <input type="number" id="tonnage" min="0">
+    <div id="closedLoopOptions" style="display: none;">
+      <label for="systemVolume">System Volume (Gallons):</label>
+      <input type="number" id="systemVolume" min="0">
     </div>
-  </div>
 
-  <div id="closedLoopOptions" style="display: none;">
-    <label for="systemVolume">System Volume (Gallons):</label>
-    <input type="number" id="systemVolume" min="0">
-  </div>
+    <button type="submit">Search</button>
+  </form>
 
-  <button type="submit">Search</button>
-</form>
-
-<div id="results"></div>
+  <div id="results"></div>
+</div>
 
 <script>
   let data = [];
