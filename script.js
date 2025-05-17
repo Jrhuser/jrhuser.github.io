@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOM fully loaded and parsed - using SCRIPT WITH ENHANCED DEBUGGING.");
+    console.log("DOM fully loaded and parsed - using SCRIPT WITH LATEST DEBUG LOGS (vMay16_LoopCheck).");
 
     // --- Element Selection ---
     const radioOpen = document.getElementById('radioOpen');
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const noResultsMessage = document.getElementById('noResultsMessage');
 
     const recircRateInput = document.getElementById('recircRate');
-    const tonnageInput = document.getElementById('tonnage'); // For "Open" system Tonnage
+    const tonnageInput = document.getElementById('tonnage'); 
     const closedSystemVolumeInput = document.getElementById('closedSystemVolume');
     const electricalCostInput = document.getElementById('electricalCost');
 
@@ -66,23 +66,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
             database = database.map(row => {
                 const safeParseFloat = (val) => {
+                    // Attempt to remove common currency symbols and commas before parsing
+                    if (typeof val === 'string') {
+                        val = val.replace(/\$|,/g, '');
+                    }
                     const num = parseFloat(val);
                     return isNaN(num) ? NaN : num;
                 };
-                return {
-                    ...row,
-                    "Min Recirc Rate (GPM)": safeParseFloat(row["Min Recirc Rate (GPM)"]),
-                    "Max Recirc Rate (GPM)": safeParseFloat(row["Max Recirc Rate (GPM)"]),
-                    "Tonnage Min": safeParseFloat(row["Tonnage Min"]),
-                    "Tonnage Max": safeParseFloat(row["Tonnage Max"]),
-                    "Loop Min (gal)": safeParseFloat(row["Loop Min (gal)"]),
-                    "Loop Max (gal)": safeParseFloat(row["Loop Max (gal)"]),
-                    "Electrical Usage (kWh)": safeParseFloat(row["Electrical Usage (kWh)"]),
-                    "Flowrate (GPM)": safeParseFloat(row["Flowrate (GPM)"])
-                };
+                // Ensure all expected numeric columns are processed
+                const newRow = { ...row }; // Clone row to avoid modifying original during iteration if issues
+                newRow["Min Recirc Rate (GPM)"] = safeParseFloat(row["Min Recirc Rate (GPM)"]);
+                newRow["Max Recirc Rate (GPM)"] = safeParseFloat(row["Max Recirc Rate (GPM)"]);
+                newRow["Tonnage Min"] = safeParseFloat(row["Tonnage Min"]);
+                newRow["Tonnage Max"] = safeParseFloat(row["Tonnage Max"]);
+                newRow["Loop Min (gal)"] = safeParseFloat(row["Loop Min (gal)"]);
+                newRow["Loop Max (gal)"] = safeParseFloat(row["Loop Max (gal)"]);
+                newRow["Electrical Usage (kWh)"] = safeParseFloat(row["Electrical Usage (kWh)"]);
+                newRow["Flowrate (GPM)"] = safeParseFloat(row["Flowrate (GPM)"]); // General flowrate for display
+                return newRow;
             });
-            console.log("DEBUG SCRIPT: Database loaded and parsed successfully. Number of rows:", database.length);
-            if (database.length > 0) console.log("First row (parsed with safeParseFloat applied to specific columns):", database[0]);
+            console.log("DEBUG SCRIPT: Database loaded and parsed. Number of rows:", database.length);
+            if (database.length > 0) {
+                console.log("First row (after custom parsing map):", database[0]);
+                // Check specific parsed values of the first row
+                console.log(`First row's Min Recirc Rate (GPM) type: ${typeof database[0]["Min Recirc Rate (GPM)"]}, value: ${database[0]["Min Recirc Rate (GPM)"]}`);
+            }
+
 
             if (database.length === 0 && parsedData.meta && parsedData.meta.aborted) {
                  console.warn("DEBUG SCRIPT: Database loading aborted by PapaParse.");
@@ -217,15 +226,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         console.log(`---- FINDANDDISPLAYMODELS START ----`);
         console.log(`INPUTS: Type=${systemType}, Recirc=${recircRate} (Type: ${typeof recircRate}), Tonnage=${tonnage} (Type: ${typeof tonnage}), ClosedVol=${closedVolume} (Type: ${typeof closedVolume})`);
+        
+        console.log(`Database has ${database.length} rows. Attempting to loop...`);
+
 
         for (const row of database) {
+            console.log(`LOOPING: Processing row - Model: ${row ? row.Model : 'NO ROW OR NO MODEL PROPERTY'}, Type: ${row ? row.Type : 'NO ROW'}`);
             if (!row || !row.Model) { 
-                // console.log("Skipping empty or invalid row:", row);
+                console.log("Skipping empty or invalid row that doesn't have a Model property:", row);
                 continue;
             }
             let match = false;
-            // console.log(`--- Checking Row: Model=${row.Model}, Type Column='${row.Type}'`); // Basic row info
-
+            
             if (systemType === 'open') {
                 const useRecirc = !isNaN(recircRate) && recircRate > 0;
                 const useTonnageInput = !isNaN(tonnage) && tonnage > 0;
@@ -234,16 +246,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const rowMaxRecirc = row["Max Recirc Rate (GPM)"];
                 const rowTonnageMin = row["Tonnage Min"];
                 const rowTonnageMax = row["Tonnage Max"];
+                
+                // console.log(`DEBUG: Model: ${row.Model}, MinRecirc: ${rowMinRecirc} (type ${typeof rowMinRecirc}), MaxRecirc: ${rowMaxRecirc} (type ${typeof rowMaxRecirc})`);
 
-                // Uncomment the block below for very verbose per-row, pre-condition logging
-                /* console.log(`OPEN SYSTEM CHECK FOR MODEL: ${row.Model}`);
-                console.log(`  User Recirc Rate: ${recircRate} (Use: ${useRecirc})`);
-                console.log(`  DB Min Recirc: ${rowMinRecirc} (Type: ${typeof rowMinRecirc})`);
-                console.log(`  DB Max Recirc: ${rowMaxRecirc} (Type: ${typeof rowMaxRecirc})`);
-                console.log(`  User Tonnage: ${tonnage} (Use: ${useTonnageInput})`);
-                console.log(`  DB Min Tonnage: ${rowTonnageMin} (Type: ${typeof rowTonnageMin})`);
-                console.log(`  DB Max Tonnage: ${rowTonnageMax} (Type: ${typeof rowTonnageMax})`);
-                */
 
                 if (useRecirc) {
                     if (typeof rowMinRecirc === 'number' && typeof rowMaxRecirc === 'number' &&
@@ -252,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         console.log(`  MATCHED (Recirc) for ${row.Model}: User ${recircRate} is between DB ${rowMinRecirc}-${rowMaxRecirc}`);
                     } else if (typeof rowMinRecirc !== 'number' || typeof rowMaxRecirc !== 'number') {
                         // Log only if this model was relevant and types were an issue
-                        if (row.Model === 'CTS2300' || row.Model === 'CTF1000' || row.Model === 'VC100') { // Example target models
+                         if (row.Model && (row.Model.includes('CTS') || row.Model.includes('CTF') || row.Model.includes('VC'))) { 
                            console.warn(`  WARNING (Recirc) for ${row.Model}: DB Recirc rates are not numbers. Min: ${rowMinRecirc} (Type: ${typeof rowMinRecirc}), Max: ${rowMaxRecirc} (Type: ${typeof rowMaxRecirc})`);
                         }
                     }
@@ -264,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         match = true;
                         console.log(`  MATCHED (Tonnage) for ${row.Model}: User ${tonnage} is between DB ${rowTonnageMin}-${rowTonnageMax}`);
                     } else if (typeof rowTonnageMin !== 'number' || typeof rowTonnageMax !== 'number') {
-                         if (row.Model === 'CTS2300' || row.Model === 'CTF1000' || row.Model === 'VC100') { // Example target models
+                         if (row.Model && (row.Model.includes('CTS') || row.Model.includes('CTF') || row.Model.includes('VC'))) { 
                             console.warn(`  WARNING (Tonnage) for ${row.Model}: DB Tonnage limits are not numbers. Min: ${rowTonnageMin} (Type: ${typeof rowTonnageMin}), Max: ${rowTonnageMax} (Type: ${typeof rowTonnageMax})`);
                          }
                     }
@@ -273,14 +278,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const useClosedVolume = !isNaN(closedVolume) && closedVolume > 0;
                 const rowLoopMin = row["Loop Min (gal)"];
                 const rowLoopMax = row["Loop Max (gal)"];
-                
-                // Uncomment for verbose closed system checks
-                /*
-                console.log(`CLOSED SYSTEM CHECK FOR MODEL: ${row.Model}`);
-                console.log(`  User System Volume: ${closedVolume} (Use: ${useClosedVolume})`);
-                console.log(`  DB Loop Min: ${rowLoopMin} (Type: ${typeof rowLoopMin})`);
-                console.log(`  DB Loop Max: ${rowLoopMax} (Type: ${typeof rowLoopMax})`);
-                */
 
                 if (useClosedVolume) {
                     if (typeof rowLoopMin === 'number' && typeof rowLoopMax === 'number' &&
@@ -294,9 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (match) {
-                // console.log(`--- Row ${row.Model} MATCHED overall criteria.`); // Basic match confirmation
                 const typeFromRow = row["Type"] ? String(row["Type"]).toLowerCase().trim() : '';
-                // console.log(`  Type from DB for ${row.Model}: '${typeFromRow}'`); // Log type string from CSV
                 if (typeFromRow.includes('separator') && !separatorModel) {
                     separatorModel = row;
                     console.log(`  ASSIGNED Separator: ${separatorModel.Model}`);
@@ -338,7 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 modelEl.textContent = modelData["Model"] || 'N/A';
                 flowrateEl.textContent = modelData["Flowrate (GPM)"] != null && !isNaN(modelData["Flowrate (GPM)"]) ? modelData["Flowrate (GPM)"] : 'N/A';
                 descriptionEl.textContent = modelData["Description"] || 'N/A';
-                const usage = modelData["Electrical Usage (kWh)"]; // This should be a number from parsing
+                const usage = modelData["Electrical Usage (kWh)"];
                 const cost = !isNaN(usage) && !isNaN(elecCost) ? (usage * elecCost).toFixed(2) : 'N/A';
                 opCostEl.textContent = cost;
                 return true;
