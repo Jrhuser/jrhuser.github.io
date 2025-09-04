@@ -214,7 +214,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const annualKwh = calculateAnnualKwh(modelData.hp, costParams.hoursPerDay, costParams.daysPerYear);
                 const annualCost = annualKwh * costParams.electricalCost;
 
-                opCostEl.textContent = !isNaN(annualCost) ? annualCost.toFixed(2) : 'N/A';
+                // **THIS IS THE CORRECTED LINE**
+                // It formats the number as U.S. currency, which includes the $ sign and commas.
+                opCostEl.textContent = !isNaN(annualCost) ? annualCost.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : 'N/A';
             } else {
                 modelEl.textContent = '-';
                 flowrateEl.textContent = '-';
