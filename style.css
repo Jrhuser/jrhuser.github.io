@@ -9,7 +9,7 @@ body {
 }
 
 .container {
-    width: 100%;
+    max-width: 1320px;
     margin: 30px auto;
     background-color: #ffffff;
     border-radius: 8px;
@@ -192,7 +192,7 @@ h2 {
     background-color: #61D604; /* NEW specified green */
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 5px; /* Shared border-radius */
     font-size: 1.2em;
     font-weight: 700;
     cursor: pointer;
@@ -218,6 +218,8 @@ h2 {
     border-collapse: collapse;
     margin-top: 20px;
     font-size: 0.95em;
+    border-radius: 5px; /* ADDED: Rounds the corners of the entire table */
+    overflow: hidden; /* Ensures the border-radius is visible */
 }
 
 .results-table th, .results-table td {
@@ -352,4 +354,3 @@ footer {
         color: #343a40;
     }
 }
-
