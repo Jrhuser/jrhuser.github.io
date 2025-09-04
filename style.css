@@ -225,6 +225,7 @@ h2 {
     border: 1px solid #e9ecef;
     padding: 12px 15px;
     text-align: left;
+    vertical-align: middle;
 }
 
 .results-table th {
@@ -242,7 +243,15 @@ h2 {
     background-color: #e9f5ff; /* Subtle hover effect - using a very light tint of the new blue */
 }
 
-/* RULE: Makes the cost values bold */
+.select-column {
+    text-align: center;
+}
+
+.select-column input[type="radio"] {
+    transform: scale(1.5);
+    cursor: pointer;
+}
+
 #separatorOpCost,
 #vafOpCost,
 #vortisandOpCost {
@@ -315,6 +324,13 @@ footer {
         position: relative;
         padding-left: 50%; /* Space for the pseudo-element label */
         text-align: right;
+        min-height: 24px; /* Ensure cells have height */
+    }
+    
+    .results-table td.select-column {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end; /* Aligns radio button with other values */
     }
 
     .results-table td:last-child {
@@ -332,20 +348,4 @@ footer {
         font-weight: 600;
         color: #343a40;
     }
-    
-    /* Add data-label attributes to the HTML for responsive table */
-    #separatorModel::before { content: "Model:"; }
-    #separatorFlowrate::before { content: "Flowrate (GPM):"; }
-    #separatorDescription::before { content: "Description:"; }
-    #separatorOpCost::before { content: "Est. Annual Operating Cost ($):"; }
-
-    #vafModel::before { content: "Model:"; }
-    #vafFlowrate::before { content: "Flowrate (GPM):"; }
-    #vafDescription::before { content: "Description:"; }
-    #vafOpCost::before { content: "Est. Annual Operating Cost ($):"; }
-
-    #vortisandModel::before { content: "Model:"; }
-    #vortisandFlowrate::before { content: "Flowrate (GPM):"; }
-    #vortisandDescription::before { content: "Description:"; }
-    #vortisandOpCost::before { content: "Est. Annual Operating Cost ($):"; }
 }
