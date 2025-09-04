@@ -17,7 +17,7 @@ body {
     overflow: hidden;
 }
 
-/* --- NEW HEADER STYLING --- */
+/* --- HEADER STYLING --- */
 header {
     background-color: #007DA3;
     color: #ffffff;
@@ -45,7 +45,7 @@ header {
 .main-nav {
     display: flex;
     justify-content: center;
-    gap: 30px;
+    gap: 24px; /* UPDATED: Reduced spacing between links */
     flex-grow: 1; /* Allow the nav to take up available space */
 }
 
@@ -53,7 +53,7 @@ header {
     color: #ffffff;
     text-decoration: none;
     font-size: 1em;
-    font-weight: 500;
+    font-weight: 700; /* UPDATED: Changed to bold (700) */
     padding: 10px 0;
     position: relative;
     transition: color 0.3s ease;
@@ -242,7 +242,7 @@ h2 {
     background-color: #e9f5ff; /* Subtle hover effect - using a very light tint of the new blue */
 }
 
-/* NEW RULE: Makes the cost values bold */
+/* RULE: Makes the cost values bold */
 #separatorOpCost,
 #vafOpCost,
 #vortisandOpCost {
