@@ -50,10 +50,20 @@
             </section>
 
             <section id="electricalCostSection" class="input-section">
-                <h2>Electrical Cost</h2>
-                <div class="input-group">
-                    <label for="electricalCost">Cost per kWh ($):</label>
-                    <input type="number" id="electricalCost" value="0.12" min="0" step="0.01">
+                <h2>Operating Cost Parameters</h2>
+                <div class="parameter-grid">
+                    <div class="input-group">
+                        <label for="electricalCost">Cost per kWh ($):</label>
+                        <input type="number" id="electricalCost" value="0.12" min="0" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <label for="hoursPerDay">Operating Hours per Day:</label>
+                        <input type="number" id="hoursPerDay" value="24" min="0" max="24">
+                    </div>
+                    <div class="input-group">
+                        <label for="daysPerYear">Operating Days per Year:</label>
+                        <input type="number" id="daysPerYear" value="365" min="0" max="365">
+                    </div>
                 </div>
             </section>
 
