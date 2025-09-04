@@ -131,4 +131,202 @@ h2 {
     width: 100%;
     padding: 12px;
     border: 1px solid #ced4da;
-    border
+    border-radius: 5px;
+    font-size: 1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box; /* Ensures padding is included in the width */
+}
+
+.input-group input[type="number"]:focus {
+    border-color: #007DA3; /* NEW Xylem blue */
+    box-shadow: 0 0 0 0.2rem rgba(0, 125, 163, 0.25); /* Shadow with new blue */
+    outline: none;
+}
+
+.parameter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.note {
+    font-size: 0.9em;
+    color: #6c757d;
+    margin-top: -10px;
+    margin-bottom: 20px;
+}
+
+/* Button Styling */
+#calculateButton {
+    display: block;
+    width: 100%;
+    padding: 15px 25px;
+    background-color: #61D604; /* NEW specified green */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 10px rgba(97, 214, 4, 0.25); /* Shadow with new green */
+}
+
+#calculateButton:hover {
+    background-color: #55b803; /* Darker shade of new green on hover */
+    transform: translateY(-2px);
+}
+
+#calculateButton:active {
+    background-color: #4a9f03; /* Even darker shade for active click */
+    transform: translateY(0);
+}
+
+/* Results Table Styling */
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 0.95em;
+}
+
+.results-table th, .results-table td {
+    border: 1px solid #e9ecef;
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.results-table th {
+    background-color: #007DA3; /* NEW Xylem blue */
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.results-table tbody tr:nth-child(even) {
+    background-color: #f8f9fa; /* Light stripe for readability */
+}
+
+.results-table tbody tr:hover {
+    background-color: #e9f5ff; /* Subtle hover effect - using a very light tint of the new blue */
+}
+
+/* NEW RULE: Makes the cost values bold */
+#separatorOpCost,
+#vafOpCost,
+#vortisandOpCost {
+    font-weight: 700;
+}
+
+
+/* No Results Message */
+.no-results {
+    text-align: center;
+    color: #dc3545; /* Red for error/no results */
+    font-size: 1.1em;
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #ffebe5;
+    border: 1px solid #dc3545;
+    border-radius: 5px;
+}
+
+/* Footer Styling */
+footer {
+    background-color: #343a40; /* Dark grey footer */
+    color: #ffffff;
+    text-align: center;
+    padding: 15px 0;
+    font-size: 0.9em;
+    border-top: 3px solid #212529;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .container {
+        margin: 15px;
+    }
+
+    header h1 {
+        font-size: 1.6em;
+    }
+
+    .header-content {
+        flex-direction: column; /* Stack logo and title on small screens */
+        gap: 10px;
+    }
+
+    .logo {
+        margin-right: 0;
+        margin-bottom: 10px; /* Space below logo */
+    }
+
+    .radio-group {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .radio-group label {
+        width: 100%;
+        text-align: center;
+    }
+
+    .results-table, .results-table thead, .results-table tbody, .results-table th, .results-table td, .results-table tr {
+        display: block;
+    }
+
+    .results-table thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    .results-table tr {
+        border: 1px solid #e9ecef;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    .results-table td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%; /* Space for the pseudo-element label */
+        text-align: right;
+    }
+
+    .results-table td:last-child {
+        border-bottom: 0;
+    }
+
+    .results-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 15px;
+        width: calc(50% - 30px);
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: 600;
+        color: #343a40;
+    }
+    
+    /* Add data-label attributes to the HTML for responsive table */
+    #separatorModel::before { content: "Model:"; }
+    #separatorFlowrate::before { content: "Flowrate (GPM):"; }
+    #separatorDescription::before { content: "Description:"; }
+    #separatorOpCost::before { content: "Est. Annual Operating Cost ($):"; }
+
+    #vafModel::before { content: "Model:"; }
+    #vafFlowrate::before { content: "Flowrate (GPM):"; }
+    #vafDescription::before { content: "Description:"; }
+    #vafOpCost::before { content: "Est. Annual Operating Cost ($):"; }
+
+    #vortisandModel::before { content: "Model:"; }
+    #vortisandFlowrate::before { content: "Flowrate (GPM):"; }
+    #vortisandDescription::before { content: "Description:"; }
+    #vortisandOpCost::before { content: "Est. Annual Operating Cost ($):"; }
+}
