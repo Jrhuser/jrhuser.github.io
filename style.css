@@ -128,18 +128,25 @@ h2 {
 }
 
 .input-group input[type="number"] {
-    width: calc(100% - 24px); /* Account for padding */
+    width: 100%;
     padding: 12px;
     border: 1px solid #ced4da;
     border-radius: 5px;
     font-size: 1em;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box; /* Ensures padding is included in the width */
 }
 
 .input-group input[type="number"]:focus {
     border-color: #007bff;
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
     outline: none;
+}
+
+.parameter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
 }
 
 .note {
