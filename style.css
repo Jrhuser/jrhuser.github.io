@@ -9,7 +9,7 @@ body {
 }
 
 .container {
-    max-width: 1000px;
+    max-width: 1320px; /* UPDATED from 1000px */
     margin: 30px auto;
     background-color: #ffffff;
     border-radius: 8px;
@@ -45,15 +45,15 @@ header {
 .main-nav {
     display: flex;
     justify-content: center;
-    gap: 24px; /* UPDATED: Reduced spacing between links */
-    flex-grow: 1; /* Allow the nav to take up available space */
+    gap: 24px;
+    flex-grow: 1;
 }
 
 .main-nav a {
     color: #ffffff;
     text-decoration: none;
     font-size: 1em;
-    font-weight: 700; /* UPDATED: Changed to bold (700) */
+    font-weight: 700;
     padding: 10px 0;
     position: relative;
     transition: color 0.3s ease;
