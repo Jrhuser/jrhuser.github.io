@@ -1,109 +1,317 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xylem Cooling Water Filtration Selector</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div class="container">
-        <header>
-            <div class="header-content">
-                <img src="xylem_logo.png" alt="Xylem Logo" class="logo">
-                <h1>Cooling Water Filtration Selector</h1>
-            </div>
-        </header>
+/* General Body and Container Styling */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f7f6; /* Light grey/off-white background */
+    color: #333;
+    line-height: 1.6;
+}
 
-        <main>
-            <section class="system-type-selection">
-                <h2>Select System Type</h2>
-                <div class="radio-group">
-                    <input type="radio" id="radioOpen" name="systemType" value="open" checked>
-                    <label for="radioOpen">Open Cooling System</label>
-                    
-                    <input type="radio" id="radioClosed" name="systemType" value="closed">
-                    <label for="radioClosed">Closed Cooling System</label>
-                </div>
-            </section>
+.container {
+    max-width: 1000px;
+    margin: 30px auto;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
 
-            <section id="openSystemInputs" class="input-section">
-                <h2>Open System Parameters</h2>
-                <div class="input-group">
-                    <label for="recircRate">Total Recirculation Rate (GPM):</label>
-                    <input type="number" id="recircRate" placeholder="e.g., 5000">
-                </div>
-                <div class="input-group">
-                    <label for="tonnage">Total System Tonnage (Tons):</label>
-                    <input type="number" id="tonnage" placeholder="e.g., 1500">
-                </div>
-                <p class="note">Enter either Recirculation Rate or Tonnage for Open Systems.</p>
-            </section>
+/* Header Styling */
+header {
+    background-color: #007bff; /* Xylem blue */
+    color: #ffffff;
+    padding: 20px 30px;
+    text-align: center;
+    border-bottom: 5px solid #0056b3; /* Darker blue accent */
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center content horizontally */
+    position: relative; /* For absolute positioning of logo if needed */
+}
 
-            <section id="closedSystemInputs" class="input-section hidden">
-                <h2>Closed System Parameters</h2>
-                <div class="input-group">
-                    <label for="closedSystemVolume">Total System Volume (Gallons):</label>
-                    <input type="number" id="closedSystemVolume" placeholder="e.g., 2000">
-                </div>
-            </section>
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 20px; /* Space between logo and title */
+}
 
-            <section id="electricalCostSection" class="input-section">
-                <h2>Electrical Cost</h2>
-                <div class="input-group">
-                    <label for="electricalCost">Cost per kWh ($):</label>
-                    <input type="number" id="electricalCost" value="0.12" min="0" step="0.01">
-                </div>
-            </section>
+.logo {
+    height: 50px; /* Adjust as needed */
+    width: auto;
+    margin-right: 15px; /* Space between logo and text */
+}
 
-            <button id="calculateButton">Find Recommended Filters</button>
+header h1 {
+    margin: 0;
+    font-size: 2em;
+    font-weight: 700;
+}
 
-            <section id="resultsSection" class="results-section hidden">
-                <h2>Recommended Models</h2>
-                <table class="results-table">
-                    <thead>
-                        <tr>
-                            <th>Filter Type</th>
-                            <th>Model</th>
-                            <th>Flowrate (GPM)</th>
-                            <th>Description</th>
-                            <th>Est. Annual Operating Cost ($)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Separator</td>
-                            <td id="separatorModel">-</td>
-                            <td id="separatorFlowrate">-</td>
-                            <td id="separatorDescription">-</td>
-                            <td id="separatorOpCost">-</td>
-                        </tr>
-                        <tr>
-                            <td>VAF</td>
-                            <td id="vafModel">-</td>
-                            <td id="vafFlowrate">-</td>
-                            <td id="vafDescription">-</td>
-                            <td id="vafOpCost">-</td>
-                        </tr>
-                        <tr>
-                            <td>Vortisand</td>
-                            <td id="vortisandModel">-</td>
-                            <td id="vortisandFlowrate">-</td>
-                            <td id="vortisandDescription">-</td>
-                            <td id="vortisandOpCost">-</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </section>
+/* Main Content Styling */
+main {
+    padding: 30px;
+}
 
-            <p id="noResultsMessage" class="no-results hidden">No suitable models found for the given criteria.</p>
-        </main>
+h2 {
+    color: #007bff;
+    font-size: 1.6em;
+    margin-top: 0;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+}
 
-        <footer>
-            <p>&copy; 2023 Xylem Inc. All rights reserved.</p>
-        </footer>
-    </div>
-    <script src="script.js"></script>
-</body>
-</html>
+/* Section Styling */
+.input-section, .system-type-selection, .results-section {
+    background-color: #fdfdfd;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Radio Group Styling */
+.radio-group {
+    display: flex;
+    gap: 25px;
+    margin-bottom: 15px;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.radio-group input[type="radio"] {
+    display: none;
+}
+
+.radio-group label {
+    background-color: #e9ecef;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border: 1px solid #ced4da;
+    font-weight: 500;
+    color: #495057;
+}
+
+.radio-group input[type="radio"]:checked + label {
+    background-color: #007bff;
+    color: #ffffff;
+    border-color: #007bff;
+    box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
+}
+
+.radio-group label:hover {
+    background-color: #cfe2ff; /* Lighter blue on hover */
+}
+
+
+/* Input Group Styling */
+.input-group {
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #343a40;
+}
+
+.input-group input[type="number"] {
+    width: calc(100% - 24px); /* Account for padding */
+    padding: 12px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-group input[type="number"]:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+
+.note {
+    font-size: 0.9em;
+    color: #6c757d;
+    margin-top: -10px;
+    margin-bottom: 20px;
+}
+
+/* Button Styling */
+#calculateButton {
+    display: block;
+    width: 100%;
+    padding: 15px 25px;
+    background-color: #28a745; /* Green for action */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 10px rgba(40, 167, 69, 0.2);
+}
+
+#calculateButton:hover {
+    background-color: #218838; /* Darker green on hover */
+    transform: translateY(-2px);
+}
+
+#calculateButton:active {
+    background-color: #1e7e34;
+    transform: translateY(0);
+}
+
+/* Results Table Styling */
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 0.95em;
+}
+
+.results-table th, .results-table td {
+    border: 1px solid #e9ecef;
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.results-table th {
+    background-color: #007bff;
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.results-table tbody tr:nth-child(even) {
+    background-color: #f8f9fa; /* Light stripe for readability */
+}
+
+.results-table tbody tr:hover {
+    background-color: #e9f5ff; /* Subtle hover effect */
+}
+
+/* No Results Message */
+.no-results {
+    text-align: center;
+    color: #dc3545; /* Red for error/no results */
+    font-size: 1.1em;
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #ffebe5;
+    border: 1px solid #dc3545;
+    border-radius: 5px;
+}
+
+/* Footer Styling */
+footer {
+    background-color: #343a40; /* Dark grey footer */
+    color: #ffffff;
+    text-align: center;
+    padding: 15px 0;
+    font-size: 0.9em;
+    border-top: 3px solid #212529;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .container {
+        margin: 15px;
+    }
+
+    header h1 {
+        font-size: 1.6em;
+    }
+
+    .header-content {
+        flex-direction: column; /* Stack logo and title on small screens */
+        gap: 10px;
+    }
+
+    .logo {
+        margin-right: 0;
+        margin-bottom: 10px; /* Space below logo */
+    }
+
+    .radio-group {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .radio-group label {
+        width: 100%;
+        text-align: center;
+    }
+
+    .results-table, .results-table thead, .results-table tbody, .results-table th, .results-table td, .results-table tr {
+        display: block;
+    }
+
+    .results-table thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    .results-table tr {
+        border: 1px solid #e9ecef;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    .results-table td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50%; /* Space for the pseudo-element label */
+        text-align: right;
+    }
+
+    .results-table td:last-child {
+        border-bottom: 0;
+    }
+
+    .results-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 15px;
+        width: calc(50% - 30px);
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: 600;
+        color: #343a40;
+    }
+    
+    /* Add data-label attributes to the HTML for responsive table */
+    #separatorModel::before { content: "Model:"; }
+    #separatorFlowrate::before { content: "Flowrate (GPM):"; }
+    #separatorDescription::before { content: "Description:"; }
+    #separatorOpCost::before { content: "Est. Annual Operating Cost ($):"; }
+
+    #vafModel::before { content: "Model:"; }
+    #vafFlowrate::before { content: "Flowrate (GPM):"; }
+    #vafDescription::before { content: "Description:"; }
+    #vafOpCost::before { content: "Est. Annual Operating Cost ($):"; }
+
+    #vortisandModel::before { content: "Model:"; }
+    #vortisandFlowrate::before { content: "Flowrate (GPM):"; }
+    #vortisandDescription::before { content: "Description:"; }
+    #vortisandOpCost::before { content: "Est. Annual Operating Cost ($):"; }
+}
