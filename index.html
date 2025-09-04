@@ -88,6 +88,7 @@
                 <table class="results-table">
                     <thead>
                         <tr>
+                            <th>Select</th>
                             <th>Filter Type</th>
                             <th>Model</th>
                             <th>Flowrate (GPM)</th>
@@ -97,25 +98,28 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Separator</td>
-                            <td id="separatorModel">-</td>
-                            <td id="separatorFlowrate">-</td>
-                            <td id="separatorDescription">-</td>
-                            <td id="separatorOpCost">-</td>
+                            <td class="select-column" data-label="Select"><input type="radio" name="selectedModel" id="selectSeparator" value="separator"></td>
+                            <td data-label="Filter Type">Separator</td>
+                            <td id="separatorModel" data-label="Model">-</td>
+                            <td id="separatorFlowrate" data-label="Flowrate (GPM)">-</td>
+                            <td id="separatorDescription" data-label="Description">-</td>
+                            <td id="separatorOpCost" data-label="Est. Annual Operating Cost ($)">-</td>
                         </tr>
                         <tr>
-                            <td>VAF</td>
-                            <td id="vafModel">-</td>
-                            <td id="vafFlowrate">-</td>
-                            <td id="vafDescription">-</td>
-                            <td id="vafOpCost">-</td>
+                            <td class="select-column" data-label="Select"><input type="radio" name="selectedModel" id="selectVaf" value="vaf"></td>
+                            <td data-label="Filter Type">VAF</td>
+                            <td id="vafModel" data-label="Model">-</td>
+                            <td id="vafFlowrate" data-label="Flowrate (GPM)">-</td>
+                            <td id="vafDescription" data-label="Description">-</td>
+                            <td id="vafOpCost" data-label="Est. Annual Operating Cost ($)">-</td>
                         </tr>
                         <tr>
-                            <td>Vortisand</td>
-                            <td id="vortisandModel">-</td>
-                            <td id="vortisandFlowrate">-</td>
-                            <td id="vortisandDescription">-</td>
-                            <td id="vortisandOpCost">-</td>
+                            <td class="select-column" data-label="Select"><input type="radio" name="selectedModel" id="selectVortisand" value="vortisand"></td>
+                            <td data-label="Filter Type">Vortisand</td>
+                            <td id="vortisandModel" data-label="Model">-</td>
+                            <td id="vortisandFlowrate" data-label="Flowrate (GPM)">-</td>
+                            <td id="vortisandDescription" data-label="Description">-</td>
+                            <td id="vortisandOpCost" data-label="Est. Annual Operating Cost ($)">-</td>
                         </tr>
                     </tbody>
                 </table>
