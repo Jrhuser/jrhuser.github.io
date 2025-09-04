@@ -29,11 +29,10 @@ header {
 .header-content {
     display: flex;
     align-items: center;
-    justify-content: space-between; /* This spaces out the logo, nav, and icons */
-    height: 70px; /* Give the header a fixed height */
+    justify-content: space-between;
+    height: 70px;
     width: 100%;
-    max-width: 1600px; /* Optional: limit max width for very large screens */
-    margin: 0 auto;
+    /* REMOVED max-width and margin to allow content to fill the header */
 }
 
 .logo {
