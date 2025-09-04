@@ -1,195 +1,109 @@
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    margin: 0;
-    background-color: #f4f4f4;
-    color: #333;
-    line-height: 1.6;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xylem Cooling Water Filtration Selector</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <img src="xylem_logo.png" alt="Xylem Logo" class="logo">
+                <h1>Cooling Water Filtration Selector</h1>
+            </div>
+        </header>
 
-header {
-    background-color: #1A6E8A; /* Teal/Dark Cyan from image */
-    color: white;
-    padding: 1.5rem 0;
-    text-align: center;
-    margin-bottom: 20px;
-}
+        <main>
+            <section class="system-type-selection">
+                <h2>Select System Type</h2>
+                <div class="radio-group">
+                    <input type="radio" id="radioOpen" name="systemType" value="open" checked>
+                    <label for="radioOpen">Open Cooling System</label>
+                    
+                    <input type="radio" id="radioClosed" name="systemType" value="closed">
+                    <label for="radioClosed">Closed Cooling System</label>
+                </div>
+            </section>
 
-header h1 {
-    margin: 0;
-    font-size: 2rem;
-}
+            <section id="openSystemInputs" class="input-section">
+                <h2>Open System Parameters</h2>
+                <div class="input-group">
+                    <label for="recircRate">Total Recirculation Rate (GPM):</label>
+                    <input type="number" id="recircRate" placeholder="e.g., 5000">
+                </div>
+                <div class="input-group">
+                    <label for="tonnage">Total System Tonnage (Tons):</label>
+                    <input type="number" id="tonnage" placeholder="e.g., 1500">
+                </div>
+                <p class="note">Enter either Recirculation Rate or Tonnage for Open Systems.</p>
+            </section>
 
-main {
-    width: 90%;
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: white;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
+            <section id="closedSystemInputs" class="input-section hidden">
+                <h2>Closed System Parameters</h2>
+                <div class="input-group">
+                    <label for="closedSystemVolume">Total System Volume (Gallons):</label>
+                    <input type="number" id="closedSystemVolume" placeholder="e.g., 2000">
+                </div>
+            </section>
 
-section {
-    margin-bottom: 25px;
-    padding: 20px;
-    border: 1px solid #ddd; /* Light grey border for sections */
-    border-top: 5px solid #1A6E8A; /* Teal top border */
-}
+            <section id="electricalCostSection" class="input-section">
+                <h2>Electrical Cost</h2>
+                <div class="input-group">
+                    <label for="electricalCost">Cost per kWh ($):</label>
+                    <input type="number" id="electricalCost" value="0.12" min="0" step="0.01">
+                </div>
+            </section>
 
-#systemTypeSection .input-group {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-top: 3px solid #1A6E8A;
-    border-bottom: 3px solid #1A6E8A;
-}
+            <button id="calculateButton">Find Recommended Filters</button>
 
-#systemTypeSection label {
-    font-size: 1.2em;
-    cursor: pointer;
-}
+            <section id="resultsSection" class="results-section hidden">
+                <h2>Recommended Models</h2>
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Filter Type</th>
+                            <th>Model</th>
+                            <th>Flowrate (GPM)</th>
+                            <th>Description</th>
+                            <th>Est. Annual Operating Cost ($)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Separator</td>
+                            <td id="separatorModel">-</td>
+                            <td id="separatorFlowrate">-</td>
+                            <td id="separatorDescription">-</td>
+                            <td id="separatorOpCost">-</td>
+                        </tr>
+                        <tr>
+                            <td>VAF</td>
+                            <td id="vafModel">-</td>
+                            <td id="vafFlowrate">-</td>
+                            <td id="vafDescription">-</td>
+                            <td id="vafOpCost">-</td>
+                        </tr>
+                        <tr>
+                            <td>Vortisand</td>
+                            <td id="vortisandModel">-</td>
+                            <td id="vortisandFlowrate">-</td>
+                            <td id="vortisandDescription">-</td>
+                            <td id="vortisandOpCost">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
 
-h2 {
-    color: #1A6E8A;
-    border-bottom: 2px solid #f0f0f0;
-    padding-bottom: 10px;
-    margin-top: 0;
-}
+            <p id="noResultsMessage" class="no-results hidden">No suitable models found for the given criteria.</p>
+        </main>
 
-.input-group {
-    margin-bottom: 15px;
-}
-
-.input-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.input-group input[type="number"],
-.input-group input[type="text"] {
-    width: calc(100% - 22px); /* Adjust for padding and border */
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box; /* Important for width calculation */
-}
-
-.input-group input[type="radio"] {
-    margin-right: 8px;
-    transform: scale(1.2); /* Make radio buttons slightly larger */
-}
-
-
-.input-group small {
-    display: block;
-    font-size: 0.8em;
-    color: #666;
-    margin-top: 5px;
-}
-
-.or-separator {
-    text-align: center;
-    font-weight: bold;
-    margin: 15px 0;
-    color: #555;
-}
-
-button#calculateButton {
-    display: block;
-    width: 100%;
-    padding: 12px 20px;
-    background-color: #007B7F; /* Accent blue/teal */
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1.1em;
-    transition: background-color 0.3s ease;
-}
-
-button#calculateButton:hover {
-    background-color: #005f63; /* Darker shade on hover */
-}
-
-button#calculateButton:disabled {
-    background-color: grey;
-    cursor: not-allowed;
-}
-
-
-.hidden {
-    display: none !important;
-}
-
-.results-grid {
-    display: flex;
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
-    gap: 20px; /* Space between columns */
-    margin-top: 20px;
-}
-
-.result-column {
-    flex: 1; /* Each column takes equal space */
-    min-width: 280px; /* Minimum width before wrapping */
-    padding: 15px;
-    border: 1px solid #e0e0e0;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-}
-
-.result-column h3 {
-    margin-top: 0;
-    color: #1A6E8A;
-    font-size: 1.3em;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 8px;
-}
-
-.result-column p {
-    margin: 8px 0;
-    font-size: 0.95em;
-}
-
-.result-column p strong {
-    color: #333;
-}
-
-#noResultsMessage {
-    text-align: center;
-    font-size: 1.1em;
-    color: #800000; /* Maroon/dark red for emphasis */
-    margin-top: 20px;
-    padding: 10px;
-    background-color: #ffe0e0; /* Light pink background */
-    border: 1px solid #ffc0c0; /* Light red border */
-    border-radius: 4px;
-}
-
-
-footer {
-    text-align: center;
-    padding: 20px;
-    margin-top: 30px;
-    background-color: #1A6E8A; /* Teal/Dark Cyan */
-    color: white;
-    font-size: 0.9em;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    header h1 {
-        font-size: 1.8rem;
-    }
-
-    .results-grid {
-        flex-direction: column; /* Stack columns on smaller screens */
-    }
-
-    #systemTypeSection .input-group {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-    }
-}
+        <footer>
+            <p>&copy; 2023 Xylem Inc. All rights reserved.</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
