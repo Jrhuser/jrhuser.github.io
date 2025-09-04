@@ -17,37 +17,66 @@ body {
     overflow: hidden;
 }
 
-/* Header Styling */
+/* --- NEW HEADER STYLING --- */
 header {
-    background-color: #007DA3; /* NEW Xylem blue - PMS 7704C */
+    background-color: #007DA3;
     color: #ffffff;
-    padding: 20px 30px;
-    text-align: center;
-    border-bottom: 5px solid #005F7D; /* Darker shade of NEW blue for accent */
-    display: flex;
-    align-items: center;
-    justify-content: center; /* Center content horizontally */
-    position: relative; /* For absolute positioning of logo if needed */
+    padding: 0 40px; /* Padding on the sides */
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .header-content {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between; /* This spaces out the logo, nav, and icons */
+    height: 70px; /* Give the header a fixed height */
     width: 100%;
-    gap: 20px; /* Space between logo and title */
+    max-width: 1600px; /* Optional: limit max width for very large screens */
+    margin: 0 auto;
 }
 
 .logo {
-    height: 50px; /* Adjust as needed */
+    height: 30px; /* Adjusted logo size */
     width: auto;
-    margin-right: 15px; /* Space between logo and text */
+    flex-shrink: 0; /* Prevent the logo from shrinking */
 }
 
-header h1 {
-    margin: 0;
-    font-size: 2em;
-    font-weight: 700;
+.main-nav {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-grow: 1; /* Allow the nav to take up available space */
+}
+
+.main-nav a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1em;
+    font-weight: 500;
+    padding: 10px 0;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.main-nav a:hover {
+    color: #cce7ef; /* Lighter color on hover */
+}
+
+.header-icons {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    font-size: 1.2em;
+}
+
+.header-icons i {
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.header-icons i:hover {
+    color: #cce7ef; /* Lighter color on hover */
 }
 
 /* Main Content Styling */
@@ -240,37 +269,27 @@ footer {
     text-align: center;
     padding: 15px 0;
     font-size: 0.9em;
-    border-top: 3px solid #212529;
 }
 
 /* Responsive Adjustments */
+@media (max-width: 1024px) {
+    .main-nav {
+        display: none; /* Hide navigation links on smaller screens */
+    }
+}
+
 @media (max-width: 768px) {
     .container {
         margin: 15px;
+        padding: 15px;
     }
-
-    header h1 {
-        font-size: 1.6em;
-    }
-
+    
     .header-content {
-        flex-direction: column; /* Stack logo and title on small screens */
-        gap: 10px;
+        height: 60px;
     }
-
-    .logo {
-        margin-right: 0;
-        margin-bottom: 10px; /* Space below logo */
-    }
-
-    .radio-group {
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .radio-group label {
-        width: 100%;
-        text-align: center;
+    
+    header {
+        padding: 0 20px;
     }
 
     .results-table, .results-table thead, .results-table tbody, .results-table th, .results-table td, .results-table tr {
