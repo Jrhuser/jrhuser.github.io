@@ -3,87 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cooling Water Filtration Selector</title>
+    <title>Xylem Cooling Water Filtration Selector</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <h1>Cooling Water Filtration</h1>
-    </header>
-
-    <main>
-        <section id="systemTypeSection">
-            <div class="input-group">
-                <label><input type="radio" name="systemType" value="open" id="radioOpen"> Open</label>
-                <label><input type="radio" name="systemType" value="closed" id="radioClosed"> Closed</label>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <img src="xylem_logo.png" alt="Xylem Logo" class="logo">
+                <h1>Cooling Water Filtration Selector</h1>
             </div>
-        </section>
+        </header>
 
-        <section id="openSystemInputs" class="hidden conditional-inputs">
-            <h2>Open System Parameters</h2>
-            <div class="input-group">
-                <label for="recircRate">Recirculation Rate (GPM):</label>
-                <input type="number" id="recircRate" name="recircRate" placeholder="e.g., 1000">
-            </div>
-            <p class="or-separator">OR</p>
-            <div class="input-group">
-                <label for="tonnage">Tonnage (Tons):</label>
-                <input type="number" id="tonnage" name="tonnage" placeholder="e.g., 300">
-                <small>(This will be used to compare against Tonnage Min/Max)</small>
-            </div>
-        </section>
-
-        <section id="closedSystemInputs" class="hidden conditional-inputs">
-            <h2>Closed System Parameters</h2>
-            <div class="input-group">
-                <label for="closedSystemVolume">System Volume (Gallons):</label>
-                <input type="number" id="closedSystemVolume" name="closedSystemVolume" placeholder="e.g., 2000">
-            </div>
-        </section>
-
-        <section id="electricalCostSection" class="hidden">
-            <h2>Cost Parameters</h2>
-            <div class="input-group">
-                <label for="electricalCost">Electrical Cost ($/kWh):</label>
-                <input type="number" id="electricalCost" name="electricalCost" step="0.01" placeholder="e.g., 0.12">
-            </div>
-            <button id="calculateButton">Find Models</button>
-        </section>
-
-        <section id="resultsSection" class="hidden">
-            <h2>Recommended Models</h2>
-            <div class="results-grid">
-                <div class="result-column" id="separatorColumn">
-                    <h3>Separator</h3>
-                    <p><strong>Model:</strong> <span id="separatorModel">-</span></p>
-                    <p><strong>Flowrate (GPM):</strong> <span id="separatorFlowrate">-</span></p>
-                    <p><strong>Description:</strong> <span id="separatorDescription">-</span></p>
-                    <p><strong>Operating Cost:</strong> $<span id="separatorOpCost">-</span></p>
+        <main>
+            <section class="system-type-selection">
+                <h2>Select System Type</h2>
+                <div class="radio-group">
+                    <input type="radio" id="radioOpen" name="systemType" value="open" checked>
+                    <label for="radioOpen">Open Cooling System</label>
+                    
+                    <input type="radio" id="radioClosed" name="systemType" value="closed">
+                    <label for="radioClosed">Closed Cooling System</label>
                 </div>
-                <div class="result-column" id="vafColumn">
-                    <h3>VAF</h3>
-                    <p><strong>Model:</strong> <span id="vafModel">-</span></p>
-                    <p><strong>Flowrate (GPM):</strong> <span id="vafFlowrate">-</span></p>
-                    <p><strong>Description:</strong> <span id="vafDescription">-</span></p>
-                    <p><strong>Operating Cost:</strong> $<span id="vafOpCost">-</span></p>
-                </div>
-                <div class="result-column" id="vortisandColumn">
-                    <h3>Vortisand</h3>
-                    <p><strong>Model:</strong> <span id="vortisandModel">-</span></p>
-                    <p><strong>Flowrate (GPM):</strong> <span id="vortisandFlowrate">-</span></p>
-                    <p><strong>Description:</strong> <span id="vortisandDescription">-</span></p>
-                    <p><strong>Operating Cost:</strong> $<span id="vortisandOpCost">-</span></p>
-                </div>
-            </div>
-             <p id="noResultsMessage" class="hidden">No suitable models found for the given criteria.</p>
-        </section>
-    </main>
+            </section>
 
-    <footer>
-        <p>&copy; 2024 Your Company Name (Current Date: May 16, 2025)</p>
-    </footer>
+            <section id="openSystemInputs" class="input-section">
+                <h2>Open System Parameters</h2>
+                <div class="input-group">
+                    <label for="recircRate">Total Recirculation Rate (GPM):</label>
+                    <input type="number" id="recircRate" placeholder="e.g., 5000">
+                </div>
+                <div class="input-group">
+                    <label for="tonnage">Total System Tonnage (Tons):</label>
+                    <input type="number" id="tonnage" placeholder="e.g., 1500">
+                </div>
+                <p class="note">Enter either Recirculation Rate or Tonnage for Open Systems.</p>
+            </section>
 
+            <section id="closedSystemInputs" class="input-section hidden">
+                <h2>Closed System Parameters</h2>
+                <div class="input-group">
+                    <label for="closedSystemVolume">Total System Volume (Gallons):</label>
+                    <input type="number" id="closedSystemVolume" placeholder="e.g., 2000">
+                </div>
+            </section>
+
+            <section id="electricalCostSection" class="input-section">
+                <h2>Electrical Cost</h2>
+                <div class="input-group">
+                    <label for="electricalCost">Cost per kWh ($):</label>
+                    <input type="number" id="electricalCost" value="0.12" min="0" step="0.01">
+                </div>
+            </section>
+
+            <button id="calculateButton">Find Recommended Filters</button>
+
+            <section id="resultsSection" class="results-section hidden">
+                <h2>Recommended Models</h2>
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Filter Type</th>
+                            <th>Model</th>
+                            <th>Flowrate (GPM)</th>
+                            <th>Description</th>
+                            <th>Est. Annual Operating Cost ($)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Separator</td>
+                            <td id="separatorModel">-</td>
+                            <td id="separatorFlowrate">-</td>
+                            <td id="separatorDescription">-</td>
+                            <td id="separatorOpCost">-</td>
+                        </tr>
+                        <tr>
+                            <td>VAF</td>
+                            <td id="vafModel">-</td>
+                            <td id="vafFlowrate">-</td>
+                            <td id="vafDescription">-</td>
+                            <td id="vafOpCost">-</td>
+                        </tr>
+                        <tr>
+                            <td>Vortisand</td>
+                            <td id="vortisandModel">-</td>
+                            <td id="vortisandFlowrate">-</td>
+                            <td id="vortisandDescription">-</td>
+                            <td id="vortisandOpCost">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <p id="noResultsMessage" class="no-results hidden">No suitable models found for the given criteria.</p>
+        </main>
+
+        <footer>
+            <p>&copy; 2023 Xylem Inc. All rights reserved.</p>
+        </footer>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
