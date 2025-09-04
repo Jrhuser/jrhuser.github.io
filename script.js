@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOM fully loaded and parsed - using SCRIPT WITH DETAILED CSV MAPPING/PARSING (vMay16_FullScriptDebug).");
+    console.log("DOM fully loaded and parsed - using CORRECTED SCRIPT (vSept4).");
 
     // --- Element Selection ---
     const radioOpen = document.getElementById('radioOpen');
@@ -10,163 +10,320 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.getElementById('calculateButton');
     const resultsSection = document.getElementById('resultsSection');
     const noResultsMessage = document.getElementById('noResultsMessage');
-
     const recircRateInput = document.getElementById('recircRate');
-    const tonnageInput = document.getElementById('tonnage'); 
+    const tonnageInput = document.getElementById('tonnage');
     const closedSystemVolumeInput = document.getElementById('closedSystemVolume');
     const electricalCostInput = document.getElementById('electricalCost');
 
-    // --- Initial Element Checks ---
-    if (!radioOpen) console.error("DEBUG SCRIPT: Element with ID 'radioOpen' not found in HTML!");
-    if (!radioClosed) console.error("DEBUG SCRIPT: Element with ID 'radioClosed' not found in HTML!");
-    if (!openSystemInputs) console.error("DEBUG SCRIPT: Element with ID 'openSystemInputs' not found in HTML!");
-    if (!tonnageInput) console.error("DEBUG SCRIPT: Element with ID 'tonnage' (for tonnageInput) not found in HTML!");
-    if (!closedSystemInputs) console.error("DEBUG SCRIPT: Element with ID 'closedSystemInputs' not found in HTML!");
-    if (!electricalCostSection) console.error("DEBUG SCRIPT: Element with ID 'electricalCostSection' not found in HTML!");
-    if (!calculateButton) console.error("DEBUG SCRIPT: Element with ID 'calculateButton' not found in HTML!");
-    if (!resultsSection) console.error("DEBUG SCRIPT: Element with ID 'resultsSection' not found in HTML!");
-    if (!noResultsMessage) console.error("DEBUG SCRIPT: Element with ID 'noResultsMessage' not found in HTML!");
-    if (!recircRateInput) console.error("DEBUG SCRIPT: Element with ID 'recircRate' (for recircRateInput) not found in HTML!");
-    if (!closedSystemVolumeInput) console.error("DEBUG SCRIPT: Element with ID 'closedSystemVolume' (for closedSystemVolumeInput) not found in HTML!");
-    if (!electricalCostInput) console.error("DEBUG SCRIPT: Element with ID 'electricalCost' (for electricalCostInput) not found in HTML!");
+    // --- CORRECTED DATA SOURCE ---
+    // The data from your selection_database.json file is included here directly.
+    // This removes the need to fetch from an external URL.
+    const jsonData = [{
+        "Model": "LCS120",
+        "hp": 3.0,
+        "Flow Rate": 120.0,
+        "Min Recirc (gallons)": 0.0,
+        "Max Recirc (gallons)": 600.0,
+        "Tonnage Min": 0.0,
+        "Tonnage Max": 200.0,
+        "Loop Min": null,
+        "Loop Max": null,
+        "Description": "VHS-120 Hydrocyclone Separator, 3HP bronze fitted DPPE pump, 460VAC/3PH/60Hz NEMA 4X basic pump starter with green power available light, 2” Auto-purge valve, outlet throttle bronze gate valve, SCH80 PVC piping.  Mounted, wired, plumbed and tested on a 304SS formed base."
+    }, {
+        "Model": "LCS180",
+        "hp": 5.0,
+        "Flow Rate": 180.0,
+        "Min Recirc (gallons)": 601.0,
+        "Max Recirc (gallons)": 900.0,
+        "Tonnage Min": 201.0,
+        "Tonnage Max": 300.0,
+        "Loop Min": null,
+        "Loop Max": null,
+        "Description": "VHS-180 Hydrocyclone Separator, 5HP bronze fitted DPPE pump, 460VAC/3PH/60Hz NEMA 4X basic pump starter with green power available light, 2” Auto-purge valve, outlet throttle bronze gate valve, SCH80 PVC piping.  Mounted, wired, plumbed and tested on a 304SS formed base."
+    }, {
+        "Model": "LCS260",
+        "hp": 7.5,
+        "Flow Rate": 260.0,
+        "Min Recirc (gallons)": 901.0,
+        "Max Recirc (gallons)": 1300.0,
+        "Tonnage Min": 301.0,
+        "Tonnage Max": 433.3333333333,
+        "Loop Min": null,
+        "Loop Max": null,
+        "Description": "VHS-260 Hydrocyclone Separator, 7.5HP bronze fitted DPPE pump, 460VAC/3PH/60Hz NEMA 4X basic pump starter with green power available light, 2” Auto-purge valve, outlet throttle bronze gate valve, SCH80 PVC piping.  Mounted, wired, plumbed and tested on a 304SS formed base."
+    }, {
+        "Model": "LCS340",
+        "hp": 7.5,
+        "Flow Rate": 340.0,
+        "Min Recirc (gallons)": 1301.0,
+        "Max Recirc (gallons)": 1700.0,
+        "Tonnage Min": 434.3333333333,
+        "Tonnage Max": 566.6666666667,
+        "Loop Min": null,
+        "Loop Max": null,
+        "Description": "VHS-340 Hydrocyclone Separator, 7.5HP bronze fitted DPPE pump, 460VAC/3PH/60Hz NEMA 4X basic pump starter with green power available light, 2” Auto-purge valve, outlet throttle bronze gate valve, SCH80 PVC piping.  Mounted, wired, plumbed and tested on a 304SS formed base."
+    }, {
+        "Model": "CTS400",
+        "hp": 15.0,
+        "Flow Rate": 400.0,
+        "Min Recirc (gallons)": 1701.0,
+        "Max Recirc (gallons)": 2000.0,
+        "Tonnage Min": 567.6666666667,
+        "Tonnage Max": 666.6666666667,
+        "Loop Min": null,
+        "Loop Max": null,
+        "Description": "VHS-400A Hydrocyclone Separator, 15HP bronze fitted DPPE pump, 460VAC/3PH/60Hz NEMA 4X basic pump starter with green power available light, 2” Auto-purge valve, outlet throttle bronze gate valve, SCH80 PVC piping.  Mounted, wired, plumbed and tested on a polyurethane coated channel frame base."
+    }, {
+        "Model": "CTS700",
+        "hp": 20.0,
+        "Flow Rate": 700.0,
+        "Min Recirc (gallons)": 2001.0,
+        "Max Recirc (gallons)": 3500.0,
+        "Tonnage Min": 667.6666666667,
+        "Tonnage Max": 1166.6666666667,
+        "Loop Min": null,
+        "Loop Max": null,
+        "Description": "VHS-700A Hydrocyclone Separator, 20HP bronze fitted DPPE pump, 460VAC/3PH/60Hz NEMA 4X basic pump starter with green power available light, 2” Auto-purge valve, outlet throttle bronze gate valve, SCH80 PVC piping.  Mounted, wired, plumbed and tested on a polyurethane coated channel frame base."
+    }, {
+        "Model": "CTS950",
+        "hp": 20.0,
+        "Flow Rate": 950.0,
+        "Min Recirc (gallons)": 3501.0,
+        "Max Recirc (gallons)": 4750.0,
+        "Tonnage Min": 1167.6666666667,
+        "Tonnage Max": 1583.3333333333,
+        "Loop Min": null,
+        "Loop Max": null,
+        "Description": "VHS-950A Hydrocyclone Separator, 20HP bronze fitted DPPE pump, 460VAC/3PH/60Hz NEMA 4X basic pump starter with green power available light, 2” Auto-purge valve, outlet throttle bronze gate valve, SCH80 PVC piping.  Mounted, wired, plumbed and tested on a polyurethane coated channel frame base."
+    }, {
+        "Model": "CTS1600",
+        "hp": 60.0,
+        "Flow Rate": 1600.0,
+        "Min Recirc (gallons)": 4751.0,
+        "Max Recirc (gallons)": 8000.0,
+        "Tonnage Min": 1584.3333333333,
+        "Tonnage Max": 2666.6666666667,
+        "Loop Min": null,
+        "Loop Max": null,
+        "Description": "VHS-1600A Hydrocyclone Separator, 60HP bronze fitted DPPE pump, 460VAC/3PH/60Hz NEMA 4X basic pump starter with green power available light, 2” Auto-purge valve, outlet throttle bronze gate valve, SCH80 PVC piping.  Mounted, wired, plumbed and tested on a polyurethane coated channel frame base."
+    }, {
+        "Model": "CTS2300",
+        "hp": 60.0,
+        "Flow Rate": 2300.0,
+        "Min Recirc (gallons)": 8001.0,
+        "Max Recirc (gallons)": 11500.0,
+        "Tonnage Min": 2667.6666666667,
+        "Tonnage Max": 3833.3333333333,
+        "Loop Min": null,
+        "Loop Max": null,
+        "Description": " VHS-2300A Hydrocyclone Separator, 60HP bronze fitted DPPE pump, 460VAC/3PH/60Hz NEMA 4X basic pump starter with green power available light, 2” Auto-purge valve, outlet throttle bronze gate valve, SCH80 PVC piping.  Mounted, wired, plumbed and tested on a polyurethane coated channel frame base."
+    }, {
+        "Model": "CTS3400",
+        "hp": 100.0,
+        "Flow Rate": 3400.0,
+        "Min Recirc (gallons)": 11501.0,
+        "Max Recirc (gallons)": 17000.0,
+        "Tonnage Min": 3834.3333333333,
+        "Tonnage Max": 5666.6666666667,
+        "Loop Min": null,
+        "Loop Max": null,
+        "Description": "VHS-3400A Hydrocyclone Separator, 100HP bronze fitted DPPE pump, 460VAC/3PH/60Hz NEMA 4X basic pump starter with green power available light, 2” Auto-purge valve, outlet throttle bronze gate valve, SCH80 PVC piping.  Mounted, wired, plumbed and tested on a polyurethane coated channel frame base."
+    }, {
+        "Model": "CTF200",
+        "hp": 5.0,
+        "Flow Rate": 100.0,
+        "Min Recirc (gallons)": 0.0,
+        "Max Recirc (gallons)": 2000.0,
+        "Tonnage Min": 0.0,
+        "Tonnage Max": 666.6666666667,
+        "Loop Min": null,
+        "Loop Max": null,
+        "Description": "V200PA Self-Cleaning Screen Filter, 25 micron screen, 140gpm Pump, 460VAC/3PH/60Hz NEMA 4X basic pump starter with green power available light, Aquamatic 1.5\" NPT Spring Assist w/ ASCO 24vac Solenoid, NEMA 3S MF 4 station AC 120/220VAC 1PH with DP gage/switch, setpoint of 6-8 psid, 24VAC steady Output, V42 Series cast Iron diaphragm valve, 1/4\" NPT drill-tap of ports 1 & 3."
+    }, {
+        "Model": "CTF250",
+        "hp": 7.5,
+        "Flow Rate": 150.0,
+        "Min Recirc (gallons)": 2001.0,
+        "Max Recirc (gallons)": 3000.0,
+        "Tonnage Min": 667.6666666667,
+        "Tonnage Max": 1000.0,
+        "Loop Min": null,
+        "Loop Max": null,
+        "Description": "V250 Self-Cleaning Screen Filter, 25 micron screen, 180gpm Pump, 460VAC/3PH/60Hz NEMA 4X basic pump starter with green power available light, Aquamatic 1.5\" NPT Spring Assist w/ ASCO 24vac Solenoid, NEMA 3S MF 4 station AC 120/220VAC 1PH with DP gage/switch, setpoint of 6-8 psid, 24VAC steady Output, V42 Series cast Iron diaphragm valve, 1/4\" NPT drill-tap of ports 1 & 3."
+    }, {
+        "Model": "CTF500",
+        "hp": 15.0,
+        "Flow Rate": 300.0,
+        "Min Recirc (gallons)": 3001.0,
+        "Max Recirc (gallons)": 6000.0,
+        "Tonnage Min": 1001.0,
+        "Tonnage Max": 2000.0,
+        "Loop Min": null,
+        "Loop Max": null,
+        "Description": "V500 Self-Cleaning Screen Filter, 25 micron screen, 360gpm Pump, 460VAC/3PH/60Hz NEMA 4X basic pump starter with green power available light, Aquamatic 1.5\" NPT Spring Assist w/ ASCO 24vac Solenoid, NEMA 3S MF 4 station AC 120/220VAC 1PH with DP gage/switch, setpoint of 6-8 psid, 24VAC steady Output, V42 Series cast Iron diaphragm valve, 1/4\" NPT drill-tap of ports 1 & 3."
+    }, {
+        "Model": "CTF1000",
+        "hp": 30.0,
+        "Flow Rate": 700.0,
+        "Min Recirc (gallons)": 6001.0,
+        "Max Recirc (gallons)": 14000.0,
+        "Tonnage Min": 2001.0,
+        "Tonnage Max": 4666.6666666667,
+        "Loop Min": null,
+        "Loop Max": null,
+        "Description": "V1000 Self-Cleaning Screen Filter, 25 micron screen, 700gpm Pump, 460VAC/3PH/60Hz NEMA 4X basic pump starter with green power available light, Aquamatic 1.5\" NPT Spring Assist w/ ASCO 24vac Solenoid, NEMA 3S MF 4 station AC 120/220VAC 1PH with DP gage/switch, setpoint of 6-8 psid, 24VAC steady Output, V42 Series cast Iron diaphragm valve, 1/4\" NPT drill-tap of ports 1 & 3."
+    }, {
+        "Model": "CTF1500",
+        "hp": 50.0,
+        "Flow Rate": 1100.0,
+        "Min Recirc (gallons)": 14001.0,
+        "Max Recirc (gallons)": 22000.0,
+        "Tonnage Min": 4667.6666666667,
+        "Tonnage Max": 7333.3333333333,
+        "Loop Min": null,
+        "Loop Max": null,
+        "Description": "V1500 Self-Cleaning Screen Filter, 25 micron screen, 1050gpm Pump, 460VAC/3PH/60Hz NEMA 4X basic pump starter with green power available light, Aquamatic 1.5\" NPT Spring Assist w/ ASCO 24vac Solenoid, NEMA 3S MF 4 station AC 120/220VAC 1PH with DP gage/switch, setpoint of 6-8 psid, 24VAC steady Output, V42 Series cast Iron diaphragm valve, 1/4\" NPT drill-tap of ports 1 & 3."
+    }, {
+        "Model": "VC50",
+        "hp": 1.5,
+        "Flow Rate": 50.0,
+        "Min Recirc (gallons)": 0.0,
+        "Max Recirc (gallons)": 5000.0,
+        "Tonnage Min": 7334.3333333333,
+        "Tonnage Max": 1666.6666666667,
+        "Loop Min": 0.0,
+        "Loop Max": 190000.0,
+        "Description": "Vortisand VC-50 filter, Filtration capacity 50 gpm,  1.5 HP Filter feed pump included, Filtered or city water used for backwash: 22 gpm, System shall be shipped in two parts (the vessel and the structural steel skid, urethane painted), Media shall be shipped separately, Stainless Steel 304 vessel with ASME, Sec. VIII Div.1, Backwash booster pump is not included, PVC Sch. 80 face piping, PLC included: PLC /w Touchscreen HMI, Metering pump option."
+    }, {
+        "Model": "VC75",
+        "hp": 1.5,
+        "Flow Rate": 75.0,
+        "Min Recirc (gallons)": 5001.0,
+        "Max Recirc (gallons)": 7500.0,
+        "Tonnage Min": 1667.6666666667,
+        "Tonnage Max": 2500.0,
+        "Loop Min": 190001.0,
+        "Loop Max": 285000.0,
+        "Description": "Vortisand VC-75 filter, Filtration capacity 75 gpm,  1.5 HP Filter feed pump included, Filtered or city water used for backwash: 35 gpm, System shall be shipped in two parts (the vessel and the structural steel skid, urethane painted), Media shall be shipped separately, Stainless Steel 304 vessel with ASME, Sec. VIII Div.1, Backwash booster pump is not included, PVC Sch. 80 face piping, PLC included: PLC /w Touchscreen HMI, Metering pump option."
+    }, {
+        "Model": "VC100",
+        "hp": 3.0,
+        "Flow Rate": 100.0,
+        "Min Recirc (gallons)": 7501.0,
+        "Max Recirc (gallons)": 10000.0,
+        "Tonnage Min": 2501.0,
+        "Tonnage Max": 3333.3333333333,
+        "Loop Min": 285001.0,
+        "Loop Max": 380000.0,
+        "Description": "Vortisand VC-100 filter, Filtration capacity 100 gpm,  2.0 HP Filter feed pump included, Filtered or city water used for backwash: 50 gpm, System shall be shipped in two parts (the vessel and the structural steel skid, urethane painted), Media shall be shipped separately, Stainless Steel 304 vessel with ASME, Sec. VIII Div.1, Backwash booster pump is not included, PVC Sch. 80 face piping, PLC included: PLC /w Touchscreen HMI, Metering pump option."
+    }, {
+        "Model": "VC140",
+        "hp": 3.0,
+        "Flow Rate": 140.0,
+        "Min Recirc (gallons)": 10001.0,
+        "Max Recirc (gallons)": 14000.0,
+        "Tonnage Min": 3334.3333333333,
+        "Tonnage Max": 4666.6666666667,
+        "Loop Min": 380001.0,
+        "Loop Max": 532000.0,
+        "Description": "Vortisand VC-140 filter, Filtration capacity 140 gpm,  3.0 HP Filter feed pump included, Filtered or city water used for backwash: 50 gpm, System shall be shipped in two parts (the vessel and the structural steel skid, urethane painted), Media shall be shipped separately, Stainless Steel 304 vessel with ASME, Sec. VIII Div.1, Backwash booster pump is not included, PVC Sch. 80 face piping, PLC included: PLC /w Touchscreen HMI, Metering pump option."
+    }, {
+        "Model": "VC200",
+        "hp": 5.0,
+        "Flow Rate": 200.0,
+        "Min Recirc (gallons)": 14001.0,
+        "Max Recirc (gallons)": 20000.0,
+        "Tonnage Min": 4667.6666666667,
+        "Tonnage Max": 6666.6666666667,
+        "Loop Min": 532001.0,
+        "Loop Max": 760000.0,
+        "Description": "Vortisand VC-200 filter, Filtration capacity 200 gpm,  5.0 HP Filter feed pump included, Filtered or city water used for backwash: 100 gpm, System shall be shipped in two parts (the vessel and the structural steel skid, urethane painted), Media shall be shipped separately, Stainless Steel 304 vessel with ASME, Sec. VIII Div.1, Backwash booster pump is not included, PVC Sch. 80 face piping, PLC included: PLC /w Touchscreen HMI, Metering pump option."
+    }, {
+        "Model": "VC280",
+        "hp": 7.5,
+        "Flow Rate": 280.0,
+        "Min Recirc (gallons)": 20001.0,
+        "Max Recirc (gallons)": 28000.0,
+        "Tonnage Min": 6667.6666666667,
+        "Tonnage Max": 9333.3333333333,
+        "Loop Min": 760001.0,
+        "Loop Max": 1064000.0,
+        "Description": "Vortisand VC-240 filter, Filtration capacity 240 gpm,  5.0 HP Filter feed pump included, Filtered or city water used for backwash: 100 gpm, System shall be shipped in two parts (the vessel and the structural steel skid, urethane painted), Media shall be shipped separately, Stainless Steel 304 vessel with ASME, Sec. VIII Div.1, Backwash booster pump is not included, PVC Sch. 80 face piping, PLC included: PLC /w Touchscreen HMI, Metering pump option."
+    }, {
+        "Model": "VC350",
+        "hp": 10.0,
+        "Flow Rate": 350.0,
+        "Min Recirc (gallons)": 28001.0,
+        "Max Recirc (gallons)": 35000.0,
+        "Tonnage Min": 9334.3333333333,
+        "Tonnage Max": 11666.6666666667,
+        "Loop Min": 1064001.0,
+        "Loop Max": 1330000.0,
+        "Description": "Vortisand VC-280 filter, Filtration capacity 280 gpm,  5.0 HP Filter feed pump included, Filtered or city water used for backwash: 100 gpm, System shall be shipped in two parts (the vessel and the structural steel skid, urethane painted), Media shall be shipped separately, Stainless Steel 304 vessel with ASME, Sec. VIII Div.1, Backwash booster pump is not included, PVC Sch. 80 face piping, PLC included: PLC /w Touchscreen HMI, Metering pump option."
+    }, {
+        "Model": "VC600",
+        "hp": 15.0,
+        "Flow Rate": 600.0,
+        "Min Recirc (gallons)": 35001.0,
+        "Max Recirc (gallons)": 60000.0,
+        "Tonnage Min": 11667.6666666667,
+        "Tonnage Max": 20000.0,
+        "Loop Min": 1330001.0,
+        "Loop Max": 2280000.0,
+        "Description": "Vortisand VC-350 filter, Filtration capacity 350 gpm,  10 HP Filter feed pump included, Filtered or city water used for backwash: 100 gpm, System shall be shipped in two parts (the vessel and the structural steel skid, urethane painted), Media shall be shipped separately, Stainless Steel 304 vessel with ASME, Sec. VIII Div.1, Backwash booster pump is not included, PVC Sch. 80 face piping, PLC included: PLC /w Touchscreen HMI, Metering pump option."
+    }];
 
-
-    const dbUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT216WTQadamMw4sIIFvBuWNWe69BCz3GedD5Ahcy3i187k9XGtiBve_yUiDc7jtqYZjtB4mrgDPnbK/pub?gid=0&single=true&output=csv';
     let database = [];
 
-    async function loadDatabase() {
-        if (typeof Papa === 'undefined') {
-            console.error("DEBUG SCRIPT: PapaParse library is NOT LOADED. Please include it in your HTML before script.js.");
-            if(noResultsMessage) {
-                noResultsMessage.textContent = "Critical Error: CSV parsing library (PapaParse) not found. Application cannot function.";
-                noResultsMessage.classList.remove('hidden');
-                if(resultsSection) resultsSection.classList.add('hidden');
-            }
-            if(calculateButton) {
-                 calculateButton.disabled = true;
-                 calculateButton.textContent = "Setup Error";
-            }
-            return;
-        }
+    function processDatabase() {
+        // This function processes the raw JSON data and prepares it for the application.
+        database = jsonData.filter(row => row.Model).map(row => {
+            const newRow = {};
 
-        try {
-            const response = await fetch(dbUrl);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+            // --- FIX 1: INFER FILTER TYPE FROM MODEL NAME ---
+            if (row.Model.startsWith('LCS') || row.Model.startsWith('CTS')) {
+                newRow.Type = 'separator';
+            } else if (row.Model.startsWith('CTF')) {
+                newRow.Type = 'vaf';
+            } else if (row.Model.startsWith('VC')) {
+                newRow.Type = 'vortisand';
+            } else {
+                newRow.Type = 'unknown';
             }
-            const csvText = await response.text();
-            // Ensure PapaParse uses headers and skips empty lines. dynamicTyping: false is safer for manual parsing.
-            const parsedData = Papa.parse(csvText, { header: true, skipEmptyLines: true, dynamicTyping: false });
             
-            if (parsedData.errors && parsedData.errors.length > 0) {
-                console.error("DEBUG SCRIPT: PapaParse errors:", parsedData.errors);
-                parsedData.errors.forEach(err => console.error(`PapaParse Error: Type=${err.type}, Code=${err.code}, Message='${err.message}', Row=${err.row}`));
-                throw new Error("Error parsing CSV data. Check console for details. Some rows might be malformed.");
-            }
-            database = parsedData.data;
+            // --- FIX 2: CALCULATE KWH FROM HP ---
+            // 1 HP = 0.746 kW. This creates the 'Electrical Usage (kWh)' the script needs.
+            const hp = parseFloat(row.hp);
+            newRow['Electrical Usage (kWh)'] = isNaN(hp) ? NaN : hp * 0.746;
 
-            // Correctly map CSV headers to the properties the script expects, and parse numbers
-            database = database.map((row, index) => { // Added index for logging
-                const safeParseFloat = (val) => {
-                    if (typeof val === 'string') {
-                        val = val.replace(/\$|,/g, ''); // Remove $ and commas that might interfere with parseFloat
-                    }
-                    const num = parseFloat(val);
-                    return isNaN(num) ? NaN : num;
-                };
-                
-                const newRow = {}; 
-                // Copy all original properties from the CSV row first
-                // This ensures any columns not explicitly parsed/mapped are still available if needed elsewhere
-                // And helps in debugging by comparing original vs parsed.
-                for (const key in row) {
-                    if (Object.prototype.hasOwnProperty.call(row, key)) {
-                        newRow[key] = row[key]; // This carries over original string values for original keys
-                    }
-                }
+            // --- FIX 3: MAP JSON FIELDS TO SCRIPT'S EXPECTED FIELDS ---
+            // This ensures the rest of the script finds the data it's looking for.
+            newRow.Model = row.Model;
+            newRow.Description = row.Description || row['Unnamed: 9'] || 'N/A'; // Handle old "Unnamed: 9" key
+            newRow['Flowrate (GPM)'] = parseFloat(row['Flow Rate']);
+            
+            // Open System Parameters
+            newRow['Min Recirc Rate (GPM)'] = parseFloat(row['Min Recirc (gallons)']);
+            newRow['Max Recirc Rate (GPM)'] = parseFloat(row['Max Recirc (gallons)']); // Corrected key with no leading space
+            newRow['Tonnage Min'] = parseFloat(row['Tonnage Min']);
+            newRow['Tonnage Max'] = parseFloat(row['Tonnage Max']);
 
-                // --- BEGIN CRITICAL MAPPING AND PARSING ---
-                // The key for newRow (e.g., "Type") is what the rest of the script will use.
-                // The key for row (e.g., row["Filter Type"]) MUST match your CSV header EXACTLY.
+            // Closed System Parameters
+            newRow['Loop Min (gal)'] = parseFloat(row['Loop Min']); // Corrected key with no leading space
+            newRow['Loop Max (gal)'] = parseFloat(row['Loop Max']);
 
-                // Type Mapping
-                const csvFilterType = row["Filter Type"]; // Read from CSV (assuming this is the header)
-                newRow["Type"] = csvFilterType;          // Assign to script's expected 'Type' property
-                if (index === 0) console.log(`MAP_DEBUG Row 0: Original CSV 'Filter Type'='${csvFilterType}', Mapped to newRow['Type']='${newRow["Type"]}'`);
+            return newRow;
+        });
 
-                // Min Recirc Rate
-                const csvMinRecirc = row["Min Recirc Rate (gpm)"]; // Read from CSV (assuming lowercase gpm based on logs)
-                newRow["Min Recirc Rate (GPM)"] = safeParseFloat(csvMinRecirc); // Assign to script's 'Min Recirc Rate (GPM)' (uppercase GPM)
-                if (index === 0) console.log(`MAP_DEBUG Row 0: Original CSV 'Min Recirc Rate (gpm)'='${csvMinRecirc}' (type: ${typeof csvMinRecirc}), Parsed to newRow['Min Recirc Rate (GPM)']=${newRow["Min Recirc Rate (GPM)"]} (type: ${typeof newRow["Min Recirc Rate (GPM)"]})`);
-
-                // Max Recirc Rate
-                const csvMaxRecirc = row["Max Recirc Rate (gpm)"]; // Read from CSV (assuming lowercase gpm)
-                newRow["Max Recirc Rate (GPM)"] = safeParseFloat(csvMaxRecirc);
-                if (index === 0) console.log(`MAP_DEBUG Row 0: Original CSV 'Max Recirc Rate (gpm)'='${csvMaxRecirc}' (type: ${typeof csvMaxRecirc}), Parsed to newRow['Max Recirc Rate (GPM)']=${newRow["Max Recirc Rate (GPM)"]} (type: ${typeof newRow["Max Recirc Rate (GPM)"]})`);
-
-                // Tonnage Min - **VERIFY CSV HEADER NAME FOR "Tonnage Min"**
-                const csvTonnageMin = row["Tonnage Min"]; // Example: Assumes CSV header is "Tonnage Min"
-                newRow["Tonnage Min"] = safeParseFloat(csvTonnageMin);
-                if (index === 0) console.log(`MAP_DEBUG Row 0: Original CSV 'Tonnage Min'='${csvTonnageMin}' (type: ${typeof csvTonnageMin}), Parsed to newRow['Tonnage Min']=${newRow["Tonnage Min"]} (type: ${typeof newRow["Tonnage Min"]})`);
-                
-                // Tonnage Max - **VERIFY CSV HEADER NAME FOR "Tonnage Max"**
-                const csvTonnageMax = row["Tonnage Max"]; // Example: Assumes CSV header is "Tonnage Max"
-                newRow["Tonnage Max"] = safeParseFloat(csvTonnageMax);
-
-                // Loop Min (gal) - **VERIFY CSV HEADER NAME FOR "Loop Min (gal)"**
-                const csvLoopMin = row["Loop Min (gal)"]; // Example: Assumes CSV header is "Loop Min (gal)"
-                newRow["Loop Min (gal)"] = safeParseFloat(csvLoopMin);
-
-                // Loop Max (gal) - **VERIFY CSV HEADER NAME FOR "Loop Max (gal)"**
-                const csvLoopMax = row["Loop Max (gal)"]; // Example: Assumes CSV header is "Loop Max (gal)"
-                newRow["Loop Max (gal)"] = safeParseFloat(csvLoopMax);
-
-                // Electrical Usage (kWh) - **VERIFY CSV HEADER NAME FOR "Electrical Usage (kWh)"**
-                const csvElecUsage = row["Electrical Usage (kWh)"]; // Example: Assumes CSV header is "Electrical Usage (kWh)"
-                newRow["Electrical Usage (kWh)"] = safeParseFloat(csvElecUsage);
-
-                // Flowrate (GPM) for display - **VERIFY CSV HEADER NAME (e.g., "Flow Rate")**
-                const csvFlowRate = row["Flow Rate"]; // Read from CSV (assuming "Flow Rate" based on logs)
-                newRow["Flowrate (GPM)"] = safeParseFloat(csvFlowRate); // Assign to script's 'Flowrate (GPM)'
-                if (index === 0) console.log(`MAP_DEBUG Row 0: Original CSV 'Flow Rate'='${csvFlowRate}' (type: ${typeof csvFlowRate}), Parsed to newRow['Flowrate (GPM)']=${newRow["Flowrate (GPM)"]} (type: ${typeof newRow["Flowrate (GPM)"]})`);
-                
-                // --- END CRITICAL MAPPING AND PARSING ---
-
-                return newRow;
-            });
-
-            console.log("DEBUG SCRIPT: Database mapping and parsing complete. Number of rows:", database.length);
-            if (database.length > 0) {
-                console.log("First row (object structure after .map operation):", database[0]);
-                // Detailed check of specifically parsed numeric fields for the first row:
-                console.log(`  VERIFY PARSED - First row's "Min Recirc Rate (GPM)": type=${typeof database[0]["Min Recirc Rate (GPM)"]}, value=${database[0]["Min Recirc Rate (GPM)"]}`);
-                console.log(`  VERIFY PARSED - First row's "Max Recirc Rate (GPM)": type=${typeof database[0]["Max Recirc Rate (GPM)"]}, value=${database[0]["Max Recirc Rate (GPM)"]}`);
-                console.log(`  VERIFY PARSED - First row's "Tonnage Min": type=${typeof database[0]["Tonnage Min"]}, value=${database[0]["Tonnage Min"]}`);
-                console.log(`  VERIFY MAPPED - First row's "Type": type=${typeof database[0]["Type"]}, value=${database[0]["Type"]}`);
-            }
-
-            if (database.length === 0 && parsedData.meta && parsedData.meta.aborted) {
-                 console.warn("DEBUG SCRIPT: Database loading aborted by PapaParse.");
-                 if(noResultsMessage) { noResultsMessage.textContent = "Warning: Filtration database loading was aborted during parsing."; noResultsMessage.classList.remove('hidden'); }
-            } else if (database.length === 0) {
-                console.warn("DEBUG SCRIPT: Database loaded but is empty or parsing resulted in no data.");
-                 if(noResultsMessage) { noResultsMessage.textContent = "Warning: Filtration database loaded but appears empty or could not be fully parsed."; noResultsMessage.classList.remove('hidden'); }
-            }
-        } catch (error) {
-            console.error("DEBUG SCRIPT: Failed to load or parse database:", error);
-            if(noResultsMessage) { noResultsMessage.textContent = `Error: Could not load or parse filtration database. ${error.message}`; noResultsMessage.classList.remove('hidden'); }
-            if(resultsSection) resultsSection.classList.add('hidden');
-            if(calculateButton) { calculateButton.disabled = true; calculateButton.textContent = "DB Load Error"; }
+        console.log("Database processed successfully. Number of rows:", database.length);
+        if (database.length > 0) {
+            console.log("First processed row:", database[0]);
         }
     }
 
-    loadDatabase();
+    processDatabase();
 
     function toggleInputs() {
-        if (!radioOpen || !radioClosed || !openSystemInputs || !closedSystemInputs || !electricalCostSection || !resultsSection || !noResultsMessage) {
-            console.error("DEBUG SCRIPT in toggleInputs: One or more critical UI elements are missing. Check initial logs.");
-            return;
-        }
         openSystemInputs.classList.add('hidden');
         closedSystemInputs.classList.add('hidden');
         electricalCostSection.classList.add('hidden');
@@ -182,136 +339,109 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    if (radioOpen && radioClosed) {
-        radioOpen.addEventListener('change', toggleInputs);
-        radioClosed.addEventListener('change', toggleInputs);
-    } else {
-        console.error("DEBUG SCRIPT: Could not add event listeners to radio buttons - elements not found.");
-    }
+    radioOpen.addEventListener('change', toggleInputs);
+    radioClosed.addEventListener('change', toggleInputs);
 
-    if (calculateButton) {
-        calculateButton.addEventListener('click', () => {
-            if (!database || database.length === 0) {
-                if(noResultsMessage) { noResultsMessage.textContent = "Database is not loaded or is empty. Please wait or check console for errors."; noResultsMessage.classList.remove('hidden'); }
-                if(resultsSection) resultsSection.classList.add('hidden');
+    calculateButton.addEventListener('click', () => {
+        if (!database || database.length === 0) {
+            noResultsMessage.textContent = "Database is not loaded or is empty. Please check for errors.";
+            noResultsMessage.classList.remove('hidden');
+            resultsSection.classList.add('hidden');
+            return;
+        }
+
+        const systemType = radioOpen.checked ? 'open' : (radioClosed.checked ? 'closed' : null);
+        const electricalCost = parseFloat(electricalCostInput.value);
+
+        if (!systemType) {
+            alert("Please select a system type (Open or Closed).");
+            return;
+        }
+        if (isNaN(electricalCost) || electricalCost < 0) {
+            alert("Please enter a valid Electrical Cost (must be a non-negative number).");
+            return;
+        }
+
+        let recircRateVal = NaN;
+        let tonnageVal = NaN;
+        let closedSystemVolumeVal = NaN;
+
+        if (systemType === 'open') {
+            recircRateVal = parseFloat(recircRateInput.value);
+            tonnageVal = parseFloat(tonnageInput.value);
+            if (isNaN(recircRateVal) && isNaN(tonnageVal)) {
+                alert("For Open systems, please enter either Recirculation Rate or Tonnage.");
                 return;
             }
-            if (!electricalCostInput || !radioOpen || !radioClosed) { alert("Critical error: UI elements for calculation are missing."); return; }
-
-            const systemType = radioOpen.checked ? 'open' : (radioClosed.checked ? 'closed' : null);
-            const electricalCost = parseFloat(electricalCostInput.value);
-
-            if (!systemType) { alert("Please select a system type (Open or Closed)."); return; }
-            if (isNaN(electricalCost) || electricalCost < 0) { alert("Please enter a valid Electrical Cost (must be a non-negative number)."); return; }
-
-            let recircRateVal = NaN;
-            let tonnageVal = NaN; 
-            let closedSystemVolumeVal = NaN;
-
-            if (systemType === 'open') {
-                if (!recircRateInput || !tonnageInput) { alert("Critical error: Open system input fields are missing."); return; }
-                recircRateVal = parseFloat(recircRateInput.value);
-                tonnageVal = parseFloat(tonnageInput.value); 
-                if (isNaN(recircRateVal) && isNaN(tonnageVal)) { alert("For Open systems, please enter either Recirculation Rate or Tonnage."); return; }
-                if (!isNaN(recircRateVal) && recircRateVal <= 0) { alert("Recirculation Rate must be a positive number if entered."); return; }
-                if (!isNaN(tonnageVal) && tonnageVal <= 0) { alert("Tonnage must be a positive number if entered."); return; }
-            } else { 
-                if (!closedSystemVolumeInput) { alert("Critical error: Closed system input field is missing."); return; }
-                closedSystemVolumeVal = parseFloat(closedSystemVolumeInput.value);
-                if (isNaN(closedSystemVolumeVal) || closedSystemVolumeVal <= 0) { alert("For Closed systems, please enter a valid, positive System Volume."); return; }
+            if (!isNaN(recircRateVal) && recircRateVal <= 0) {
+                alert("Recirculation Rate must be a positive number if entered.");
+                return;
             }
-            findAndDisplayModels(systemType, recircRateVal, tonnageVal, closedSystemVolumeVal, electricalCost);
-        });
-    } else {
-        console.error("DEBUG SCRIPT: Calculate button not found. Cannot add event listener.");
-    }
+            if (!isNaN(tonnageVal) && tonnageVal <= 0) {
+                alert("Tonnage must be a positive number if entered.");
+                return;
+            }
+        } else { // closed system
+            closedSystemVolumeVal = parseFloat(closedSystemVolumeInput.value);
+            if (isNaN(closedSystemVolumeVal) || closedSystemVolumeVal <= 0) {
+                alert("For Closed systems, please enter a valid, positive System Volume.");
+                return;
+            }
+        }
+        findAndDisplayModels(systemType, recircRateVal, tonnageVal, closedSystemVolumeVal, electricalCost);
+    });
 
     function findAndDisplayModels(systemType, recircRate, tonnage, closedVolume, elecCost) {
         let separatorModel = null;
         let vafModel = null;
         let vortisandModel = null;
-
-        console.log(`---- FINDANDDISPLAYMODELS START ----`);
-        console.log(`INPUTS: Type=${systemType}, Recirc=${recircRate} (Type: ${typeof recircRate}), Tonnage=${tonnage} (Type: ${typeof tonnage}), ClosedVol=${closedVolume} (Type: ${typeof closedVolume})`);
-        console.log(`Database has ${database.length} rows. Attempting to loop...`);
-
+        
         for (const row of database) {
-            console.log(`LOOPING: Processing Model: ${row ? row.Model : 'NO MODEL'}, Script's 'Type': ${row ? row["Type"] : 'NO TYPE'}, Parsed MinRecirc: ${row && row["Min Recirc Rate (GPM)"] !== undefined ? row["Min Recirc Rate (GPM)"] : 'NOT PARSED/MISSING'}`);
+            if (!row || !row.Model) continue;
             
-            if (!row || !row.Model) { 
-                console.log("Skipping empty or invalid row (no Model property):", row);
-                continue;
-            }
             let match = false;
             
             if (systemType === 'open') {
-                const useRecirc = !isNaN(recircRate) && recircRate > 0;
-                const useTonnageInput = !isNaN(tonnage) && tonnage > 0;
-
-                const rowMinRecirc = row["Min Recirc Rate (GPM)"]; 
+                const useRecirc = !isNaN(recircRate);
+                const useTonnage = !isNaN(tonnage);
+                
+                const rowMinRecirc = row["Min Recirc Rate (GPM)"];
                 const rowMaxRecirc = row["Max Recirc Rate (GPM)"];
                 const rowTonnageMin = row["Tonnage Min"];
                 const rowTonnageMax = row["Tonnage Max"];
                 
-                if (useRecirc) {
-                    if (typeof rowMinRecirc === 'number' && typeof rowMaxRecirc === 'number' &&
-                        recircRate >= rowMinRecirc && recircRate <= rowMaxRecirc) {
-                        match = true;
-                        console.log(`  MATCHED (Recirc) for ${row.Model}: User ${recircRate} is between DB ${rowMinRecirc}-${rowMaxRecirc}`);
-                    } else if (typeof rowMinRecirc !== 'number' || typeof rowMaxRecirc !== 'number') {
-                         if (row.Model && (row.Model.includes('CTS') || row.Model.includes('CTF') || row.Model.includes('VC'))) { 
-                           console.warn(`  WARNING (Recirc) for ${row.Model}: DB Recirc rates are not numbers or NaN. Min: ${rowMinRecirc} (Type: ${typeof rowMinRecirc}), Max: ${rowMaxRecirc} (Type: ${typeof rowMaxRecirc})`);
-                        }
-                    }
+                // Match if user's recirc rate is within the model's range
+                if (useRecirc && typeof rowMinRecirc === 'number' && typeof rowMaxRecirc === 'number' && recircRate >= rowMinRecirc && recircRate <= rowMaxRecirc) {
+                    match = true;
                 }
-
-                if (!match && useTonnageInput) {
-                    if (typeof rowTonnageMin === 'number' && typeof rowTonnageMax === 'number' &&
-                        tonnage >= rowTonnageMin && tonnage <= rowTonnageMax) {
-                        match = true;
-                        console.log(`  MATCHED (Tonnage) for ${row.Model}: User ${tonnage} is between DB ${rowTonnageMin}-${rowTonnageMax}`);
-                    } else if (typeof rowTonnageMin !== 'number' || typeof rowTonnageMax !== 'number') {
-                         if (row.Model && (row.Model.includes('CTS') || row.Model.includes('CTF') || row.Model.includes('VC'))) { 
-                            console.warn(`  WARNING (Tonnage) for ${row.Model}: DB Tonnage limits are not numbers or NaN. Min: ${rowTonnageMin} (Type: ${typeof rowTonnageMin}), Max: ${rowTonnageMax} (Type: ${typeof rowTonnageMax})`);
-                         }
-                    }
+                
+                // Or if user's tonnage is within the model's range
+                if (!match && useTonnage && typeof rowTonnageMin === 'number' && typeof rowTonnageMax === 'number' && tonnage >= rowTonnageMin && tonnage <= rowTonnageMax) {
+                    match = true;
                 }
             } else { // systemType === 'closed'
-                const useClosedVolume = !isNaN(closedVolume) && closedVolume > 0;
                 const rowLoopMin = row["Loop Min (gal)"];
                 const rowLoopMax = row["Loop Max (gal)"];
 
-                if (useClosedVolume) {
-                    if (typeof rowLoopMin === 'number' && typeof rowLoopMax === 'number' &&
-                        closedVolume >= rowLoopMin && closedVolume <= rowLoopMax) {
-                        match = true;
-                        console.log(`  MATCHED (LoopVol) for ${row.Model}: User ${closedVolume} is between DB ${rowLoopMin}-${rowLoopMax}`);
-                    } else if (typeof rowLoopMin !== 'number' || typeof rowLoopMax !== 'number') {
-                         console.warn(`  WARNING (LoopVol) for ${row.Model}: DB Loop volumes are not numbers or NaN. Min: ${rowLoopMin} (Type: ${typeof rowLoopMin}), Max: ${rowLoopMax} (Type: ${typeof rowLoopMax})`);
-                    }
+                if (typeof rowLoopMin === 'number' && typeof rowLoopMax === 'number' && closedVolume >= rowLoopMin && closedVolume <= rowLoopMax) {
+                    match = true;
                 }
             }
 
             if (match) {
-                const typeFromRow = row["Type"] ? String(row["Type"]).toLowerCase().trim() : ''; 
-                if (typeFromRow.includes('separator') && !separatorModel) {
+                if (row.Type === 'separator' && !separatorModel) {
                     separatorModel = row;
-                    console.log(`  ASSIGNED Separator: ${separatorModel.Model}`);
-                } else if (typeFromRow.includes('vaf') && !vafModel) {
+                } else if (row.Type === 'vaf' && !vafModel) {
                     vafModel = row;
-                    console.log(`  ASSIGNED VAF: ${vafModel.Model}`);
-                } else if (typeFromRow.includes('vortisand') && !vortisandModel) {
+                } else if (row.Type === 'vortisand' && !vortisandModel) {
                     vortisandModel = row;
-                    console.log(`  ASSIGNED Vortisand: ${vortisandModel.Model}`);
                 }
             }
         }
-        console.log(`---- FINDANDDISPLAYMODELS END ----`);
         displayResults(separatorModel, vafModel, vortisandModel, elecCost);
     }
 
     function displayResults(separator, vaf, vortisand, elecCost) {
-        if (!resultsSection || !noResultsMessage) { console.error("DEBUG SCRIPT in displayResults: resultsSection or noResultsMessage element not found."); return; }
         resultsSection.classList.remove('hidden');
         noResultsMessage.classList.add('hidden');
         let anyModelFound = false;
@@ -322,22 +452,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const descriptionEl = document.getElementById(`${typeKey}Description`);
             const opCostEl = document.getElementById(`${typeKey}OpCost`);
 
-            if (!modelEl || !flowrateEl || !descriptionEl || !opCostEl) { console.error(`DEBUG SCRIPT in displayResults: One or more display elements for type '${typeKey}' not found.`); return false; }
-
             if (modelData) {
-                modelEl.textContent = modelData["Model"] || 'N/A';
+                modelEl.textContent = modelData.Model || 'N/A';
                 flowrateEl.textContent = modelData["Flowrate (GPM)"] != null && !isNaN(modelData["Flowrate (GPM)"]) ? modelData["Flowrate (GPM)"] : 'N/A';
-                descriptionEl.textContent = modelData["Description"] || 'N/A';
+                descriptionEl.textContent = modelData.Description || 'N/A';
                 const usage = modelData["Electrical Usage (kWh)"];
                 const cost = !isNaN(usage) && !isNaN(elecCost) ? (usage * elecCost).toFixed(2) : 'N/A';
                 opCostEl.textContent = cost;
                 return true;
-            } else { 
+            } else {
                 modelEl.textContent = '-';
                 flowrateEl.textContent = '-';
                 descriptionEl.textContent = 'No suitable model found';
                 opCostEl.textContent = '-';
-                return false; 
+                return false;
             }
         }
 
@@ -346,14 +474,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (updateColumn('vortisand', vortisand)) anyModelFound = true;
 
         if (!anyModelFound) {
-            if (noResultsMessage) { noResultsMessage.textContent = "No suitable models found for the given criteria across all categories."; noResultsMessage.classList.remove('hidden');}
+            noResultsMessage.textContent = "No suitable models found for the given criteria across all categories.";
+            noResultsMessage.classList.remove('hidden');
         }
     }
-
-    if (typeof toggleInputs === "function") {
-        toggleInputs();
-        console.log("DEBUG SCRIPT: Initial toggleInputs call performed.");
-    } else {
-        console.error("DEBUG SCRIPT: toggleInputs function is not defined at the time of initial call.");
-    }
+    
+    // Initialize the view
+    toggleInputs();
 });
