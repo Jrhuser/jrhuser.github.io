@@ -1,4 +1,8 @@
 /* General Body and Container Styling */
+html, body {
+    height: 100%; /* Ensures the body can fill the full viewport height */
+}
+
 body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
@@ -6,15 +10,15 @@ body {
     background-color: #f4f7f6; /* Light grey/off-white background */
     color: #333;
     line-height: 1.6;
+    display: flex;
+    flex-direction: column; /* Arranges header, container, and footer vertically */
 }
 
 .container {
-    max-width: 1320px;
-    margin: 30px auto;
+    width: 100%;
     background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+    flex-grow: 1; /* This makes the container fill all available vertical space */
+    /* Removed max-width, margin, border-radius, and box-shadow */
 }
 
 /* --- HEADER STYLING --- */
@@ -32,7 +36,6 @@ header {
     justify-content: space-between;
     height: 70px;
     width: 100%;
-    /* REMOVED max-width and margin to allow content to fill the header */
 }
 
 .logo {
@@ -80,7 +83,9 @@ header {
 
 /* Main Content Styling */
 main {
-    padding: 40px; /* Increased padding for a more open feel */
+    padding: 40px;
+    max-width: 1320px; /* Keeps the content from stretching too wide */
+    margin: 0 auto;   /* Centers the content within the full-width container */
 }
 
 h2 {
@@ -92,13 +97,13 @@ h2 {
     padding-bottom: 10px;
 }
 
-/* Section Styling - UPDATED */
+/* Section Styling */
 .input-section, .system-type-selection, .results-section {
-    padding: 0; /* REMOVED padding */
-    border: none; /* REMOVED border */
-    box-shadow: none; /* REMOVED box-shadow */
+    padding: 0; 
+    border: none;
+    box-shadow: none;
     margin-bottom: 25px;
-    background-color: transparent; /* Set background to transparent */
+    background-color: transparent;
 }
 
 .hidden {
@@ -217,8 +222,8 @@ h2 {
     border-collapse: collapse;
     margin-top: 20px;
     font-size: 0.95em;
-    border-radius: 5px; /* ADDED: Rounds the corners of the entire table */
-    overflow: hidden; /* Ensures the border-radius is visible */
+    border-radius: 5px; 
+    overflow: hidden;
 }
 
 .results-table th, .results-table td {
@@ -288,11 +293,6 @@ footer {
 }
 
 @media (max-width: 768px) {
-    .container {
-        margin: 15px;
-        padding: 15px;
-    }
-    
     main {
         padding: 20px;
     }
