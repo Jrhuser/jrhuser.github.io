@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadDatabase() {
         try {
             // Updated to load the new JSON file name
-            const response = await fetch('Selection_Database (1).json');
+            const response = await fetch('selection-database.json');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -465,4 +465,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize the view
     toggleInputs();
 });
+
 
