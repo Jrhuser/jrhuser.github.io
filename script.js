@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOM fully loaded and parsed - using script with conditional cost section.");
+    console.log("DOM fully loaded and parsed - using script with dynamic results table.");
 
     // --- Element Selection ---
     const radioOpen = document.getElementById('radioOpen');
@@ -12,6 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.getElementById('calculateButton');
     const resultsSection = document.getElementById('resultsSection');
     const noResultsMessage = document.getElementById('noResultsMessage');
+
+    // New selectors for table rows and columns
+    const separatorRow = document.getElementById('separatorRow');
+    const vafRow = document.getElementById('vafRow');
+    const vortisandRow = document.getElementById('vortisandRow');
+    const costColumnElements = document.querySelectorAll('.cost-column');
 
     const recircRateInput = document.getElementById('recircRate');
     const tonnageInput = document.getElementById('tonnage');
@@ -55,7 +61,8 @@ document.addEventListener('DOMContentLoaded', () => {
                  throw new Error("Database is empty after processing.");
             }
 
-        } catch (error) {
+        } catch (error)
+ {
             console.error("Failed to load or process database:", error);
             if(noResultsMessage) {
                 noResultsMessage.textContent = `Error: Could not load or parse filtration database. ${error.message}`;
@@ -69,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadDatabase();
 
     function toggleInputs() {
-        // Hide all conditional sections first
+        // Hide all conditional input sections first
         openSystemInputs.classList.add('hidden');
         closedSystemInputs.classList.add('hidden');
         techSystemInputs.classList.add('hidden');
@@ -77,16 +84,23 @@ document.addEventListener('DOMContentLoaded', () => {
         resultsSection.classList.add('hidden');
         noResultsMessage.classList.add('hidden');
 
+        // Reset table to its default state (all rows/columns visible)
+        separatorRow.classList.remove('hidden');
+        vafRow.classList.remove('hidden');
+        vortisandRow.classList.remove('hidden');
+        costColumnElements.forEach(el => el.classList.remove('hidden'));
+
         // Show the correct sections based on selection
-        if (radioOpen.checked) {
-            openSystemInputs.classList.remove('hidden');
-            electricalCostSection.classList.remove('hidden');
-        } else if (radioClosed.checked) {
-            closedSystemInputs.classList.remove('hidden');
+        if (radioOpen.checked || radioClosed.checked) {
+            radioOpen.checked ? openSystemInputs.classList.remove('hidden') : closedSystemInputs.classList.remove('hidden');
             electricalCostSection.classList.remove('hidden');
         } else if (radioTech.checked) {
             techSystemInputs.classList.remove('hidden');
-            // Note: electricalCostSection remains hidden for this option
+            
+            // For Tech systems, modify the results table
+            separatorRow.classList.add('hidden');
+            vortisandRow.classList.add('hidden');
+            costColumnElements.forEach(el => el.classList.add('hidden'));
         }
     }
 
@@ -105,7 +119,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const systemType = document.querySelector('input[name="systemType"]:checked').value;
         
         let costParams = {};
-        // Only read cost parameters if the section is visible
         if (systemType === 'open' || systemType === 'closed') {
             const electricalCost = parseFloat(electricalCostInput.value);
             const hoursPerDay = parseFloat(hoursPerDayInput.value);
@@ -218,7 +231,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 descriptionEl.textContent = modelData.Description || 'N/A';
                 
                 let annualCost = NaN;
-                // Only calculate cost if parameters are available and hp is a valid number
                 if (costParams.electricalCost !== undefined && !isNaN(modelData.hp)) {
                     const annualKwh = calculateAnnualKwh(modelData.hp, costParams.hoursPerDay, costParams.daysPerYear);
                     annualCost = annualKwh * costParams.electricalCost;
