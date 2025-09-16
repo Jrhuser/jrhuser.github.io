@@ -1,31 +1,30 @@
 /* General Body and Container Styling */
 html, body {
-    height: 100%; /* Ensures the body can fill the full viewport height */
+    height: 100%;
 }
 
 body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f7f6; /* Light grey/off-white background */
+    background-color: #f4f7f6;
     color: #333;
     line-height: 1.6;
     display: flex;
-    flex-direction: column; /* Arranges header, container, and footer vertically */
+    flex-direction: column;
 }
 
 .container {
     width: 100%;
     background-color: #ffffff;
-    flex-grow: 1; /* This makes the container fill all available vertical space */
-    /* Removed max-width, margin, border-radius, and box-shadow */
+    flex-grow: 1;
 }
 
 /* --- HEADER STYLING --- */
 header {
     background-color: #007DA3;
     color: #ffffff;
-    padding: 0 40px; /* Padding on the sides */
+    padding: 0 40px;
     width: 100%;
     box-sizing: border-box;
 }
@@ -39,9 +38,9 @@ header {
 }
 
 .logo {
-    height: 30px; /* Adjusted logo size */
+    height: 30px;
     width: auto;
-    flex-shrink: 0; /* Prevent the logo from shrinking */
+    flex-shrink: 0;
 }
 
 .main-nav {
@@ -62,7 +61,7 @@ header {
 }
 
 .main-nav a:hover {
-    color: #cce7ef; /* Lighter color on hover */
+    color: #cce7ef;
 }
 
 .header-icons {
@@ -78,18 +77,18 @@ header {
 }
 
 .header-icons i:hover {
-    color: #cce7ef; /* Lighter color on hover */
+    color: #cce7ef;
 }
 
 /* Main Content Styling */
 main {
     padding: 40px;
-    max-width: 1320px; /* Keeps the content from stretching too wide */
-    margin: 0 auto;   /* Centers the content within the full-width container */
+    max-width: 1320px;
+    margin: 0 auto;
 }
 
 h2 {
-    color: #007DA3; /* NEW Xylem blue */
+    color: #007DA3;
     font-size: 1.6em;
     margin-top: 0;
     margin-bottom: 20px;
@@ -115,7 +114,7 @@ h2 {
     display: flex;
     gap: 25px;
     margin-bottom: 15px;
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    flex-wrap: wrap;
 }
 
 .radio-group input[type="radio"] {
@@ -134,14 +133,14 @@ h2 {
 }
 
 .radio-group input[type="radio"]:checked + label {
-    background-color: #007DA3; /* NEW Xylem blue */
+    background-color: #007DA3;
     color: #ffffff;
-    border-color: #007DA3; /* NEW Xylem blue */
-    box-shadow: 0 2px 5px rgba(0, 125, 163, 0.3); /* Shadow with new blue */
+    border-color: #007DA3;
+    box-shadow: 0 2px 5px rgba(0, 125, 163, 0.3);
 }
 
 .radio-group label:hover {
-    background-color: #CCE7EF; /* Lighter shade of new blue on hover */
+    background-color: #CCE7EF;
 }
 
 
@@ -166,12 +165,12 @@ h2 {
     border-radius: 5px;
     font-size: 1em;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    box-sizing: border-box; /* Ensures padding is included in the width */
+    box-sizing: border-box;
 }
 
 .input-group input[type="number"]:focus {
-    border-color: #007DA3; /* NEW Xylem blue */
-    box-shadow: 0 0 0 0.2rem rgba(0, 125, 163, 0.25); /* Shadow with new blue */
+    border-color: #007DA3;
+    box-shadow: 0 0 0 0.2rem rgba(0, 125, 163, 0.25);
     outline: none;
 }
 
@@ -193,26 +192,26 @@ h2 {
     display: block;
     width: 100%;
     padding: 15px 25px;
-    background-color: #61D604; /* NEW specified green */
+    background-color: #61D604;
     color: white;
     border: none;
-    border-radius: 5px; /* Shared border-radius */
+    border-radius: 5px;
     font-size: 1.2em;
     font-weight: 700;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
     margin-top: 20px;
     margin-bottom: 30px;
-    box-shadow: 0 4px 10px rgba(97, 214, 4, 0.25); /* Shadow with new green */
+    box-shadow: 0 4px 10px rgba(97, 214, 4, 0.25);
 }
 
 #calculateButton:hover {
-    background-color: #55b803; /* Darker shade of new green on hover */
+    background-color: #55b803;
     transform: translateY(-2px);
 }
 
 #calculateButton:active {
-    background-color: #4a9f03; /* Even darker shade for active click */
+    background-color: #4a9f03;
     transform: translateY(0);
 }
 
@@ -234,18 +233,18 @@ h2 {
 }
 
 .results-table th {
-    background-color: #007DA3; /* NEW Xylem blue */
+    background-color: #007DA3;
     color: white;
     font-weight: 600;
     text-transform: uppercase;
 }
 
 .results-table tbody tr:nth-child(even) {
-    background-color: #f8f9fa; /* Light stripe for readability */
+    background-color: #f8f9fa;
 }
 
 .results-table tbody tr:hover {
-    background-color: #e9f5ff; /* Subtle hover effect - using a very light tint of the new blue */
+    background-color: #e9f5ff;
 }
 
 .select-column {
@@ -263,11 +262,36 @@ h2 {
     font-weight: 700;
 }
 
+/* --- NEW DOWNLOADS SECTION STYLING --- */
+.downloads-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.download-link {
+    background-color: #e9ecef;
+    color: #343a40;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    border: 1px solid #ced4da;
+    transition: background-color 0.3s, color 0.3s, transform 0.2s;
+}
+
+.download-link:hover {
+    background-color: #007DA3;
+    color: #ffffff;
+    border-color: #007DA3;
+    transform: translateY(-2px);
+}
 
 /* No Results Message */
 .no-results {
     text-align: center;
-    color: #dc3545; /* Red for error/no results */
+    color: #dc3545;
     font-size: 1.1em;
     margin-top: 20px;
     padding: 15px;
@@ -278,7 +302,7 @@ h2 {
 
 /* Footer Styling */
 footer {
-    background-color: #343a40; /* Dark grey footer */
+    background-color: #343a40;
     color: #ffffff;
     text-align: center;
     padding: 15px 0;
@@ -288,7 +312,7 @@ footer {
 /* Responsive Adjustments */
 @media (max-width: 1024px) {
     .main-nav {
-        display: none; /* Hide navigation links on smaller screens */
+        display: none;
     }
 }
 
@@ -326,15 +350,15 @@ footer {
         border: none;
         border-bottom: 1px solid #eee;
         position: relative;
-        padding-left: 50%; /* Space for the pseudo-element label */
+        padding-left: 50%;
         text-align: right;
-        min-height: 24px; /* Ensure cells have height */
+        min-height: 24px;
     }
     
     .results-table td.select-column {
         display: flex;
         align-items: center;
-        justify-content: flex-end; /* Aligns radio button with other values */
+        justify-content: flex-end;
     }
 
     .results-table td:last-child {
