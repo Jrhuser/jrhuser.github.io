@@ -1,563 +1,249 @@
-[
-  {
-    "Model":"LCS120",
-    "Filter Type":"Separator",
-    "Application":"Side stream",
-    "hp":3.0,
-    "Flow Rate":120,
-    "Min Recirc Rate (gpm)":0.0,
-    "Max Recirc Rate (gpm)":600.0,
-    "Tonnage Min":0.0,
-    "Tonnage Max":200.0,
-    "Loop Min (gallons)":null,
-    "Loop Max (gallons)":null,
-    "Electrical Usage":19604.88,
-    "DP (PSI)":null,
-    "Filtration":"High density particles greater than 70 micron",
-    "Description":"VHS-120 Hydrocyclone Separator, 3HP bronze fitted DPPE pump, 460VAC\/3PH\/60Hz NEMA 4X basic pump starter with green power available light, 2\u201d Auto-purge valve, outlet throttle bronze gate valve, SCH80 PVC piping.  Mounted, wired, plumbed and tested on a 304SS formed base."
-  },
-  {
-    "Model":"LCS180",
-    "Filter Type":"Separator",
-    "Application":"Side stream",
-    "hp":5.0,
-    "Flow Rate":180,
-    "Min Recirc Rate (gpm)":601.0,
-    "Max Recirc Rate (gpm)":900.0,
-    "Tonnage Min":201.0,
-    "Tonnage Max":300.0,
-    "Loop Min (gallons)":null,
-    "Loop Max (gallons)":null,
-    "Electrical Usage":32674.8,
-    "DP (PSI)":null,
-    "Filtration":"High density particles greater than 70 micron",
-    "Description":"VHS-180 Hydrocyclone Separator, 5HP bronze fitted DPPE pump, 460VAC\/3PH\/60Hz NEMA 4X basic pump starter with green power available light, 2\u201d Auto-purge valve, outlet throttle bronze gate valve, SCH80 PVC piping.  Mounted, wired, plumbed and tested on a 304SS formed base."
-  },
-  {
-    "Model":"LCS260",
-    "Filter Type":"Separator",
-    "Application":"Side stream",
-    "hp":7.5,
-    "Flow Rate":260,
-    "Min Recirc Rate (gpm)":901.0,
-    "Max Recirc Rate (gpm)":1300.0,
-    "Tonnage Min":301.0,
-    "Tonnage Max":433.3333333333,
-    "Loop Min (gallons)":null,
-    "Loop Max (gallons)":null,
-    "Electrical Usage":49012.2,
-    "DP (PSI)":null,
-    "Filtration":"High density particles greater than 70 micron",
-    "Description":"VHS-260 Hydrocyclone Separator, 7.5HP bronze fitted DPPE pump, 460VAC\/3PH\/60Hz NEMA 4X basic pump starter with green power available light, 2\u201d Auto-purge valve, outlet throttle bronze gate valve, SCH80 PVC piping.  Mounted, wired, plumbed and tested on a 304SS formed base."
-  },
-  {
-    "Model":"LCS340",
-    "Filter Type":"Separator",
-    "Application":"Side stream",
-    "hp":7.5,
-    "Flow Rate":340,
-    "Min Recirc Rate (gpm)":1301.0,
-    "Max Recirc Rate (gpm)":1700.0,
-    "Tonnage Min":434.3333333333,
-    "Tonnage Max":566.6666666667,
-    "Loop Min (gallons)":null,
-    "Loop Max (gallons)":null,
-    "Electrical Usage":49012.2,
-    "DP (PSI)":null,
-    "Filtration":"High density particles greater than 70 micron",
-    "Description":"VHS-340 Hydrocyclone Separator, 7.5HP bronze fitted DPPE pump, 460VAC\/3PH\/60Hz NEMA 4X basic pump starter with green power available light, 2\u201d Auto-purge valve, outlet throttle bronze gate valve, SCH80 PVC piping.  Mounted, wired, plumbed and tested on a 304SS formed base."
-  },
-  {
-    "Model":"CTS400",
-    "Filter Type":"Separator",
-    "Application":"Side stream",
-    "hp":15.0,
-    "Flow Rate":400,
-    "Min Recirc Rate (gpm)":1701.0,
-    "Max Recirc Rate (gpm)":2000.0,
-    "Tonnage Min":567.6666666667,
-    "Tonnage Max":666.6666666667,
-    "Loop Min (gallons)":null,
-    "Loop Max (gallons)":null,
-    "Electrical Usage":98024.4,
-    "DP (PSI)":null,
-    "Filtration":"High density particles greater than 70 micron",
-    "Description":"VHS-400A Hydrocyclone Separator, 15HP bronze fitted DPPE pump, 460VAC\/3PH\/60Hz NEMA 4X basic pump starter with green power available light, 2\u201d Auto-purge valve, outlet throttle bronze gate valve, SCH80 PVC piping.  Mounted, wired, plumbed and tested on a polyurethane coated channel frame base."
-  },
-  {
-    "Model":"CTS700",
-    "Filter Type":"Separator",
-    "Application":"Side stream",
-    "hp":20.0,
-    "Flow Rate":700,
-    "Min Recirc Rate (gpm)":2001.0,
-    "Max Recirc Rate (gpm)":3500.0,
-    "Tonnage Min":667.6666666667,
-    "Tonnage Max":1166.6666666667,
-    "Loop Min (gallons)":null,
-    "Loop Max (gallons)":null,
-    "Electrical Usage":130699.2,
-    "DP (PSI)":null,
-    "Filtration":"High density particles greater than 70 micron",
-    "Description":"VHS-700A Hydrocyclone Separator, 20HP bronze fitted DPPE pump, 460VAC\/3PH\/60Hz NEMA 4X basic pump starter with green power available light, 2\u201d Auto-purge valve, outlet throttle bronze gate valve, SCH80 PVC piping.  Mounted, wired, plumbed and tested on a polyurethane coated channel frame base."
-  },
-  {
-    "Model":"CTS950",
-    "Filter Type":"Separator",
-    "Application":"Side stream",
-    "hp":20.0,
-    "Flow Rate":950,
-    "Min Recirc Rate (gpm)":3501.0,
-    "Max Recirc Rate (gpm)":4750.0,
-    "Tonnage Min":1167.6666666667,
-    "Tonnage Max":1583.3333333333,
-    "Loop Min (gallons)":null,
-    "Loop Max (gallons)":null,
-    "Electrical Usage":130699.2,
-    "DP (PSI)":null,
-    "Filtration":"High density particles greater than 70 micron",
-    "Description":"VHS-950A Hydrocyclone Separator, 20HP bronze fitted DPPE pump, 460VAC\/3PH\/60Hz NEMA 4X basic pump starter with green power available light, 2\u201d Auto-purge valve, outlet throttle bronze gate valve, SCH80 PVC piping.  Mounted, wired, plumbed and tested on a polyurethane coated channel frame base."
-  },
-  {
-    "Model":"CTS1600",
-    "Filter Type":"Separator",
-    "Application":"Side stream",
-    "hp":60.0,
-    "Flow Rate":1600,
-    "Min Recirc Rate (gpm)":4751.0,
-    "Max Recirc Rate (gpm)":8000.0,
-    "Tonnage Min":1584.3333333333,
-    "Tonnage Max":2666.6666666667,
-    "Loop Min (gallons)":null,
-    "Loop Max (gallons)":null,
-    "Electrical Usage":392097.6,
-    "DP (PSI)":null,
-    "Filtration":"High density particles greater than 70 micron",
-    "Description":"VHS-1600A Hydrocyclone Separator, 60HP bronze fitted DPPE pump, 460VAC\/3PH\/60Hz NEMA 4X basic pump starter with green power available light, 2\u201d Auto-purge valve, outlet throttle bronze gate valve, SCH80 PVC piping.  Mounted, wired, plumbed and tested on a polyurethane coated channel frame base."
-  },
-  {
-    "Model":"CTS2300",
-    "Filter Type":"Separator",
-    "Application":"Side stream",
-    "hp":60.0,
-    "Flow Rate":2300,
-    "Min Recirc Rate (gpm)":8001.0,
-    "Max Recirc Rate (gpm)":11500.0,
-    "Tonnage Min":2667.6666666667,
-    "Tonnage Max":3833.3333333333,
-    "Loop Min (gallons)":null,
-    "Loop Max (gallons)":null,
-    "Electrical Usage":392097.6,
-    "DP (PSI)":null,
-    "Filtration":"High density particles greater than 70 micron",
-    "Description":" VHS-2300A Hydrocyclone Separator, 60HP bronze fitted DPPE pump, 460VAC\/3PH\/60Hz NEMA 4X basic pump starter with green power available light, 2\u201d Auto-purge valve, outlet throttle bronze gate valve, SCH80 PVC piping.  Mounted, wired, plumbed and tested on a polyurethane coated channel frame base."
-  },
-  {
-    "Model":"CTS3400",
-    "Filter Type":"Separator",
-    "Application":"Side stream",
-    "hp":100.0,
-    "Flow Rate":3400,
-    "Min Recirc Rate (gpm)":11501.0,
-    "Max Recirc Rate (gpm)":17000.0,
-    "Tonnage Min":3834.3333333333,
-    "Tonnage Max":5666.6666666667,
-    "Loop Min (gallons)":null,
-    "Loop Max (gallons)":null,
-    "Electrical Usage":653496.0,
-    "DP (PSI)":null,
-    "Filtration":"High density particles greater than 70 micron",
-    "Description":"VHS-3400A Hydrocyclone Separator, 100HP bronze fitted DPPE pump, 460VAC\/3PH\/60Hz NEMA 4X basic pump starter with green power available light, 2\u201d Auto-purge valve, outlet throttle bronze gate valve, SCH80 PVC piping.  Mounted, wired, plumbed and tested on a polyurethane coated channel frame base."
-  },
-  {
-    "Model":"(2) CTS2300",
-    "Filter Type":"Separator",
-    "Application":"Side stream",
-    "hp":120.0,
-    "Flow Rate":4600,
-    "Min Recirc Rate (gpm)":17001.0,
-    "Max Recirc Rate (gpm)":23000.0,
-    "Tonnage Min":5668.0,
-    "Tonnage Max":7667.0,
-    "Loop Min (gallons)":null,
-    "Loop Max (gallons)":null,
-    "Electrical Usage":784195.2,
-    "DP (PSI)":null,
-    "Filtration":"High density particles greater than 70 micron",
-    "Description":"Quantity (2) - VHS-2300A Hydrocyclone Separator, 60HP bronze fitted DPPE pump, 460VAC\/3PH\/60Hz NEMA 4X basic pump starter with green power available light, 2\u201d Auto-purge valve, outlet throttle bronze gate valve, SCH80 PVC piping.  Mounted, wired, plumbed and tested on a polyurethane coated channel frame base."
-  },
-  {
-    "Model":"(2) CTS3400",
-    "Filter Type":"Separator",
-    "Application":"Side stream",
-    "hp":200.0,
-    "Flow Rate":9200,
-    "Min Recirc Rate (gpm)":23001.0,
-    "Max Recirc Rate (gpm)":34000.0,
-    "Tonnage Min":5668.0,
-    "Tonnage Max":11334.0,
-    "Loop Min (gallons)":null,
-    "Loop Max (gallons)":null,
-    "Electrical Usage":1306992.0,
-    "DP (PSI)":null,
-    "Filtration":"High density particles greater than 70 micron",
-    "Description":"Quantity (2) - VHS-2300A Hydrocyclone Separator, 60HP bronze fitted DPPE pump, 460VAC\/3PH\/60Hz NEMA 4X basic pump starter with green power available light, 2\u201d Auto-purge valve, outlet throttle bronze gate valve, SCH80 PVC piping.  Mounted, wired, plumbed and tested on a polyurethane coated channel frame base."
-  },
-  {
-    "Model":"Multiple Units",
-    "Filter Type":"Separator",
-    "Application":"Side stream",
-    "hp":201.0,
-    "Flow Rate":9201,
-    "Min Recirc Rate (gpm)":34001.0,
-    "Max Recirc Rate (gpm)":1000000.0,
-    "Tonnage Min":11335.0,
-    "Tonnage Max":333333.0,
-    "Loop Min (gallons)":null,
-    "Loop Max (gallons)":null,
-    "Electrical Usage":1313526.96,
-    "DP (PSI)":null,
-    "Filtration":"High density particles greater than 70 micron",
-    "Description":"Divide Total Recirc or Tonnage into even increments and run calculator assuming multiple units"
-  },
-  {
-    "Model":"CTF200",
-    "Filter Type":"VAF",
-    "Application":"Side stream",
-    "hp":5.0,
-    "Flow Rate":100,
-    "Min Recirc Rate (gpm)":0.0,
-    "Max Recirc Rate (gpm)":2000.0,
-    "Tonnage Min":0.0,
-    "Tonnage Max":666.6666666667,
-    "Loop Min (gallons)":null,
-    "Loop Max (gallons)":null,
-    "Electrical Usage":32674.8,
-    "DP (PSI)":null,
-    "Filtration":"All particles greater than 50 micron",
-    "Description":"V200PA Self-Cleaning Screen Filter, 50 micron screen (25 micron optional), 140gpm Pump, 460VAC\/3PH\/60Hz NEMA 4X basic pump starter with green power available light, Aquamatic 1.5\" NPT Spring Assist w\/ ASCO 24vac Solenoid, NEMA 3S MF 4 station AC 120\/220VAC 1PH with DP gage\/switch, setpoint of 6-8 psid, 24VAC steady Output, V42 Series cast Iron diaphragm valve, 1\/4\" NPT drill-tap of ports 1 & 3."
-  },
-  {
-    "Model":"CTF250",
-    "Filter Type":"VAF",
-    "Application":"Side stream",
-    "hp":7.5,
-    "Flow Rate":150,
-    "Min Recirc Rate (gpm)":2001.0,
-    "Max Recirc Rate (gpm)":3000.0,
-    "Tonnage Min":667.6666666667,
-    "Tonnage Max":1000.0,
-    "Loop Min (gallons)":null,
-    "Loop Max (gallons)":null,
-    "Electrical Usage":49012.2,
-    "DP (PSI)":null,
-    "Filtration":"All particles greater than 50 micron",
-    "Description":"V250 Self-Cleaning Screen Filter, 50 micron screen (25 micron optional), e-svx integrated vfd pump, Aquamatic 1.5\" NPT Spring Assist w\/ ASCO 24vac Solenoid, NEMA 3S MF 4 station AC 120\/220VAC 1PH with DP gage\/switch, setpoint of 6-8 psid, 24VAC steady Output, V42 Series cast Iron diaphragm valve, 1\/4\" NPT drill-tap of ports 1 & 3."
-  },
-  {
-    "Model":"CTF500",
-    "Filter Type":"VAF",
-    "Application":"Side stream",
-    "hp":15.0,
-    "Flow Rate":300,
-    "Min Recirc Rate (gpm)":3001.0,
-    "Max Recirc Rate (gpm)":6000.0,
-    "Tonnage Min":1001.0,
-    "Tonnage Max":2000.0,
-    "Loop Min (gallons)":null,
-    "Loop Max (gallons)":null,
-    "Electrical Usage":98024.4,
-    "DP (PSI)":null,
-    "Filtration":"All particles greater than 50 micron",
-    "Description":"V500 Self-Cleaning Screen Filter, 50 micron screen (25 micron optional), 360gpm Pump, 460VAC\/3PH\/60Hz NEMA 4X basic pump starter with green power available light, Aquamatic 1.5\" NPT Spring Assist w\/ ASCO 24vac Solenoid, NEMA 3S MF 4 station AC 120\/220VAC 1PH with DP gage\/switch, setpoint of 6-8 psid, 24VAC steady Output, V42 Series cast Iron diaphragm valve, 1\/4\" NPT drill-tap of ports 1 & 3."
-  },
-  {
-    "Model":"CTF1000",
-    "Filter Type":"VAF",
-    "Application":"Side stream",
-    "hp":30.0,
-    "Flow Rate":700,
-    "Min Recirc Rate (gpm)":6001.0,
-    "Max Recirc Rate (gpm)":14000.0,
-    "Tonnage Min":2001.0,
-    "Tonnage Max":4666.6666666667,
-    "Loop Min (gallons)":null,
-    "Loop Max (gallons)":null,
-    "Electrical Usage":196048.8,
-    "DP (PSI)":null,
-    "Filtration":"All particles greater than 50 micron",
-    "Description":"V1000 Self-Cleaning Screen Filter, 50 micron screen (25 micron optional), 700gpm Pump, 460VAC\/3PH\/60Hz NEMA 4X basic pump starter with green power available light, Aquamatic 1.5\" NPT Spring Assist w\/ ASCO 24vac Solenoid, NEMA 3S MF 4 station AC 120\/220VAC 1PH with DP gage\/switch, setpoint of 6-8 psid, 24VAC steady Output, V42 Series cast Iron diaphragm valve, 1\/4\" NPT drill-tap of ports 1 & 3."
-  },
-  {
-    "Model":"CTF1500",
-    "Filter Type":"VAF",
-    "Application":"Side stream",
-    "hp":50.0,
-    "Flow Rate":1100,
-    "Min Recirc Rate (gpm)":14001.0,
-    "Max Recirc Rate (gpm)":22000.0,
-    "Tonnage Min":4667.6666666667,
-    "Tonnage Max":7333.3333333333,
-    "Loop Min (gallons)":null,
-    "Loop Max (gallons)":null,
-    "Electrical Usage":326748.0,
-    "DP (PSI)":null,
-    "Filtration":"All particles greater than 50 micron",
-    "Description":"V1500 Self-Cleaning Screen Filter, 50 micron screen (25 micron optional), 1050gpm Pump, 460VAC\/3PH\/60Hz NEMA 4X basic pump starter with green power available light, Aquamatic 1.5\" NPT Spring Assist w\/ ASCO 24vac Solenoid, NEMA 3S MF 4 station AC 120\/220VAC 1PH with DP gage\/switch, setpoint of 6-8 psid, 24VAC steady Output, V42 Series cast Iron diaphragm valve, 1\/4\" NPT drill-tap of ports 1 & 3."
-  },
-  {
-    "Model":"(2) CTF1000",
-    "Filter Type":"VAF",
-    "Application":"Side stream",
-    "hp":60.0,
-    "Flow Rate":1400,
-    "Min Recirc Rate (gpm)":22001.0,
-    "Max Recirc Rate (gpm)":28000.0,
-    "Tonnage Min":7734.0,
-    "Tonnage Max":9334.0,
-    "Loop Min (gallons)":null,
-    "Loop Max (gallons)":null,
-    "Electrical Usage":392097.6,
-    "DP (PSI)":null,
-    "Filtration":"All particles greater than 50 micron",
-    "Description":"Quantity (2) - V1000 Self-Cleaning Screen Filter, 25 micron screen, 700gpm Pump, 460VAC\/3PH\/60Hz NEMA 4X basic pump starter with green power available light, Aquamatic 1.5\" NPT Spring Assist w\/ ASCO 24vac Solenoid, NEMA 3S MF 4 station AC 120\/220VAC 1PH with DP gage\/switch, setpoint of 6-8 psid, 24VAC steady Output, V42 Series cast Iron diaphragm valve, 1\/4\" NPT drill-tap of ports 1 & 3."
-  },
-  {
-    "Model":"(2) CTF1500",
-    "Filter Type":"VAF",
-    "Application":"Side stream",
-    "hp":100.0,
-    "Flow Rate":2200,
-    "Min Recirc Rate (gpm)":28001.0,
-    "Max Recirc Rate (gpm)":44000.0,
-    "Tonnage Min":9335.0,
-    "Tonnage Max":14666.6666666667,
-    "Loop Min (gallons)":null,
-    "Loop Max (gallons)":null,
-    "Electrical Usage":653496.0,
-    "DP (PSI)":null,
-    "Filtration":"All particles greater than 50 micron",
-    "Description":"Quantity (2) - V1500 Self-Cleaning Screen Filter, 25 micron screen, 1050gpm Pump, 460VAC\/3PH\/60Hz NEMA 4X basic pump starter with green power available light, Aquamatic 1.5\" NPT Spring Assist w\/ ASCO 24vac Solenoid, NEMA 3S MF 4 station AC 120\/220VAC 1PH with DP gage\/switch, setpoint of 6-8 psid, 24VAC steady Output, V42 Series cast Iron diaphragm valve, 1\/4\" NPT drill-tap of ports 1 & 3."
-  },
-  {
-    "Model":"Multiple Units",
-    "Filter Type":"VAF",
-    "Application":"Side stream",
-    "hp":101.0,
-    "Flow Rate":2201,
-    "Min Recirc Rate (gpm)":44001.0,
-    "Max Recirc Rate (gpm)":1000000.0,
-    "Tonnage Min":14668.0,
-    "Tonnage Max":333333.3333333333,
-    "Loop Min (gallons)":null,
-    "Loop Max (gallons)":null,
-    "Electrical Usage":660030.96,
-    "DP (PSI)":null,
-    "Filtration":"All particles greater than 50 micron",
-    "Description":"Divide Total Recirc or Tonnage into even increments and run calculator assuming multiple units"
-  },
-  {
-    "Model":"VC50",
-    "Filter Type":"Vortisand",
-    "Application":"Side stream",
-    "hp":1.5,
-    "Flow Rate":50,
-    "Min Recirc Rate (gpm)":0.0,
-    "Max Recirc Rate (gpm)":5000.0,
-    "Tonnage Min":0.0,
-    "Tonnage Max":1666.6666666667,
-    "Loop Min (gallons)":0.0,
-    "Loop Max (gallons)":190000.0,
-    "Electrical Usage":9802.44,
-    "DP (PSI)":null,
-    "Filtration":"All particles greater than 0.5 micron",
-    "Description":"Vortisand VC-50 filter, Filtration capacity 50 gpm,  1.5 HP Filter feed pump included, Filtered or city water used for backwash: 22 gpm, System shall be shipped in two parts (the vessel and the structural steel skid, urethane painted), Media shall be shipped separately, Stainless Steel 304 vessel with ASME, Sec. VIII Div.1, Backwash booster pump is not included, PVC Sch. 80 face piping, PLC included: PLC \/w Touchscreen HMI, Metering pump option."
-  },
-  {
-    "Model":"VC75",
-    "Filter Type":"Vortisand",
-    "Application":"Side stream",
-    "hp":1.5,
-    "Flow Rate":75,
-    "Min Recirc Rate (gpm)":5001.0,
-    "Max Recirc Rate (gpm)":7500.0,
-    "Tonnage Min":1667.6666666667,
-    "Tonnage Max":2500.0,
-    "Loop Min (gallons)":190001.0,
-    "Loop Max (gallons)":285000.0,
-    "Electrical Usage":9802.44,
-    "DP (PSI)":null,
-    "Filtration":"All particles greater than 0.5 micron",
-    "Description":"Vortisand VC-75 filter, Filtration capacity 75 gpm,  1.5 HP Filter feed pump included, Filtered or city water used for backwash: 35 gpm, System shall be shipped in two parts (the vessel and the structural steel skid, urethane painted), Media shall be shipped separately, Stainless Steel 304 vessel with ASME, Sec. VIII Div.1, Backwash booster pump is not included, PVC Sch. 80 face piping, PLC included: PLC \/w Touchscreen HMI, Metering pump option."
-  },
-  {
-    "Model":"VC100",
-    "Filter Type":"Vortisand",
-    "Application":"Side stream",
-    "hp":3.0,
-    "Flow Rate":100,
-    "Min Recirc Rate (gpm)":7501.0,
-    "Max Recirc Rate (gpm)":10000.0,
-    "Tonnage Min":2501.0,
-    "Tonnage Max":3333.3333333333,
-    "Loop Min (gallons)":285001.0,
-    "Loop Max (gallons)":380000.0,
-    "Electrical Usage":19604.88,
-    "DP (PSI)":null,
-    "Filtration":"All particles greater than 0.5 micron",
-    "Description":"Vortisand VC-100 filter, Filtration capacity 100 gpm,  2.0 HP Filter feed pump included, Filtered or city water used for backwash: 50 gpm, System shall be shipped in two parts (the vessel and the structural steel skid, urethane painted), Media shall be shipped separately, Stainless Steel 304 vessel with ASME, Sec. VIII Div.1, Backwash booster pump is not included, PVC Sch. 80 face piping, PLC included: PLC \/w Touchscreen HMI, Metering pump option."
-  },
-  {
-    "Model":"VC140",
-    "Filter Type":"Vortisand",
-    "Application":"Side stream",
-    "hp":3.0,
-    "Flow Rate":140,
-    "Min Recirc Rate (gpm)":10001.0,
-    "Max Recirc Rate (gpm)":14000.0,
-    "Tonnage Min":3334.3333333333,
-    "Tonnage Max":4666.6666666667,
-    "Loop Min (gallons)":380001.0,
-    "Loop Max (gallons)":532000.0,
-    "Electrical Usage":19604.88,
-    "DP (PSI)":null,
-    "Filtration":"All particles greater than 0.5 micron",
-    "Description":"Vortisand VC-140 filter, Filtration capacity 140 gpm,  3.0 HP Filter feed pump included, Filtered or city water used for backwash: 50 gpm, System shall be shipped in two parts (the vessel and the structural steel skid, urethane painted), Media shall be shipped separately, Stainless Steel 304 vessel with ASME, Sec. VIII Div.1, Backwash booster pump is not included, PVC Sch. 80 face piping, PLC included: PLC \/w Touchscreen HMI, Metering pump option."
-  },
-  {
-    "Model":"VC200",
-    "Filter Type":"Vortisand",
-    "Application":"Side stream",
-    "hp":5.0,
-    "Flow Rate":200,
-    "Min Recirc Rate (gpm)":14001.0,
-    "Max Recirc Rate (gpm)":20000.0,
-    "Tonnage Min":4667.6666666667,
-    "Tonnage Max":6666.6666666667,
-    "Loop Min (gallons)":532001.0,
-    "Loop Max (gallons)":760000.0,
-    "Electrical Usage":32674.8,
-    "DP (PSI)":null,
-    "Filtration":"All particles greater than 0.5 micron",
-    "Description":"Vortisand VC-200 filter, Filtration capacity 200 gpm,  5.0 HP Filter feed pump included, Filtered or city water used for backwash: 100 gpm, System shall be shipped in two parts (the vessel and the structural steel skid, urethane painted), Media shall be shipped separately, Stainless Steel 304 vessel with ASME, Sec. VIII Div.1, Backwash booster pump is not included, PVC Sch. 80 face piping, PLC included: PLC \/w Touchscreen HMI, Metering pump option."
-  },
-  {
-    "Model":"VC350",
-    "Filter Type":"Vortisand",
-    "Application":"Side stream",
-    "hp":10.0,
-    "Flow Rate":350,
-    "Min Recirc Rate (gpm)":20001.0,
-    "Max Recirc Rate (gpm)":35000.0,
-    "Tonnage Min":6668.0,
-    "Tonnage Max":11666.6666666667,
-    "Loop Min (gallons)":760001.0,
-    "Loop Max (gallons)":1330000.0,
-    "Electrical Usage":65349.6,
-    "DP (PSI)":null,
-    "Filtration":"All particles greater than 0.5 micron",
-    "Description":"Vortisand VC-350 filter, Filtration capacity 350 gpm,  10 HP Filter feed pump included, Filtered or city water used for backwash: 100 gpm, System shall be shipped in two parts (the vessel and the structural steel skid, urethane painted), Media shall be shipped separately, Stainless Steel 304 vessel with ASME, Sec. VIII Div.1, Backwash booster pump is not included, PVC Sch. 80 face piping, PLC included: PLC \/w Touchscreen HMI, Metering pump option."
-  },
-  {
-    "Model":"VC600",
-    "Filter Type":"Vortisand",
-    "Application":"Side stream",
-    "hp":15.0,
-    "Flow Rate":600,
-    "Min Recirc Rate (gpm)":35001.0,
-    "Max Recirc Rate (gpm)":60000.0,
-    "Tonnage Min":11667.6666666667,
-    "Tonnage Max":20000.0,
-    "Loop Min (gallons)":1330001.0,
-    "Loop Max (gallons)":2280000.0,
-    "Electrical Usage":98024.4,
-    "DP (PSI)":null,
-    "Filtration":"All particles greater than 0.5 micron",
-    "Description":"Vortisand VC-600 filter, Filtration capacity 600 gpm,  15 HP Filter feed pump included, Filtered or city water used for backwash: 300 gpm, System shall be shipped in two parts (the vessel and the structural steel skid, urethane painted), Media shall be shipped separately, Stainless Steel 304 vessel with ASME, Sec. VIII Div.1, Backwash booster pump is not included, PVC Sch. 80 face piping, PLC included: PLC \/w Touchscreen HMI, Metering pump option."
-  },
-  {
-    "Model":"V250-04",
-    "Filter Type":"VAF",
-    "Application":"Technology Cooling Filtration",
-    "hp":null,
-    "Flow Rate":353,
-    "Min Recirc Rate (gpm)":null,
-    "Max Recirc Rate (gpm)":null,
-    "Tonnage Min":null,
-    "Tonnage Max":null,
-    "Loop Min (gallons)":null,
-    "Loop Max (gallons)":null,
-    "Electrical Usage":null,
-    "DP (PSI)":"< 1",
-    "Filtration":"25 or 50 Micron",
-    "Description":"V-250-4 Automatic Filter; 4\" in\/outlet AWWA Class D Flanges; with StSt\nlower bulkhead, 316L StSt body; w\/o screen; 150 psi @ 176 deg. F rated;\nInternal parts: 316 StSt, CPVC, Acetyl, Glass Reinforced Nylon."
-  },
-  {
-    "Model":"V500-06",
-    "Filter Type":"VAF",
-    "Application":"Technology Cooling Filtration",
-    "hp":null,
-    "Flow Rate":794,
-    "Min Recirc Rate (gpm)":null,
-    "Max Recirc Rate (gpm)":null,
-    "Tonnage Min":null,
-    "Tonnage Max":null,
-    "Loop Min (gallons)":null,
-    "Loop Max (gallons)":null,
-    "Electrical Usage":null,
-    "DP (PSI)":"<1",
-    "Filtration":"25 or 50 Micron",
-    "Description":"V-500-6 Automatic Filter; 6\" in\/outlet AWWA Class D Flanges; with StSt\nlower bulkhead; 316L StSt body; w\/o screen; 150 psi @ 176 deg. F rated;\nInternal parts: 316 StSt, CPVC, Acetyl, Glass Reinforced Nylon."
-  },
-  {
-    "Model":"V1000-08",
-    "Filter Type":"VAF",
-    "Application":"Technology Cooling Filtration",
-    "hp":null,
-    "Flow Rate":1413,
-    "Min Recirc Rate (gpm)":null,
-    "Max Recirc Rate (gpm)":null,
-    "Tonnage Min":null,
-    "Tonnage Max":null,
-    "Loop Min (gallons)":null,
-    "Loop Max (gallons)":null,
-    "Electrical Usage":null,
-    "DP (PSI)":"< 1 ",
-    "Filtration":"25 or 50 Micron",
-    "Description":"V-1000NB-8 Automatic Filter; 8\" in\/outlet AWWA Class D Flanges; 316L\nStSt body; w\/o screen; 150 psi @ 176 deg. F rated; Internal\nnal parts: 316 StSt, CPVC, Acetyl, Glass Reinforced Nylon.\nstyle."
-  },
-  {
-    "Model":"V1500-10",
-    "Filter Type":"VAF",
-    "Application":"Technology Cooling Filtration",
-    "hp":null,
-    "Flow Rate":2160,
-    "Min Recirc Rate (gpm)":null,
-    "Max Recirc Rate (gpm)":null,
-    "Tonnage Min":null,
-    "Tonnage Max":null,
-    "Loop Min (gallons)":null,
-    "Loop Max (gallons)":null,
-    "Electrical Usage":null,
-    "DP (PSI)":"< 1",
-    "Filtration":"25 or 50 Micron",
-    "Description":"V-1500-10 Automatic Filter; 10\" in\/outlet, AWWA Class D StSt Flanges;\n316L StSt body; w\/o screen; 150 psi @ 176 deg. F rated;\nInternal parts: 316 StSt, CPVC, Acetyl, Glass Reinforced Nylon"
-  },
-  {
-    "Model":"V2000-12",
-    "Filter Type":"VAF",
-    "Application":"Technology Cooling Filtration",
-    "hp":null,
-    "Flow Rate":3900,
-    "Min Recirc Rate (gpm)":null,
-    "Max Recirc Rate (gpm)":null,
-    "Tonnage Min":null,
-    "Tonnage Max":null,
-    "Loop Min (gallons)":null,
-    "Loop Max (gallons)":null,
-    "Electrical Usage":null,
-    "DP (PSI)":"< 1",
-    "Filtration":"25 or 50 Micron",
-    "Description":"V-2000H-12 Automatic Filter; 12\" in\/outlet, AWWA Class D Flanges; 316L\nStSt body; w\/o screen; 150 psi @ 176 deg. F rated; Internal parts: 316\nStSt, CPVC, Acetyl, Glass Reinforced Nylon."
-  }
-]
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("DOM fully loaded and parsed - using script with conditional cost section.");
+
+    // --- Element Selection ---
+    const radioOpen = document.getElementById('radioOpen');
+    const radioClosed = document.getElementById('radioClosed');
+    const radioTech = document.getElementById('radioTech');
+    const openSystemInputs = document.getElementById('openSystemInputs');
+    const closedSystemInputs = document.getElementById('closedSystemInputs');
+    const techSystemInputs = document.getElementById('techSystemInputs');
+    const electricalCostSection = document.getElementById('electricalCostSection');
+    const calculateButton = document.getElementById('calculateButton');
+    const resultsSection = document.getElementById('resultsSection');
+    const noResultsMessage = document.getElementById('noResultsMessage');
+
+    const recircRateInput = document.getElementById('recircRate');
+    const tonnageInput = document.getElementById('tonnage');
+    const closedSystemVolumeInput = document.getElementById('closedSystemVolume');
+    const techFlowRateInput = document.getElementById('techFlowRate');
+    
+    const electricalCostInput = document.getElementById('electricalCost');
+    const hoursPerDayInput = document.getElementById('hoursPerDay');
+    const daysPerYearInput = document.getElementById('daysPerYear');
+
+
+    let database = [];
+
+    async function loadDatabase() {
+        try {
+            const response = await fetch('selection-database.json');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const jsonData = await response.json();
+
+            database = jsonData.map(row => {
+                if (!row.Model) return null;
+                const newRow = { ...row };
+                
+                newRow.hp = parseFloat(row.hp);
+                newRow['Flow Rate'] = parseFloat(row['Flow Rate']);
+                newRow['Min Recirc Rate (gpm)'] = parseFloat(row['Min Recirc Rate (gpm)']);
+                newRow['Max Recirc Rate (gpm)'] = parseFloat(row['Max Recirc Rate (gpm)']);
+                newRow['Tonnage Min'] = parseFloat(row['Tonnage Min']);
+                newRow['Tonnage Max'] = parseFloat(row['Tonnage Max']);
+                newRow['Loop Min (gallons)'] = parseFloat(row['Loop Min (gallons)']);
+                newRow['Loop Max (gallons)'] = parseFloat(row['Loop Max (gallons)']);
+                newRow['Electrical Usage'] = parseFloat(row['Electrical Usage']);
+
+                return newRow;
+            }).filter(row => row !== null);
+
+            console.log("Database successfully loaded and processed.");
+            if (database.length === 0) {
+                 throw new Error("Database is empty after processing.");
+            }
+
+        } catch (error) {
+            console.error("Failed to load or process database:", error);
+            if(noResultsMessage) {
+                noResultsMessage.textContent = `Error: Could not load or parse filtration database. ${error.message}`;
+                noResultsMessage.classList.remove('hidden');
+            }
+            if(resultsSection) resultsSection.classList.add('hidden');
+            if(calculateButton) { calculateButton.disabled = true; calculateButton.textContent = "DB Load Error"; }
+        }
+    }
+
+    loadDatabase();
+
+    function toggleInputs() {
+        // Hide all conditional sections first
+        openSystemInputs.classList.add('hidden');
+        closedSystemInputs.classList.add('hidden');
+        techSystemInputs.classList.add('hidden');
+        electricalCostSection.classList.add('hidden');
+        resultsSection.classList.add('hidden');
+        noResultsMessage.classList.add('hidden');
+
+        // Show the correct sections based on selection
+        if (radioOpen.checked) {
+            openSystemInputs.classList.remove('hidden');
+            electricalCostSection.classList.remove('hidden');
+        } else if (radioClosed.checked) {
+            closedSystemInputs.classList.remove('hidden');
+            electricalCostSection.classList.remove('hidden');
+        } else if (radioTech.checked) {
+            techSystemInputs.classList.remove('hidden');
+            // Note: electricalCostSection remains hidden for this option
+        }
+    }
+
+    radioOpen.addEventListener('change', toggleInputs);
+    radioClosed.addEventListener('change', toggleInputs);
+    radioTech.addEventListener('change', toggleInputs);
+
+    calculateButton.addEventListener('click', () => {
+        if (!database || database.length === 0) {
+            noResultsMessage.textContent = "Database is not loaded or is empty.";
+            noResultsMessage.classList.remove('hidden');
+            resultsSection.classList.add('hidden');
+            return;
+        }
+
+        const systemType = document.querySelector('input[name="systemType"]:checked').value;
+        
+        let costParams = {};
+        // Only read cost parameters if the section is visible
+        if (systemType === 'open' || systemType === 'closed') {
+            const electricalCost = parseFloat(electricalCostInput.value);
+            const hoursPerDay = parseFloat(hoursPerDayInput.value);
+            const daysPerYear = parseFloat(daysPerYearInput.value);
+
+            if (isNaN(electricalCost) || electricalCost < 0) { alert("Please enter a valid Electrical Cost."); return; }
+            if (isNaN(hoursPerDay) || hoursPerDay < 0 || hoursPerDay > 24) { alert("Please enter valid Operating Hours per Day (0-24)."); return; }
+            if (isNaN(daysPerYear) || daysPerYear < 0 || daysPerYear > 365) { alert("Please enter valid Operating Days per Year (0-365)."); return; }
+            
+            costParams = { electricalCost, hoursPerDay, daysPerYear };
+        }
+        
+        let recircRateVal = NaN;
+        let tonnageVal = NaN;
+        let closedSystemVolumeVal = NaN;
+        let techFlowRateVal = NaN;
+
+        if (systemType === 'open') {
+            recircRateVal = parseFloat(recircRateInput.value);
+            tonnageVal = parseFloat(tonnageInput.value);
+            if (isNaN(recircRateVal) && isNaN(tonnageVal)) { alert("For Open systems, please enter either Recirculation Rate or Tonnage."); return; }
+        } else if (systemType === 'closed') {
+            closedSystemVolumeVal = parseFloat(closedSystemVolumeInput.value);
+            if (isNaN(closedSystemVolumeVal) || closedSystemVolumeVal <= 0) { alert("For Closed systems, please enter a valid, positive System Volume."); return; }
+        } else if (systemType === 'technology') {
+            techFlowRateVal = parseFloat(techFlowRateInput.value);
+            if (isNaN(techFlowRateVal) || techFlowRateVal <= 0) { alert("For Technology Cooling Systems, please enter a valid, positive Flow Rate."); return; }
+        }
+
+        findAndDisplayModels(systemType, recircRateVal, tonnageVal, closedSystemVolumeVal, techFlowRateVal, costParams);
+    });
+
+    function findAndDisplayModels(systemType, recircRate, tonnage, closedVolume, techFlowRate, costParams) {
+        let separatorModel = null;
+        let vafModel = null;
+        let vortisandModel = null;
+
+        if (systemType === 'technology') {
+            const potentialModels = database.filter(row =>
+                row['Application'] === 'Technology Cooling Filtration' &&
+                row['Flow Rate'] >= techFlowRate
+            );
+
+            if (potentialModels.length > 0) {
+                potentialModels.sort((a, b) => a['Flow Rate'] - b['Flow Rate']);
+                const bestFit = potentialModels[0];
+                const typeFromRow = bestFit['Filter Type'] || '';
+
+                if (typeFromRow.toLowerCase() === 'vaf') {
+                    vafModel = bestFit;
+                }
+            }
+        } else {
+            const sideStreamModels = database.filter(row => row['Application'] === 'Side stream');
+
+            for (const row of sideStreamModels) {
+                let match = false;
+                
+                if (systemType === 'open') {
+                    const useRecirc = !isNaN(recircRate) && recircRate > 0;
+                    const useTonnageInput = !isNaN(tonnage) && tonnage > 0;
+                    if (useRecirc && (recircRate >= row["Min Recirc Rate (gpm)"] && recircRate <= row["Max Recirc Rate (gpm)"])) {
+                        match = true;
+                    }
+                    if (!match && useTonnageInput && (tonnage >= row["Tonnage Min"] && tonnage <= row["Tonnage Max"])) {
+                        match = true;
+                    }
+                } else {
+                    if (closedVolume >= row["Loop Min (gallons)"] && closedVolume <= row["Loop Max (gallons)"]) {
+                        match = true;
+                    }
+                }
+
+                if (match) {
+                    const typeFromRow = row['Filter Type'] || '';
+                    if (typeFromRow.toLowerCase() === 'separator' && !separatorModel) {
+                        separatorModel = row;
+                    } else if (typeFromRow.toLowerCase() === 'vaf' && !vafModel) {
+                        vafModel = row;
+                    } else if (typeFromRow.toLowerCase() === 'vortisand' && !vortisandModel) {
+                        vortisandModel = row;
+                    }
+                }
+            }
+        }
+        
+        displayResults(separatorModel, vafModel, vortisandModel, costParams);
+    }
+    
+    const calculateAnnualKwh = (hp, hoursPerDay, daysPerYear) => {
+        if (isNaN(hp)) return NaN;
+        return hp * 0.746 * hoursPerDay * daysPerYear;
+    };
+
+    function displayResults(separator, vaf, vortisand, costParams) {
+        resultsSection.classList.remove('hidden');
+        noResultsMessage.classList.add('hidden');
+        let anyModelFound = false;
+
+        function updateColumn(typeKey, modelData) {
+            const modelEl = document.getElementById(`${typeKey}Model`);
+            const flowrateEl = document.getElementById(`${typeKey}Flowrate`);
+            const descriptionEl = document.getElementById(`${typeKey}Description`);
+            const opCostEl = document.getElementById(`${typeKey}OpCost`);
+
+            if (modelData) {
+                anyModelFound = true;
+                modelEl.textContent = modelData.Model || 'N/A';
+                flowrateEl.textContent = modelData['Flow Rate'] != null ? modelData['Flow Rate'] : 'N/A';
+                descriptionEl.textContent = modelData.Description || 'N/A';
+                
+                let annualCost = NaN;
+                // Only calculate cost if parameters are available and hp is a valid number
+                if (costParams.electricalCost !== undefined && !isNaN(modelData.hp)) {
+                    const annualKwh = calculateAnnualKwh(modelData.hp, costParams.hoursPerDay, costParams.daysPerYear);
+                    annualCost = annualKwh * costParams.electricalCost;
+                }
+                
+                opCostEl.textContent = !isNaN(annualCost) ? annualCost.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : 'N/A';
+            } else {
+                modelEl.textContent = '-';
+                flowrateEl.textContent = '-';
+                descriptionEl.textContent = 'No suitable model found.';
+                opCostEl.textContent = '-';
+            }
+        }
+
+        updateColumn('separator', separator);
+        updateColumn('vaf', vaf);
+        updateColumn('vortisand', vortisand);
+
+        if (!anyModelFound) {
+            resultsSection.classList.add('hidden');
+            noResultsMessage.textContent = "No suitable models found for the given criteria across all categories.";
+            noResultsMessage.classList.remove('hidden');
+        }
+    }
+
+    // Initialize the view
+    toggleInputs();
+});
