@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOM fully loaded and parsed - using script with dynamic results table.");
+    console.log("DOM fully loaded and parsed - using script with downloads logic.");
 
     // --- Element Selection ---
     const radioOpen = document.getElementById('radioOpen');
@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultsSection = document.getElementById('resultsSection');
     const noResultsMessage = document.getElementById('noResultsMessage');
 
-    // New selectors for table rows and columns
     const separatorRow = document.getElementById('separatorRow');
     const vafRow = document.getElementById('vafRow');
     const vortisandRow = document.getElementById('vortisandRow');
@@ -28,8 +27,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const hoursPerDayInput = document.getElementById('hoursPerDay');
     const daysPerYearInput = document.getElementById('daysPerYear');
 
+    // New selectors for downloads
+    const downloadsSection = document.getElementById('downloadsSection');
+    const specLink = document.getElementById('specLink');
+    const cutSheetLink = document.getElementById('cutSheetLink');
+    const gaLink = document.getElementById('gaLink');
+    const cadLink = document.getElementById('cadLink');
+    const radioButtons = document.querySelectorAll('input[name="selectedModel"]');
 
     let database = [];
+    let separatorModel, vafModel, vortisandModel; // Store results globally
 
     async function loadDatabase() {
         try {
@@ -41,69 +48,90 @@ document.addEventListener('DOMContentLoaded', () => {
 
             database = jsonData.map(row => {
                 if (!row.Model) return null;
-                const newRow = { ...row };
-                
-                newRow.hp = parseFloat(row.hp);
-                newRow['Flow Rate'] = parseFloat(row['Flow Rate']);
-                newRow['Min Recirc Rate (gpm)'] = parseFloat(row['Min Recirc Rate (gpm)']);
-                newRow['Max Recirc Rate (gpm)'] = parseFloat(row['Max Recirc Rate (gpm)']);
-                newRow['Tonnage Min'] = parseFloat(row['Tonnage Min']);
-                newRow['Tonnage Max'] = parseFloat(row['Tonnage Max']);
-                newRow['Loop Min (gallons)'] = parseFloat(row['Loop Min (gallons)']);
-                newRow['Loop Max (gallons)'] = parseFloat(row['Loop Max (gallons)']);
-                newRow['Electrical Usage'] = parseFloat(row['Electrical Usage']);
-
-                return newRow;
+                return { ...row };
             }).filter(row => row !== null);
 
             console.log("Database successfully loaded and processed.");
-            if (database.length === 0) {
-                 throw new Error("Database is empty after processing.");
-            }
-
-        } catch (error)
- {
+        } catch (error) {
             console.error("Failed to load or process database:", error);
-            if(noResultsMessage) {
-                noResultsMessage.textContent = `Error: Could not load or parse filtration database. ${error.message}`;
-                noResultsMessage.classList.remove('hidden');
-            }
-            if(resultsSection) resultsSection.classList.add('hidden');
-            if(calculateButton) { calculateButton.disabled = true; calculateButton.textContent = "DB Load Error"; }
+            noResultsMessage.textContent = `Error: Could not load or parse filtration database. ${error.message}`;
+            noResultsMessage.classList.remove('hidden');
+            calculateButton.disabled = true;
+            calculateButton.textContent = "DB Load Error";
         }
     }
 
     loadDatabase();
 
     function toggleInputs() {
-        // Hide all conditional input sections first
         openSystemInputs.classList.add('hidden');
         closedSystemInputs.classList.add('hidden');
         techSystemInputs.classList.add('hidden');
         electricalCostSection.classList.add('hidden');
         resultsSection.classList.add('hidden');
+        downloadsSection.classList.add('hidden');
         noResultsMessage.classList.add('hidden');
 
-        // Reset table to its default state (all rows/columns visible)
         separatorRow.classList.remove('hidden');
         vafRow.classList.remove('hidden');
         vortisandRow.classList.remove('hidden');
         costColumnElements.forEach(el => el.classList.remove('hidden'));
 
-        // Show the correct sections based on selection
         if (radioOpen.checked || radioClosed.checked) {
             radioOpen.checked ? openSystemInputs.classList.remove('hidden') : closedSystemInputs.classList.remove('hidden');
             electricalCostSection.classList.remove('hidden');
         } else if (radioTech.checked) {
             techSystemInputs.classList.remove('hidden');
-            
-            // For Tech systems, modify the results table
             separatorRow.classList.add('hidden');
             vortisandRow.classList.add('hidden');
             costColumnElements.forEach(el => el.classList.add('hidden'));
         }
     }
 
+    radioButtons.forEach(radio => {
+        radio.addEventListener('change', () => {
+            const selectedValue = document.querySelector('input[name="selectedModel"]:checked').value;
+            let selectedModelData = null;
+
+            if (selectedValue === 'separator') {
+                selectedModelData = separatorModel;
+            } else if (selectedValue === 'vaf') {
+                selectedModelData = vafModel;
+            } else if (selectedValue === 'vortisand') {
+                selectedModelData = vortisandModel;
+            }
+
+            updateDownloads(selectedModelData);
+        });
+    });
+
+    function updateDownloads(modelData) {
+        const setupLink = (linkElement, filename) => {
+            if (filename) {
+                linkElement.href = `product/${filename}`;
+                linkElement.classList.remove('hidden');
+            } else {
+                linkElement.classList.add('hidden');
+            }
+        };
+
+        if (modelData) {
+            setupLink(specLink, modelData['Written Specification']);
+            setupLink(cutSheetLink, modelData['Cut Sheet']);
+            setupLink(gaLink, modelData['GA']);
+            setupLink(cadLink, modelData['CAD']);
+            
+            // Show section only if at least one link is available
+            if (modelData['Written Specification'] || modelData['Cut Sheet'] || modelData['GA'] || modelData['CAD']) {
+                downloadsSection.classList.remove('hidden');
+            } else {
+                downloadsSection.classList.add('hidden');
+            }
+        } else {
+            downloadsSection.classList.add('hidden');
+        }
+    }
+    
     radioOpen.addEventListener('change', toggleInputs);
     radioClosed.addEventListener('change', toggleInputs);
     radioTech.addEventListener('change', toggleInputs);
@@ -112,9 +140,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!database || database.length === 0) {
             noResultsMessage.textContent = "Database is not loaded or is empty.";
             noResultsMessage.classList.remove('hidden');
-            resultsSection.classList.add('hidden');
             return;
         }
+        
+        // Hide previous results and downloads on new calculation
+        resultsSection.classList.add('hidden');
+        downloadsSection.classList.add('hidden');
+        radioButtons.forEach(radio => radio.checked = false); // Deselect radio buttons
 
         const systemType = document.querySelector('input[name="systemType"]:checked').value;
         
@@ -123,18 +155,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const electricalCost = parseFloat(electricalCostInput.value);
             const hoursPerDay = parseFloat(hoursPerDayInput.value);
             const daysPerYear = parseFloat(daysPerYearInput.value);
-
             if (isNaN(electricalCost) || electricalCost < 0) { alert("Please enter a valid Electrical Cost."); return; }
             if (isNaN(hoursPerDay) || hoursPerDay < 0 || hoursPerDay > 24) { alert("Please enter valid Operating Hours per Day (0-24)."); return; }
             if (isNaN(daysPerYear) || daysPerYear < 0 || daysPerYear > 365) { alert("Please enter valid Operating Days per Year (0-365)."); return; }
-            
             costParams = { electricalCost, hoursPerDay, daysPerYear };
         }
         
-        let recircRateVal = NaN;
-        let tonnageVal = NaN;
-        let closedSystemVolumeVal = NaN;
-        let techFlowRateVal = NaN;
+        let recircRateVal = NaN, tonnageVal = NaN, closedSystemVolumeVal = NaN, techFlowRateVal = NaN;
 
         if (systemType === 'open') {
             recircRateVal = parseFloat(recircRateInput.value);
@@ -152,55 +179,37 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function findAndDisplayModels(systemType, recircRate, tonnage, closedVolume, techFlowRate, costParams) {
-        let separatorModel = null;
-        let vafModel = null;
-        let vortisandModel = null;
+        // Reset models from previous searches
+        separatorModel = null;
+        vafModel = null;
+        vortisandModel = null;
 
         if (systemType === 'technology') {
             const potentialModels = database.filter(row =>
                 row['Application'] === 'Technology Cooling Filtration' &&
                 row['Flow Rate'] >= techFlowRate
             );
-
             if (potentialModels.length > 0) {
                 potentialModels.sort((a, b) => a['Flow Rate'] - b['Flow Rate']);
-                const bestFit = potentialModels[0];
-                const typeFromRow = bestFit['Filter Type'] || '';
-
-                if (typeFromRow.toLowerCase() === 'vaf') {
-                    vafModel = bestFit;
-                }
+                vafModel = potentialModels[0];
             }
         } else {
             const sideStreamModels = database.filter(row => row['Application'] === 'Side stream');
-
             for (const row of sideStreamModels) {
                 let match = false;
-                
                 if (systemType === 'open') {
                     const useRecirc = !isNaN(recircRate) && recircRate > 0;
                     const useTonnageInput = !isNaN(tonnage) && tonnage > 0;
-                    if (useRecirc && (recircRate >= row["Min Recirc Rate (gpm)"] && recircRate <= row["Max Recirc Rate (gpm)"])) {
-                        match = true;
-                    }
-                    if (!match && useTonnageInput && (tonnage >= row["Tonnage Min"] && tonnage <= row["Tonnage Max"])) {
-                        match = true;
-                    }
+                    if (useRecirc && (recircRate >= row["Min Recirc Rate (gpm)"] && recircRate <= row["Max Recirc Rate (gpm)"])) match = true;
+                    if (!match && useTonnageInput && (tonnage >= row["Tonnage Min"] && tonnage <= row["Tonnage Max"])) match = true;
                 } else {
-                    if (closedVolume >= row["Loop Min (gallons)"] && closedVolume <= row["Loop Max (gallons)"]) {
-                        match = true;
-                    }
+                    if (closedVolume >= row["Loop Min (gallons)"] && closedVolume <= row["Loop Max (gallons)"]) match = true;
                 }
-
                 if (match) {
                     const typeFromRow = row['Filter Type'] || '';
-                    if (typeFromRow.toLowerCase() === 'separator' && !separatorModel) {
-                        separatorModel = row;
-                    } else if (typeFromRow.toLowerCase() === 'vaf' && !vafModel) {
-                        vafModel = row;
-                    } else if (typeFromRow.toLowerCase() === 'vortisand' && !vortisandModel) {
-                        vortisandModel = row;
-                    }
+                    if (typeFromRow.toLowerCase() === 'separator' && !separatorModel) separatorModel = row;
+                    else if (typeFromRow.toLowerCase() === 'vaf' && !vafModel) vafModel = row;
+                    else if (typeFromRow.toLowerCase() === 'vortisand' && !vortisandModel) vortisandModel = row;
                 }
             }
         }
