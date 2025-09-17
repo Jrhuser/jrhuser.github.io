@@ -215,6 +215,27 @@ h2 {
     transform: translateY(0);
 }
 
+/* NEW: CTA Button Styling */
+.cta-button {
+    display: block;
+    text-align: center;
+    width: 200px;
+    margin: 30px auto;
+    padding: 12px 20px;
+    background-color: #007DA3;
+    color: #ffffff;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.cta-button:hover {
+    background-color: #005F7D; /* Darker Xylem Blue */
+    transform: translateY(-2px);
+}
+
+
 /* Results Table Styling */
 .results-table {
     width: 100%;
@@ -262,7 +283,7 @@ h2 {
     font-weight: 700;
 }
 
-/* --- NEW DOWNLOADS SECTION STYLING --- */
+/* Downloads Section Styling */
 .downloads-grid {
     display: flex;
     flex-wrap: wrap;
