@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOM fully loaded and parsed - using script with downloads logic.");
+    console.log("DOM fully loaded and parsed - using script with downloads and learn more logic.");
 
     // --- Element Selection ---
     const radioOpen = document.getElementById('radioOpen');
@@ -27,16 +27,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const hoursPerDayInput = document.getElementById('hoursPerDay');
     const daysPerYearInput = document.getElementById('daysPerYear');
 
-    // New selectors for downloads
     const downloadsSection = document.getElementById('downloadsSection');
     const specLink = document.getElementById('specLink');
     const cutSheetLink = document.getElementById('cutSheetLink');
     const gaLink = document.getElementById('gaLink');
     const cadLink = document.getElementById('cadLink');
     const radioButtons = document.querySelectorAll('input[name="selectedModel"]');
+    const learnMoreBtn = document.getElementById('learnMoreBtn');
 
     let database = [];
-    let separatorModel, vafModel, vortisandModel; // Store results globally
+    let separatorModel, vafModel, vortisandModel;
 
     async function loadDatabase() {
         try {
@@ -45,12 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const jsonData = await response.json();
-
-            database = jsonData.map(row => {
-                if (!row.Model) return null;
-                return { ...row };
-            }).filter(row => row !== null);
-
+            database = jsonData.filter(row => row.Model);
             console.log("Database successfully loaded and processed.");
         } catch (error) {
             console.error("Failed to load or process database:", error);
@@ -70,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         electricalCostSection.classList.add('hidden');
         resultsSection.classList.add('hidden');
         downloadsSection.classList.add('hidden');
+        learnMoreBtn.classList.add('hidden');
         noResultsMessage.classList.add('hidden');
 
         separatorRow.classList.remove('hidden');
@@ -93,13 +89,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const selectedValue = document.querySelector('input[name="selectedModel"]:checked').value;
             let selectedModelData = null;
 
-            if (selectedValue === 'separator') {
-                selectedModelData = separatorModel;
-            } else if (selectedValue === 'vaf') {
-                selectedModelData = vafModel;
-            } else if (selectedValue === 'vortisand') {
-                selectedModelData = vortisandModel;
-            }
+            if (selectedValue === 'separator') selectedModelData = separatorModel;
+            else if (selectedValue === 'vaf') selectedModelData = vafModel;
+            else if (selectedValue === 'vortisand') selectedModelData = vortisandModel;
 
             updateDownloads(selectedModelData);
         });
@@ -110,25 +102,31 @@ document.addEventListener('DOMContentLoaded', () => {
             if (filename) {
                 linkElement.href = `product/${filename}`;
                 linkElement.classList.remove('hidden');
+                return true;
             } else {
                 linkElement.classList.add('hidden');
+                return false;
             }
         };
 
         if (modelData) {
-            setupLink(specLink, modelData['Written Specification']);
-            setupLink(cutSheetLink, modelData['Cut Sheet']);
-            setupLink(gaLink, modelData['GA']);
-            setupLink(cadLink, modelData['CAD']);
+            const hasSpec = setupLink(specLink, modelData['Written Specification']);
+            const hasCut = setupLink(cutSheetLink, modelData['Cut Sheet']);
+            const hasGa = setupLink(gaLink, modelData['GA']);
+            const hasCad = setupLink(cadLink, modelData['CAD']);
             
-            // Show section only if at least one link is available
-            if (modelData['Written Specification'] || modelData['Cut Sheet'] || modelData['GA'] || modelData['CAD']) {
+            if (hasSpec || hasCut || hasGa || hasCad) {
                 downloadsSection.classList.remove('hidden');
+                learnMoreBtn.classList.remove('hidden');
+                const subject = `Inquiry about ${modelData.Model}`;
+                learnMoreBtn.href = `mailto:James.Huser@Xylem.com?subject=${encodeURIComponent(subject)}`;
             } else {
                 downloadsSection.classList.add('hidden');
+                learnMoreBtn.classList.add('hidden');
             }
         } else {
             downloadsSection.classList.add('hidden');
+            learnMoreBtn.classList.add('hidden');
         }
     }
     
@@ -143,10 +141,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         
-        // Hide previous results and downloads on new calculation
         resultsSection.classList.add('hidden');
         downloadsSection.classList.add('hidden');
-        radioButtons.forEach(radio => radio.checked = false); // Deselect radio buttons
+        learnMoreBtn.classList.add('hidden');
+        radioButtons.forEach(radio => radio.checked = false);
 
         const systemType = document.querySelector('input[name="systemType"]:checked').value;
         
@@ -179,7 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function findAndDisplayModels(systemType, recircRate, tonnage, closedVolume, techFlowRate, costParams) {
-        // Reset models from previous searches
         separatorModel = null;
         vafModel = null;
         vortisandModel = null;
@@ -187,10 +184,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (systemType === 'technology') {
             const potentialModels = database.filter(row =>
                 row['Application'] === 'Technology Cooling Filtration' &&
-                row['Flow Rate'] >= techFlowRate
+                parseFloat(row['Flow Rate']) >= techFlowRate
             );
             if (potentialModels.length > 0) {
-                potentialModels.sort((a, b) => a['Flow Rate'] - b['Flow Rate']);
+                potentialModels.sort((a, b) => parseFloat(a['Flow Rate']) - parseFloat(b['Flow Rate']));
                 vafModel = potentialModels[0];
             }
         } else {
@@ -200,10 +197,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (systemType === 'open') {
                     const useRecirc = !isNaN(recircRate) && recircRate > 0;
                     const useTonnageInput = !isNaN(tonnage) && tonnage > 0;
-                    if (useRecirc && (recircRate >= row["Min Recirc Rate (gpm)"] && recircRate <= row["Max Recirc Rate (gpm)"])) match = true;
-                    if (!match && useTonnageInput && (tonnage >= row["Tonnage Min"] && tonnage <= row["Tonnage Max"])) match = true;
+                    if (useRecirc && (recircRate >= parseFloat(row["Min Recirc Rate (gpm)"]) && recircRate <= parseFloat(row["Max Recirc Rate (gpm)"]))) match = true;
+                    if (!match && useTonnageInput && (tonnage >= parseFloat(row["Tonnage Min"]) && tonnage <= parseFloat(row["Tonnage Max"]))) match = true;
                 } else {
-                    if (closedVolume >= row["Loop Min (gallons)"] && closedVolume <= row["Loop Max (gallons)"]) match = true;
+                    if (closedVolume >= parseFloat(row["Loop Min (gallons)"]) && closedVolume <= parseFloat(row["Loop Max (gallons)"])) match = true;
                 }
                 if (match) {
                     const typeFromRow = row['Filter Type'] || '';
@@ -218,8 +215,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     const calculateAnnualKwh = (hp, hoursPerDay, daysPerYear) => {
-        if (isNaN(hp)) return NaN;
-        return hp * 0.746 * hoursPerDay * daysPerYear;
+        const numHp = parseFloat(hp);
+        if (isNaN(numHp)) return NaN;
+        return numHp * 0.746 * hoursPerDay * daysPerYear;
     };
 
     function displayResults(separator, vaf, vortisand, costParams) {
@@ -240,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 descriptionEl.textContent = modelData.Description || 'N/A';
                 
                 let annualCost = NaN;
-                if (costParams.electricalCost !== undefined && !isNaN(modelData.hp)) {
+                if (costParams.electricalCost !== undefined && !isNaN(parseFloat(modelData.hp))) {
                     const annualKwh = calculateAnnualKwh(modelData.hp, costParams.hoursPerDay, costParams.daysPerYear);
                     annualCost = annualKwh * costParams.electricalCost;
                 }
