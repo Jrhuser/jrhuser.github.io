@@ -109,7 +109,7 @@ h2 {
     display: none !important;
 }
 
-/* --- NEW: Icon Radio Button Group Styling --- */
+/* --- NEW: Icon Checkbox Group Styling --- */
 .radio-group-icons {
     display: flex;
     gap: 15px;
@@ -118,13 +118,14 @@ h2 {
     justify-content: space-around; /* Distribute them evenly */
 }
 
-.radio-group-icons input[type="radio"] {
-    display: none;
-}
-
-.radio-group-icons label {
+/* NEW: Styling for equipment icons */
+.equipment-icon-wrapper {
+    display: flex;
+    flex-direction: column; /* Stack image and label */
+    align-items: center;    /* Center content horizontally */
+    gap: 10px;              /* Space between image and label/checkbox */
     background-color: #e9ecef;
-    padding: 20px;
+    padding: 15px;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
@@ -132,57 +133,50 @@ h2 {
     font-weight: 500;
     color: #495057;
     text-align: center;
-    min-width: 120px; /* Give them a minimum width */
+    min-width: 120px;
     flex-grow: 1;
-    flex-basis: 150px; /* Allow them to wrap nicely */
+    flex-basis: 150px;
 }
 
-.radio-group-icons input[type="radio"]:checked + label {
+.equipment-icon {
+    max-width: 100px; /* Adjust as needed */
+    height: auto;
+    display: block; /* Remove extra space below image */
+    margin-bottom: 5px; /* Space between image and its checkbox/label */
+}
+
+/* Adjust checkbox label for the new wrapper */
+.equipment-icon-wrapper label {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    display: block;
+    cursor: pointer; /* Ensure label is clickable */
+}
+
+/* This targets the wrapper as a whole for checked state */
+.equipment-icon-wrapper:has(input[type="checkbox"]:checked) {
     background-color: #007DA3;
-    color: #ffffff;
+    color: #ffffff; /* Text inside wrapper */
     border-color: #007DA3;
     box-shadow: 0 4px 8px rgba(0, 125, 163, 0.3);
 }
 
-.radio-group-icons label:hover {
-    background-color: #CCE7EF;
-    border-color: #007DA3;
-}
-
-
-/* --- OLD: Radio Group Styling (for Open/Closed/Tech) --- */
-/* This is no longer the main selector but can be reused if needed */
-.radio-group {
-    display: flex;
-    gap: 25px;
-    margin-bottom: 15px;
-    flex-wrap: wrap;
-}
-
-.radio-group input[type="radio"] {
-    display: none;
-}
-
-.radio-group label {
-    background-color: #e9ecef;
-    padding: 12px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    border: 1px solid #ced4da;
-    font-weight: 500;
-    color: #495057;
-}
-
-.radio-group input[type="radio"]:checked + label {
-    background-color: #007DA3;
+/* Ensure the label text also turns white when checked */
+.equipment-icon-wrapper:has(input[type="checkbox"]:checked) label {
     color: #ffffff;
-    border-color: #007DA3;
-    box-shadow: 0 2px 5px rgba(0, 125, 163, 0.3);
 }
 
-.radio-group label:hover {
+
+.equipment-icon-wrapper:hover {
     background-color: #CCE7EF;
+    border-color: #007DA3;
+}
+
+/* Ensure the actual checkbox input itself is hidden */
+.equipment-icon-wrapper input[type="checkbox"] {
+    display: none;
 }
 
 
@@ -307,7 +301,6 @@ h2 {
 
 
 /* Results Table Styling */
-/* This styling should work for the new dynamic table */
 .results-table {
     width: 100%;
     border-collapse: collapse;
@@ -415,7 +408,7 @@ footer {
         padding: 0 20px;
     }
 
-    /* This responsive table logic should still work */
+    /* Responsive table logic */
     .results-table, .results-table thead, .results-table tbody, .results-table th, .results-table td, .results-table tr {
         display: block;
     }
