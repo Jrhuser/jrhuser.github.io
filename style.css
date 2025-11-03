@@ -97,7 +97,7 @@ h2 {
 }
 
 /* Section Styling */
-.input-section, .system-type-selection, .results-section {
+.input-section, .system-type-selection, .results-section, .equipment-selection {
     padding: 0; 
     border: none;
     box-shadow: none;
@@ -109,7 +109,49 @@ h2 {
     display: none !important;
 }
 
-/* Radio Group Styling */
+/* --- NEW: Icon Radio Button Group Styling --- */
+.radio-group-icons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    justify-content: space-around; /* Distribute them evenly */
+}
+
+.radio-group-icons input[type="radio"] {
+    display: none;
+}
+
+.radio-group-icons label {
+    background-color: #e9ecef;
+    padding: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #ced4da;
+    font-weight: 500;
+    color: #495057;
+    text-align: center;
+    min-width: 120px; /* Give them a minimum width */
+    flex-grow: 1;
+    flex-basis: 150px; /* Allow them to wrap nicely */
+}
+
+.radio-group-icons input[type="radio"]:checked + label {
+    background-color: #007DA3;
+    color: #ffffff;
+    border-color: #007DA3;
+    box-shadow: 0 4px 8px rgba(0, 125, 163, 0.3);
+}
+
+.radio-group-icons label:hover {
+    background-color: #CCE7EF;
+    border-color: #007DA3;
+}
+
+
+/* --- OLD: Radio Group Styling (for Open/Closed/Tech) --- */
+/* This is no longer the main selector but can be reused if needed */
 .radio-group {
     display: flex;
     gap: 25px;
@@ -174,6 +216,34 @@ h2 {
     outline: none;
 }
 
+/* --- NEW: Styling for <select> dropdowns --- */
+.input-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box;
+    background-color: #fff; /* Ensure white background */
+    -webkit-appearance: none; /* Remove default styling */
+    -moz-appearance: none;
+    appearance: none;
+    /* Add a custom dropdown arrow */
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%208l5%205%205-5z%22%20fill%3D%22%23495057%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 12px;
+    cursor: pointer;
+}
+
+.input-group select:focus {
+    border-color: #007DA3;
+    box-shadow: 0 0 0 0.2rem rgba(0, 125, 163, 0.25);
+    outline: none;
+}
+
+
 .parameter-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -215,7 +285,7 @@ h2 {
     transform: translateY(0);
 }
 
-/* NEW: CTA Button Styling */
+/* CTA Button Styling */
 .cta-button {
     display: block;
     text-align: center;
@@ -237,6 +307,7 @@ h2 {
 
 
 /* Results Table Styling */
+/* This styling should work for the new dynamic table */
 .results-table {
     width: 100%;
     border-collapse: collapse;
@@ -275,12 +346,6 @@ h2 {
 .select-column input[type="radio"] {
     transform: scale(1.5);
     cursor: pointer;
-}
-
-#separatorOpCost,
-#vafOpCost,
-#vortisandOpCost {
-    font-weight: 700;
 }
 
 /* Downloads Section Styling */
@@ -350,6 +415,7 @@ footer {
         padding: 0 20px;
     }
 
+    /* This responsive table logic should still work */
     .results-table, .results-table thead, .results-table tbody, .results-table th, .results-table td, .results-table tr {
         display: block;
     }
