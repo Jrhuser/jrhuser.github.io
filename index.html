@@ -1,98 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xylem Cooling Water Filtration Selector</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-</head>
-<body>
-
-    <header>
-        <div class="header-content">
-            <img src="xylem_logo_white.png" alt="Xylem Logo" class="logo">
-            <nav class="main-nav">
-                <a href="#">Markets</a>
-                <a href="#">Products & Services</a>
-                <a href="#">Brands</a>
-                <a href="#">Resources</a>
-                <a href="#">About Xylem</a>
-                <a href="#">eCommerce</a>
-            </nav>
-            <div class="header-icons">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <i class="fa-solid fa-cart-shopping"></i>
-                <i class="fa-solid fa-bars"></i>
-            </div>
-        </div>
-    </header>
-
-    <div class="container">
+<div class="container">
         <main>
-            <section class="system-type-selection">
-                <h2>Select System Type</h2>
-                <div class="radio-group">
-                    <input type="radio" id="radioOpen" name="systemType" value="open" checked>
-                    <label for="radioOpen">Open Cooling System</label>
+            <section class="equipment-selection">
+                <h2>Select Equipment Type</h2>
+                <div class="radio-group-icons">
+                    <input type="radio" id="radioFilter" name="equipmentGrouping" value="Filter" checked>
+                    <label for="radioFilter">Filter</label>
                     
-                    <input type="radio" id="radioClosed" name="systemType" value="closed">
-                    <label for="radioClosed">Closed Cooling System</label>
+                    <input type="radio" id="radioPump" name="equipmentGrouping" value="Pump">
+                    <label for="radioPump">Pump</label>
 
-                    <input type="radio" id="radioTech" name="systemType" value="technology">
-                    <label for="radioTech">Technology Cooling System</label>
+                    <input type="radio" id="radioStrainer" name="equipmentGrouping" value="Strainer">
+                    <label for="radioStrainer">Strainer</label>
+
+                    <input type="radio" id="radioUV" name="equipmentGrouping" value="UV">
+                    <label for="radioUV">UV</label>
+
+                    <input type="radio" id="radioValveKit" name="equipmentGrouping" value="Valve Kit">
+                    <label for="radioValveKit">Valve Kit</label>
                 </div>
             </section>
 
-            <section id="openSystemInputs" class="input-section">
-                <h2>Open System Parameters</h2>
-                <div class="input-group">
-                    <label for="recircRate">Total Recirculation Rate (GPM):</label>
-                    <input type="number" id="recircRate" placeholder="e.g., 5000">
+            <section id="secondaryOptions" class="input-section">
+                
+                <div id="filterOptions" class_name="input-group hidden">
+                    <label for="filterType">Filter Type:</label>
+                    <select id="filterType">
+                        <option value="Defender">Defender</option>
+                        <option value="Sand Filter">Sand Filter</option>
+                    </select>
                 </div>
-                <div class="input-group">
-                    <label for="tonnage">Total System Tonnage (Tons):</label>
-                    <input type="number" id="tonnage" placeholder="e.g., 1500">
-                </div>
-                <p class="note">Enter either Recirculation Rate or Tonnage for Open Systems.</p>
-            </section>
 
-            <section id="closedSystemInputs" class="input-section hidden">
-                <h2>Closed System Parameters</h2>
-                <div class="input-group">
-                    <label for="closedSystemVolume">Total System Volume (Gallons):</label>
-                    <input type="number" id="closedSystemVolume" placeholder="e.g., 2000">
-                </div>
-            </section>
-
-            <section id="techSystemInputs" class="input-section hidden">
-                <h2>Technology Cooling System Parameters</h2>
-                <div class="input-group">
-                    <label for="techFlowRate">Required Flow Rate (GPM):</label>
-                    <input type="number" id="techFlowRate" placeholder="e.g., 500">
+                <div id="pumpOptions" class="input-group hidden">
+                    <label for="pumpVoltage">Voltage:</label>
+                    <select id="pumpVoltage">
+                        <option value="230/460">230/460</option>
+                        <option value="575">575</option>
+                    </select>
                 </div>
             </section>
 
-            <section id="electricalCostSection" class="input-section">
-                <h2>Operating Cost Parameters</h2>
+            <section id="flowRateSection" class="input-section">
+                <h2>Enter Flow Rate</h2>
                 <div class="parameter-grid">
                     <div class="input-group">
-                        <label for="electricalCost">Cost per kWh ($):</label>
-                        <input type="number" id="electricalCost" value="0.12" min="0" step="0.01">
-                    </div>
-                    <div class="input-group">
-                        <label for="hoursPerDay">Operating Hours per Day:</label>
-                        <input type="number" id="hoursPerDay" value="24" min="0" max="24">
-                    </div>
-                    <div class="input-group">
-                        <label for="daysPerYear">Operating Days per Year:</label>
-                        <input type="number" id="daysPerYear" value="365" min="0" max="365">
+                        <label for="circulationRate">Circulation Rate (GPM):</label>
+                        <input type="number" id="circulationRate" placeholder="e.g., 500">
                     </div>
                 </div>
             </section>
 
-            <button id="calculateButton">Find Recommended Filters</button>
+            <button id="calculateButton">Find Recommended Equipment</button>
 
             <section id="resultsSection" class="results-section hidden">
                 <h2>Recommended Models</h2>
@@ -100,39 +57,14 @@
                     <thead>
                         <tr>
                             <th>Select</th>
-                            <th>Filter Type</th>
+                            <th>Equipment Type</th>
                             <th>Model</th>
-                            <th>Flowrate (GPM)</th>
-                            <th>Description</th>
-                            <th class="cost-column">Est. Annual Operating Cost ($)</th>
+                            <th>Flowrate Range (GPM)</th>
+                            <th>HP</th>
+                            <th>Details</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr id="separatorRow">
-                            <td class="select-column" data-label="Select"><input type="radio" name="selectedModel" id="selectSeparator" value="separator"></td>
-                            <td data-label="Filter Type">Separator</td>
-                            <td id="separatorModel" data-label="Model">-</td>
-                            <td id="separatorFlowrate" data-label="Flowrate (GPM)">-</td>
-                            <td id="separatorDescription" data-label="Description">-</td>
-                            <td id="separatorOpCost" class="cost-column" data-label="Est. Annual Operating Cost ($)">-</td>
-                        </tr>
-                        <tr id="vafRow">
-                            <td class="select-column" data-label="Select"><input type="radio" name="selectedModel" id="selectVaf" value="vaf"></td>
-                            <td data-label="Filter Type">VAF</td>
-                            <td id="vafModel" data-label="Model">-</td>
-                            <td id="vafFlowrate" data-label="Flowrate (GPM)">-</td>
-                            <td id="vafDescription" data-label="Description">-</td>
-                            <td id="vafOpCost" class="cost-column" data-label="Est. Annual Operating Cost ($)">-</td>
-                        </tr>
-                        <tr id="vortisandRow">
-                            <td class="select-column" data-label="Select"><input type="radio" name="selectedModel" id="selectVortisand" value="vortisand"></td>
-                            <td data-label="Filter Type">Vortisand</td>
-                            <td id="vortisandModel" data-label="Model">-</td>
-                            <td id="vortisandFlowrate" data-label="Flowrate (GPM)">-</td>
-                            <td id="vortisandDescription" data-label="Description">-</td>
-                            <td id="vortisandOpCost" class="cost-column" data-label="Est. Annual Operating Cost ($)">-</td>
-                        </tr>
-                    </tbody>
+                    <tbody id="results-body"></tbody>
                 </table>
             </section>
 
@@ -147,15 +79,7 @@
             </section>
 
             <a href="mailto:James.Huser@Xylem.com" id="learnMoreBtn" class="cta-button hidden">Learn More</a>
-
             <p id="noResultsMessage" class="no-results hidden">No suitable models found for the given criteria.</p>
+
         </main>
     </div>
-
-    <footer>
-        <p>© 2025 Xylem Inc. All rights reserved.</p>
-    </footer>
-
-    <script src="script.js"></script>
-</body>
-</html>
