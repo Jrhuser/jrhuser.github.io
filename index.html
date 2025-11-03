@@ -1,28 +1,59 @@
-<div class="container">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xylem Cooling Water Filtration Selector</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <img src="xylem_logo_white.png" alt="Xylem Logo" class="logo">
+            <nav class="main-nav">
+                <a href="#">Markets</a>
+                <a href="#">Products & Services</a>
+                <a href="#">Brands</a>
+                <a href="#">Resources</a>
+                <a href="#">About Xylem</a>
+                <a href="#">eCommerce</a>
+            </nav>
+            <div class="header-icons">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <i class="fa-solid fa-cart-shopping"></i>
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
         <main>
             <section class="equipment-selection">
-                <h2>Select Equipment Type</h2>
+                <h2>Select Equipment Type(s)</h2>
                 <div class="radio-group-icons">
-                    <input type="radio" id="radioFilter" name="equipmentGrouping" value="Filter" checked>
+                    <input type="checkbox" id="radioFilter" name="equipmentGroup" value="Filter">
                     <label for="radioFilter">Filter</label>
                     
-                    <input type="radio" id="radioPump" name="equipmentGrouping" value="Pump">
+                    <input type="checkbox" id="radioPump" name="equipmentGroup" value="Pump">
                     <label for="radioPump">Pump</label>
 
-                    <input type="radio" id="radioStrainer" name="equipmentGrouping" value="Strainer">
+                    <input type="checkbox" id="radioStrainer" name="equipmentGroup" value="Strainer">
                     <label for="radioStrainer">Strainer</label>
 
-                    <input type="radio" id="radioUV" name="equipmentGrouping" value="UV">
+                    <input type="checkbox" id="radioUV" name="equipmentGroup" value="UV">
                     <label for="radioUV">UV</label>
 
-                    <input type="radio" id="radioValveKit" name="equipmentGrouping" value="Valve Kit">
+                    <input type="checkbox" id="radioValveKit" name="equipmentGroup" value="Valve Kit">
                     <label for="radioValveKit">Valve Kit</label>
                 </div>
             </section>
 
             <section id="secondaryOptions" class="input-section">
                 
-                <div id="filterOptions" class_name="input-group hidden">
+                <div id="filterOptions" class="input-group hidden">
                     <label for="filterType">Filter Type:</label>
                     <select id="filterType">
                         <option value="Defender">Defender</option>
@@ -57,11 +88,10 @@
                     <thead>
                         <tr>
                             <th>Select</th>
-                            <th>Equipment Type</th>
+                            <th>Category</th> <th>Equipment Type</th>
                             <th>Model</th>
-                            <th>Flowrate Range (GPM)</th>
+                            <th>Flowrate (GPM)</th>
                             <th>HP</th>
-                            <th>Details</th>
                         </tr>
                     </thead>
                     <tbody id="results-body"></tbody>
@@ -83,3 +113,11 @@
 
         </main>
     </div>
+
+    <footer>
+        <p>© 2025 Xylem Inc. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
