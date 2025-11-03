@@ -1,12 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOM loaded - using new dynamic selector logic.");
+    console.log("DOM loaded - using new MULTI-SELECT logic.");
 
     // --- Database ---
     let database = [];
     let allModelData = new Map(); // To store model data by unique key for download links
 
     // --- Element Selection (New) ---
-    const equipmentRadios = document.querySelectorAll('input[name="equipmentGrouping"]');
+    const equipmentCheckboxes = document.querySelectorAll('input[name="equipmentGroup"]');
+    const filterCheckbox = document.getElementById('radioFilter');
+    const pumpCheckbox = document.getElementById('radioPump');
+    
     const filterOptions = document.getElementById('filterOptions');
     const pumpOptions = document.getElementById('pumpOptions');
     const circulationRateInput = document.getElementById('circulationRate');
@@ -41,27 +44,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- NEW: Toggles secondary dropdowns ---
+    // --- NEW: Toggles secondary dropdowns based on checkbox state ---
     function toggleSecondaryOptions() {
-        const selectedGroup = document.querySelector('input[name="equipmentGrouping"]:checked').value;
-
-        // Hide all secondary options first
-        filterOptions.classList.add('hidden');
-        pumpOptions.classList.add('hidden');
-
-        // Show the correct one
-        if (selectedGroup === 'Filter') {
+        // Show/Hide Filter options
+        if (filterCheckbox.checked) {
             filterOptions.classList.remove('hidden');
-        } else if (selectedGroup === 'Pump') {
+        } else {
+            filterOptions.classList.add('hidden');
+        }
+
+        // Show/Hide Pump options
+        if (pumpCheckbox.checked) {
             pumpOptions.classList.remove('hidden');
+        } else {
+            pumpOptions.classList.add('hidden');
         }
     }
 
-    // --- Add Listeners to Main Radio Buttons ---
-    equipmentRadios.forEach(radio => {
-        radio.addEventListener('change', () => {
+    // --- Add Listeners to ALL Checkboxes ---
+    equipmentCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
             toggleSecondaryOptions();
-            // Clear old results when changing primary type
+            // Clear old results when changing selections
             resultsSection.classList.add('hidden');
             downloadsSection.classList.add('hidden');
             learnMoreBtn.classList.add('hidden');
@@ -70,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- Calculate Button Listener (New Logic) ---
+    // --- Calculate Button Listener (New Multi-Select Logic) ---
     calculateButton.addEventListener('click', () => {
         allModelData.clear(); // Clear old model data
         resultsBody.innerHTML = ''; // Clear old results
@@ -79,42 +83,56 @@ document.addEventListener('DOMContentLoaded', () => {
         learnMoreBtn.classList.add('hidden');
         noResultsMessage.classList.add('hidden');
         
-        // 1. Get all inputs
-        const selectedGroup = document.querySelector('input[name="equipmentGrouping"]:checked').value;
-        const circRate = parseFloat(circulationRateInput.value);
+        // 1. Get all checked equipment groups
+        const checkedGroups = Array.from(equipmentCheckboxes)
+                                   .filter(cb => cb.checked)
+                                   .map(cb => cb.value);
 
+        if (checkedGroups.length === 0) {
+            alert("Please select at least one equipment type.");
+            return;
+        }
+
+        const circRate = parseFloat(circulationRateInput.value);
         if (isNaN(circRate) || circRate <= 0) {
             alert("Please enter a valid, positive Circulation Rate (GPM).");
             return;
         }
 
-        // 2. Start filtering
-        let matchingModels = database.filter(item => item.Grouping === selectedGroup);
+        let allMatchingModels = [];
 
-        // 3. Conditional Filtering
-        if (selectedGroup === 'Filter') {
-            const filterType = document.getElementById('filterType').value;
-            matchingModels = matchingModels.filter(item => item["Equipment Type"] === filterType);
-        } else if (selectedGroup === 'Pump') {
-            const pumpVoltage = document.getElementById('pumpVoltage').value;
-            matchingModels = matchingModels.filter(item => item.Power === pumpVoltage);
+        // 2. Loop through each checked group and find matching models
+        for (const selectedGroup of checkedGroups) {
+            
+            // 3. Start filtering by Grouping
+            let groupModels = database.filter(item => item.Grouping === selectedGroup);
+
+            // 4. Conditional Filtering
+            if (selectedGroup === 'Filter') {
+                const filterType = document.getElementById('filterType').value;
+                groupModels = groupModels.filter(item => item["Equipment Type"] === filterType);
+            } else if (selectedGroup === 'Pump') {
+                const pumpVoltage = document.getElementById('pumpVoltage').value;
+                groupModels = groupModels.filter(item => item.Power === pumpVoltage);
+            }
+
+            // 5. Flow Rate Filtering (The main logic)
+            const flowMatchedModels = groupModels.filter(item => {
+                const min = parseFloat(item["Min Flow"]);
+                const max = parseFloat(item["Max Flow"]);
+                
+                const isMinMatch = circRate >= min;
+                const isMaxMatch = isNaN(max) ? true : circRate <= max; 
+                
+                return isMinMatch && isMaxMatch;
+            });
+            
+            // 6. Add the models found for this group to the main list
+            allMatchingModels = allMatchingModels.concat(flowMatchedModels);
         }
 
-        // 4. Flow Rate Filtering (The main logic)
-        matchingModels = matchingModels.filter(item => {
-            const min = parseFloat(item["Min Flow"]);
-            const max = parseFloat(item["Max Flow"]);
-            
-            // Check if circRate is within bounds
-            const isMinMatch = circRate >= min;
-            // If Max Flow is not a number (NaN), it means no upper limit (e.g., last item in range)
-            const isMaxMatch = isNaN(max) ? true : circRate <= max; 
-            
-            return isMinMatch && isMaxMatch;
-        });
-
-        // 5. Display results
-        displayResults(matchingModels);
+        // 7. Display all found results
+        displayResults(allMatchingModels);
     });
 
     // --- NEW: Dynamically builds the results table ---
@@ -126,6 +144,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         resultsSection.classList.remove('hidden');
+
+        // Sort models by their "Grouping" so they appear in a logical order
+        models.sort((a, b) => a.Grouping.localeCompare(b.Grouping));
 
         models.forEach((model, index) => {
             // Create a unique key for this model to retrieve its data later
@@ -139,15 +160,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const flowRange = `${flowMin}${flowMax}`;
             const hp = model.HP || 'N/A';
             
+            // Added "Grouping" to the table to make it clear what each item is
             tr.innerHTML = `
                 <td class="select-column" data-label="Select">
                     <input type="radio" name="selectedModel" id="${modelKey}" value="${modelKey}">
                 </td>
+                <td data-label="Category"><strong>${model.Grouping}</strong></td>
                 <td data-label="Equipment Type">${model["Equipment Type"] || 'N/A'}</td>
                 <td data-label="Model">${model.Model || model["Part Number"] || 'N/A'}</td>
                 <td data-label="Flowrate Range (GPM)">${flowRange}</td>
                 <td data-label="HP">${hp}</td>
-                <td data-label="Details">${model.Description || 'See Spec Sheet'}</td>
             `;
             
             resultsBody.appendChild(tr);
@@ -163,11 +185,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- REUSED: This function works as-is, just needs to be called by the new radio buttons ---
+    // --- REUSED: This function works as-is ---
     function updateDownloads(modelData) {
         const setupLink = (linkElement, filename) => {
             if (filename) {
-                // Assuming files are in a 'product' folder like your old script
+                // Assuming files are in a 'product' folder
                 linkElement.href = `product/${filename}`; 
                 linkElement.classList.remove('hidden');
                 return true;
