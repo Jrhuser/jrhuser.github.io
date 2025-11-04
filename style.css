@@ -228,7 +228,7 @@ h3 {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%208l5%205%205-5z%22%20fill%3D%22%23495057%22%2F%3E%3C%2Fsvg%3E');
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%2D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%208l5%205%205-5z%22%20fill%3D%22%23495057%22%2F%3E%3C%2Fsvg%3E');
     background-repeat: no-repeat;
     background-position: right 12px center;
     background-size: 12px;
@@ -283,18 +283,46 @@ h3 {
     transform: translateY(0);
 }
 
+/* --- NEW: Add to Cart Button Styling --- */
+#addToCartButton {
+    display: block;
+    width: 100%;
+    padding: 15px 25px;
+    background-color: #007DA3; /* Xylem Blue */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: -10px; /* Pull it up a bit */
+    margin-bottom: 30px;
+    box-shadow: 0 4px 10px rgba(0, 125, 163, 0.25);
+}
+
+#addToCartButton:hover {
+    background-color: #005F7D; /* Darker Blue */
+    transform: translateY(-2px);
+}
+
+#addToCartButton:active {
+    background-color: #004a61;
+    transform: translateY(0);
+}
+
 
 /* --- NEW: Turnover Result Styling --- */
 .turnover-result {
-    font-size: 1.5em; /* Make it stand out */
+    font-size: 1.5em; 
     font-weight: 700;
-    color: #007DA3; /* Use brand color */
+    color: #007DA3; 
     text-align: center;
-    background-color: #e9f5ff; /* Light blue background */
+    background-color: #e9f5ff; 
     padding: 20px;
     border-radius: 5px;
     border: 1px solid #cce7ef;
-    margin-top: -10px; /* Pull it up a bit */
+    margin-top: -10px;
     margin-bottom: 25px;
 }
 
@@ -329,6 +357,17 @@ h3 {
 
 .results-table tbody tr:hover {
     background-color: #e9f5ff;
+}
+
+/* --- NEW: Select Column Styling --- */
+.select-column {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.select-column input[type="checkbox"] {
+    transform: scale(1.5);
+    cursor: pointer;
 }
 
 /* Styling for Download Links in Table */
@@ -429,6 +468,13 @@ footer {
         padding-left: 50%;
         text-align: right;
         min-height: 24px;
+    }
+    
+    /* --- NEW: Responsive style for select column --- */
+    .results-table td.select-column {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end; /* Aligns checkbox to the right */
     }
 
     .results-table td:last-child {
