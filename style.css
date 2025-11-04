@@ -115,15 +115,15 @@ h2 {
     gap: 15px;
     margin-bottom: 15px;
     flex-wrap: wrap;
-    /* Aligns items to the top, so they don't stretch */
-    align-items: flex-start;
+    justify-content: space-around;
 }
 
+/* UPDATED: Wrapper is a simple flex container again */
 .equipment-icon-wrapper {
-    display: flex;
-    flex-direction: column; /* Stack label and dropdown */
+    display: flex; 
     background-color: #e9ecef;
     border-radius: 5px;
+    cursor: pointer;
     transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
     border: 1px solid #ced4da;
     font-weight: 500;
@@ -132,7 +132,6 @@ h2 {
     min-width: 120px;
     flex-grow: 1;
     flex-basis: 150px;
-    /* IMPORTANT: The wrapper itself no longer needs a cursor */
 }
 
 .equipment-icon {
@@ -142,7 +141,7 @@ h2 {
     margin-bottom: 5px;
 }
 
-/* UPDATED: Label fills the 'button' part */
+/* UPDATED: Label fills the wrapper again */
 .equipment-icon-wrapper label {
     display: flex;
     flex-direction: column;
@@ -151,14 +150,15 @@ h2 {
     gap: 10px;
     padding: 15px;
     
+    /* Make the label fill the wrapper */
     width: 100%;
-    /* REMOVED height: 100% to allow wrapper to grow */
-    box-sizing: border-box;
+    height: 100%;
+    box-sizing: border-box; 
 
     background-color: transparent;
     border: none;
     margin: 0;
-    cursor: pointer; /* The label is the clickable part */
+    cursor: pointer;
 }
 
 /* This targets the wrapper as a whole for checked state */
@@ -185,28 +185,10 @@ h2 {
 }
 
 
-/* --- NEW: Styling for the dropdowns INSIDE the wrappers --- */
-.equipment-icon-wrapper .input-group {
-    width: 100%;
-    padding: 15px;
-    box-sizing: border-box;
-    background-color: #f8f9fa; /* Light background for the dropdown area */
-    border-top: 1px solid #ced4da;
-    margin-bottom: 0; /* Remove default margin */
-    /* Make labels inside dropdowns dark */
-    color: #343a40; 
-}
-/* This selector needs to be more specific */
-.equipment-icon-wrapper:has(input[type="checkbox"]:checked) .input-group,
-.equipment-icon-wrapper:has(input[type="checkbox"]:checked) .input-group label {
-    color: #343a40; /* Keep dropdown text dark even when selected */
-}
-.equipment-icon-wrapper .input-group label {
-    color: #343a40;
-}
+/* --- REMOVED: Styles for .equipment-icon-wrapper .input-group --- */
 
 
-/* Input Group Styling (for main flow rate input) */
+/* Input Group Styling (for main flow rate and dropdowns) */
 .input-group {
     margin-bottom: 18px;
     display: flex;
@@ -249,7 +231,7 @@ h2 {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%208l5%205%205-5z%22%20fill%3D%22%23495057%22%2F%3E%3C%2Vsvg%3E');
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%208l5%205%205-5z%22%20fill%3D%22%23495057%22%2F%3E%3C%2Fsvg%3E');
     background-repeat: no-repeat;
     background-position: right 12px center;
     background-size: 12px;
