@@ -98,8 +98,12 @@
             </section>
 
             <section id="flowRateSection" class="input-section">
-                <h2>Enter Flow Rate</h2>
+                <h2>Enter System Parameters</h2>
                 <div class="parameter-grid">
+                    <div class="input-group">
+                        <label for="poolVolume">Pool Volume (Gallons):</label>
+                        <input type="number" id="poolVolume" placeholder="e.g., 50000">
+                    </div>
                     <div class="input-group">
                         <label for="circulationRate">Circulation Rate (GPM):</label>
                         <input type="number" id="circulationRate" placeholder="e.g., 500">
@@ -107,19 +111,24 @@
                 </div>
             </section>
 
-            <button id="calculateButton">Find Recommended Equipment</button>
+            <button id="calculateButton">Build Pump Room</button>
+
+            <section id="turnoverResultSection" class="input-section hidden">
+                <h3>System Turnover Time</h3>
+                <p id="turnoverResultText" class="turnover-result"></p>
+            </section>
 
             <section id="resultsSection" class="results-section hidden">
                 <h2>Bill of Materials</h2>
                 <table class="results-table">
                     <thead>
                         <tr>
-                            <th>Category</th> 
+                            <th>Description</th> 
                             <th>Part Number</th>
                             <th>Model</th>
                             <th>Flowrate (GPM)</th>
-                            <th>HP</th>
-                            <th>Downloads</th> </tr>
+                            <th>Downloads</th>
+                        </tr>
                     </thead>
                     <tbody id="results-body"></tbody>
                 </table>
