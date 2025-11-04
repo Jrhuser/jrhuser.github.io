@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOM loaded - using new MULTI-SELECT logic.");
+    console.log("DOM loaded - using new MULTI-SELECT logic with integrated downloads.");
 
     // --- Database ---
     let database = [];
-    let allModelData = new Map(); // To store model data by unique key for download links
+    let allModelData = new Map(); // To store model data by unique key (still useful for debugging)
 
     // --- Element Selection (New) ---
     const equipmentCheckboxes = document.querySelectorAll('input[name="equipmentGroup"]');
@@ -18,14 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.getElementById('calculateButton');
     const resultsSection = document.getElementById('resultsSection');
     const noResultsMessage = document.getElementById('noResultsMessage');
-    const resultsBody = document.getElementById('results-body'); // The new <tbody>
+    const resultsBody = document.getElementById('results-body');
 
-    const downloadsSection = document.getElementById('downloadsSection');
-    const specLink = document.getElementById('specLink');
-    const cutSheetLink = document.getElementById('cutSheetLink');
-    const gaLink = document.getElementById('gaLink');
-    const cadLink = document.getElementById('cadLink');
-    const learnMoreBtn = document.getElementById('learnMoreBtn');
+    // --- Removed all consts for downloadsSection, links, and learnMoreBtn ---
 
     // --- Load Database ---
     async function loadDatabase() {
@@ -44,16 +39,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- NEW: Toggles secondary dropdowns based on checkbox state ---
+    // --- Toggles secondary dropdowns ---
     function toggleSecondaryOptions() {
-        // Show/Hide Filter options
         if (filterCheckbox.checked) {
             filterOptions.classList.remove('hidden');
         } else {
             filterOptions.classList.add('hidden');
         }
 
-        // Show/Hide Pump options
         if (pumpCheckbox.checked) {
             pumpOptions.classList.remove('hidden');
         } else {
@@ -67,8 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleSecondaryOptions();
             // Clear old results when changing selections
             resultsSection.classList.add('hidden');
-            downloadsSection.classList.add('hidden');
-            learnMoreBtn.classList.add('hidden');
             noResultsMessage.classList.add('hidden');
             resultsBody.innerHTML = '';
         });
@@ -76,14 +67,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Calculate Button Listener (New Multi-Select Logic) ---
     calculateButton.addEventListener('click', () => {
-        allModelData.clear(); // Clear old model data
-        resultsBody.innerHTML = ''; // Clear old results
+        allModelData.clear();
+        resultsBody.innerHTML = ''; 
         resultsSection.classList.add('hidden');
-        downloadsSection.classList.add('hidden');
-        learnMoreBtn.classList.add('hidden');
         noResultsMessage.classList.add('hidden');
         
-        // 1. Get all checked equipment groups
         const checkedGroups = Array.from(equipmentCheckboxes)
                                    .filter(cb => cb.checked)
                                    .map(cb => cb.value);
@@ -101,13 +89,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let allMatchingModels = [];
 
-        // 2. Loop through each checked group and find matching models
         for (const selectedGroup of checkedGroups) {
-            
-            // 3. Start filtering by Grouping
             let groupModels = database.filter(item => item.Grouping === selectedGroup);
 
-            // 4. Conditional Filtering
             if (selectedGroup === 'Filter') {
                 const filterType = document.getElementById('filterType').value;
                 groupModels = groupModels.filter(item => item["Equipment Type"] === filterType);
@@ -116,7 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 groupModels = groupModels.filter(item => item.Power === pumpVoltage);
             }
 
-            // 5. Flow Rate Filtering (The main logic)
             const flowMatchedModels = groupModels.filter(item => {
                 const min = parseFloat(item["Min Flow"]);
                 const max = parseFloat(item["Max Flow"]);
@@ -127,11 +110,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 return isMinMatch && isMaxMatch;
             });
             
-            // 6. Add the models found for this group to the main list
             allMatchingModels = allMatchingModels.concat(flowMatchedModels);
         }
 
-        // 7. Display all found results
         displayResults(allMatchingModels);
     });
 
@@ -145,11 +126,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         resultsSection.classList.remove('hidden');
 
-        // Sort models by their "Grouping" so they appear in a logical order
+        // Helper function to build link HTML
+        const buildLink = (filename, text) => {
+            if (filename) {
+                return `<a href="product/${filename}" target="_blank" class="download-link">${text}</a>`;
+            }
+            return ''; // Return empty string if no filename
+        };
+
         models.sort((a, b) => a.Grouping.localeCompare(b.Grouping));
 
         models.forEach((model, index) => {
-            // Create a unique key for this model to retrieve its data later
             const modelKey = `model-${index}`;
             allModelData.set(modelKey, model);
 
@@ -160,65 +147,31 @@ document.addEventListener('DOMContentLoaded', () => {
             const flowRange = `${flowMin}${flowMax}`;
             const hp = model.HP || 'N/A';
             
-            // !!! UPDATED THIS LINE !!!
+            // Build download links HTML
+            const specLink = buildLink(model['Written Specification'], 'Spec');
+            const cutSheetLink = buildLink(model['Cut Sheet'], 'Cut Sheet');
+            const gaLink = buildLink(model['GA'], 'GA');
+            const cadLink = buildLink(model['CAD'], 'CAD');
+
+            // Join all non-empty links with a space
+            const linksHtml = [specLink, cutSheetLink, gaLink, cadLink].filter(link => link).join(' ');
+
             tr.innerHTML = `
-                <td class="select-column" data-label="Select">
-                    <input type="radio" name="selectedModel" id="${modelKey}" value="${modelKey}">
-                </td>
                 <td data-label="Category"><strong>${model.Grouping}</strong></td>
                 <td data-label="Part Number">${model["Part Number"] || 'N/A'}</td>
                 <td data-label="Model">${model.Model || 'N/A'}</td>
                 <td data-label="Flowrate Range (GPM)">${flowRange}</td>
                 <td data-label="HP">${hp}</td>
+                <td data-label="Downloads" class="downloads-cell">${linksHtml.length > 0 ? linksHtml : 'N/A'}</td>
             `;
             
             resultsBody.appendChild(tr);
         });
 
-        // Add event listeners to the new radio buttons
-        document.querySelectorAll('input[name="selectedModel"]').forEach(radio => {
-            radio.addEventListener('change', (e) => {
-                const selectedKey = e.target.value;
-                const selectedModelData = allModelData.get(selectedKey);
-                updateDownloads(selectedModelData);
-            });
-        });
+        // --- Removed all logic for download radio buttons ---
     }
 
-    // --- REUSED: This function works as-is ---
-    function updateDownloads(modelData) {
-        const setupLink = (linkElement, filename) => {
-            if (filename) {
-                // Assuming files are in a 'product' folder
-                linkElement.href = `product/${filename}`; 
-                linkElement.classList.remove('hidden');
-                return true;
-            } else {
-                linkElement.classList.add('hidden');
-                return false;
-            }
-        };
-
-        if (modelData) {
-            const hasSpec = setupLink(specLink, modelData['Written Specification']);
-            const hasCut = setupLink(cutSheetLink, modelData['Cut Sheet']);
-            const hasGa = setupLink(gaLink, modelData['GA']);
-            const hasCad = setupLink(cadLink, modelData['CAD']);
-            
-            if (hasSpec || hasCut || hasGa || hasCad) {
-                downloadsSection.classList.remove('hidden');
-                learnMoreBtn.classList.remove('hidden');
-                const subject = `Inquiry about ${modelData.Model || modelData["Part Number"]}`;
-                learnMoreBtn.href = `mailto:James.Huser@Xylem.com?subject=${encodeURIComponent(subject)}`;
-            } else {
-                downloadsSection.classList.add('hidden');
-                learnMoreBtn.classList.add('hidden');
-            }
-        } else {
-            downloadsSection.classList.add('hidden');
-            learnMoreBtn.classList.add('hidden');
-        }
-    }
+    // --- Removed the entire updateDownloads function ---
 
     // --- Initialize ---
     loadDatabase();
