@@ -1,26 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOM loaded - using new MULTI-SELECT logic with integrated downloads.");
+    console.log("DOM loaded - using new logic with Turnover calculation.");
 
     // --- Database ---
     let database = [];
-    let allModelData = new Map(); // To store model data by unique key (still useful for debugging)
+    let allModelData = new Map();
 
-    // --- Element Selection (New) ---
+    // --- Element Selection ---
     const equipmentCheckboxes = document.querySelectorAll('input[name="equipmentGroup"]');
     const filterCheckbox = document.getElementById('radioFilter');
     const pumpCheckbox = document.getElementById('radioPump');
     
     const filterOptions = document.getElementById('filterOptions');
     const pumpOptions = document.getElementById('pumpOptions');
-    const circulationRateInput = document.getElementById('circulationRate');
     
-    // --- Element Selection (Existing) ---
+    // --- NEW Inputs and Outputs ---
+    const poolVolumeInput = document.getElementById('poolVolume');
+    const circulationRateInput = document.getElementById('circulationRate');
+    const turnoverResultSection = document.getElementById('turnoverResultSection');
+    const turnoverResultText = document.getElementById('turnoverResultText');
+    
     const calculateButton = document.getElementById('calculateButton');
     const resultsSection = document.getElementById('resultsSection');
     const noResultsMessage = document.getElementById('noResultsMessage');
     const resultsBody = document.getElementById('results-body');
-
-    // --- Removed all consts for downloadsSection, links, and learnMoreBtn ---
 
     // --- Load Database ---
     async function loadDatabase() {
@@ -61,34 +63,49 @@ document.addEventListener('DOMContentLoaded', () => {
             // Clear old results when changing selections
             resultsSection.classList.add('hidden');
             noResultsMessage.classList.add('hidden');
+            turnoverResultSection.classList.add('hidden'); // Hide turnover too
             resultsBody.innerHTML = '';
         });
     });
 
-    // --- Calculate Button Listener (New Multi-Select Logic) ---
+    // --- Calculate Button Listener ---
     calculateButton.addEventListener('click', () => {
         allModelData.clear();
         resultsBody.innerHTML = ''; 
         resultsSection.classList.add('hidden');
         noResultsMessage.classList.add('hidden');
+        turnoverResultSection.classList.add('hidden'); // Hide on new calc
         
-        const checkedGroups = Array.from(equipmentCheckboxes)
-                                   .filter(cb => cb.checked)
-                                   .map(cb => cb.value);
+        // 1. Get and Validate Inputs
+        const poolVolume = parseFloat(poolVolumeInput.value);
+        const circRate = parseFloat(circulationRateInput.value);
 
-        if (checkedGroups.length === 0) {
-            alert("Please select at least one equipment type.");
+        if (isNaN(poolVolume) || poolVolume <= 0) {
+            alert("Please enter a valid, positive Pool Volume (Gallons).");
             return;
         }
-
-        const circRate = parseFloat(circulationRateInput.value);
         if (isNaN(circRate) || circRate <= 0) {
             alert("Please enter a valid, positive Circulation Rate (GPM).");
             return;
         }
 
+        // 2. Calculate and Display Turnover Time
+        const turnoverTime = poolVolume / circRate;
+        turnoverResultText.textContent = `${turnoverTime.toFixed(2)} minutes`;
+        turnoverResultSection.classList.remove('hidden');
+
+        // 3. Get Checked Equipment
+        const checkedGroups = Array.from(equipmentCheckboxes)
+                                   .filter(cb => cb.checked)
+                                   .map(cb => cb.value);
+
+        if (checkedGroups.length === 0) {
+            return; 
+        }
+
         let allMatchingModels = [];
 
+        // 4. Loop through and find equipment
         for (const selectedGroup of checkedGroups) {
             let groupModels = database.filter(item => item.Grouping === selectedGroup);
 
@@ -113,12 +130,13 @@ document.addEventListener('DOMContentLoaded', () => {
             allMatchingModels = allMatchingModels.concat(flowMatchedModels);
         }
 
+        // 5. Display all found results
         displayResults(allMatchingModels);
     });
 
     // --- Dynamically builds the results table ---
     function displayResults(models) {
-        if (models.length === 0) {
+        if (models.length === 0 && Array.from(equipmentCheckboxes).some(cb => cb.checked)) {
             noResultsMessage.classList.remove('hidden');
             resultsSection.classList.add('hidden');
             return;
@@ -126,12 +144,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         resultsSection.classList.remove('hidden');
 
-        // Helper function to build link HTML
         const buildLink = (filename, text) => {
             if (filename) {
                 return `<a href="product/${filename}" target="_blank" class="download-link">${text}</a>`;
             }
-            return ''; // Return empty string if no filename
+            return '';
         };
 
         models.sort((a, b) => a.Grouping.localeCompare(b.Grouping));
@@ -145,35 +162,28 @@ document.addEventListener('DOMContentLoaded', () => {
             const flowMin = model["Min Flow"];
             const flowMax = isNaN(parseFloat(model["Max Flow"])) ? " +" : ` - ${model["Max Flow"]}`;
             const flowRange = `${flowMin}${flowMax}`;
-            const hp = model.HP || 'N/A';
             
-            // Build download links HTML
             const specLink = buildLink(model['Written Specification'], 'Spec');
             const cutSheetLink = buildLink(model['Cut Sheet'], 'Cut Sheet');
             const gaLink = buildLink(model['GA'], 'GA');
             const cadLink = buildLink(model['CAD'], 'CAD');
 
-            // Join all non-empty links with a space
             const linksHtml = [specLink, cutSheetLink, gaLink, cadLink].filter(link => link).join(' ');
 
+            // !!! UPDATED THIS LINE !!!
             tr.innerHTML = `
-                <td data-label="Category"><strong>${model.Grouping}</strong></td>
+                <td data-label="Description">${model["Equipment Type"] || 'N/A'}</td>
                 <td data-label="Part Number">${model["Part Number"] || 'N/A'}</td>
                 <td data-label="Model">${model.Model || 'N/A'}</td>
                 <td data-label="Flowrate Range (GPM)">${flowRange}</td>
-                <td data-label="HP">${hp}</td>
                 <td data-label="Downloads" class="downloads-cell">${linksHtml.length > 0 ? linksHtml : 'N/A'}</td>
             `;
             
             resultsBody.appendChild(tr);
         });
-
-        // --- Removed all logic for download radio buttons ---
     }
-
-    // --- Removed the entire updateDownloads function ---
 
     // --- Initialize ---
     loadDatabase();
-    toggleSecondaryOptions(); // Run on load to set the initial state
+    toggleSecondaryOptions();
 });
