@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
         displayResults(allMatchingModels);
     });
 
-    // --- NEW: Dynamically builds the results table ---
+    // --- Dynamically builds the results table ---
     function displayResults(models) {
         if (models.length === 0) {
             noResultsMessage.classList.remove('hidden');
@@ -160,14 +160,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const flowRange = `${flowMin}${flowMax}`;
             const hp = model.HP || 'N/A';
             
-            // Added "Grouping" to the table to make it clear what each item is
+            // !!! UPDATED THIS LINE !!!
             tr.innerHTML = `
                 <td class="select-column" data-label="Select">
                     <input type="radio" name="selectedModel" id="${modelKey}" value="${modelKey}">
                 </td>
                 <td data-label="Category"><strong>${model.Grouping}</strong></td>
-                <td data-label="Equipment Type">${model["Equipment Type"] || 'N/A'}</td>
-                <td data-label="Model">${model.Model || model["Part Number"] || 'N/A'}</td>
+                <td data-label="Part Number">${model["Part Number"] || 'N/A'}</td>
+                <td data-label="Model">${model.Model || 'N/A'}</td>
                 <td data-label="Flowrate Range (GPM)">${flowRange}</td>
                 <td data-label="HP">${hp}</td>
             `;
