@@ -109,23 +109,19 @@ h2 {
     display: none !important;
 }
 
-/* --- NEW: Icon Checkbox Group Styling --- */
+/* --- Icon Checkbox Group Styling --- */
 .radio-group-icons {
     display: flex;
     gap: 15px;
     margin-bottom: 15px;
     flex-wrap: wrap;
-    justify-content: space-around; /* Distribute them evenly */
+    justify-content: space-around;
 }
 
-/* NEW: Styling for equipment icons */
+/* UPDATED: Wrapper now has padding removed and is a flex container */
 .equipment-icon-wrapper {
-    display: flex;
-    flex-direction: column; /* Stack image and label */
-    align-items: center;    /* Center content horizontally */
-    gap: 10px;              /* Space between image and label/checkbox */
+    display: flex; /* This ensures the label inside can fill it */
     background-color: #e9ecef;
-    padding: 15px;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
@@ -136,29 +132,40 @@ h2 {
     min-width: 120px;
     flex-grow: 1;
     flex-basis: 150px;
+    /* Padding, gap, etc., have been moved to the label */
 }
 
 .equipment-icon {
-    max-width: 100px; /* Adjust as needed */
+    max-width: 100px;
     height: auto;
-    display: block; /* Remove extra space below image */
-    margin-bottom: 5px; /* Space between image and its checkbox/label */
+    display: block;
+    margin-bottom: 5px;
 }
 
-/* Adjust checkbox label for the new wrapper */
+/* UPDATED: Label now fills the wrapper and handles layout */
 .equipment-icon-wrapper label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Center content vertically */
+    gap: 10px;
+    padding: 15px;
+    
+    /* Make the label fill the wrapper */
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box; /* Important! */
+
     background-color: transparent;
     border: none;
-    padding: 0;
     margin: 0;
-    display: block;
-    cursor: pointer; /* Ensure label is clickable */
+    cursor: pointer;
 }
 
 /* This targets the wrapper as a whole for checked state */
 .equipment-icon-wrapper:has(input[type="checkbox"]:checked) {
     background-color: #007DA3;
-    color: #ffffff; /* Text inside wrapper */
+    color: #ffffff;
     border-color: #007DA3;
     box-shadow: 0 4px 8px rgba(0, 125, 163, 0.3);
 }
@@ -167,7 +174,6 @@ h2 {
 .equipment-icon-wrapper:has(input[type="checkbox"]:checked) label {
     color: #ffffff;
 }
-
 
 .equipment-icon-wrapper:hover {
     background-color: #CCE7EF;
@@ -210,7 +216,7 @@ h2 {
     outline: none;
 }
 
-/* --- NEW: Styling for <select> dropdowns --- */
+/* Styling for <select> dropdowns */
 .input-group select {
     width: 100%;
     padding: 12px;
@@ -219,11 +225,10 @@ h2 {
     font-size: 1em;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
     box-sizing: border-box;
-    background-color: #fff; /* Ensure white background */
-    -webkit-appearance: none; /* Remove default styling */
+    background-color: #fff;
+    -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    /* Add a custom dropdown arrow */
     background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%208l5%205%205-5z%22%20fill%3D%22%23495057%22%2F%3E%3C%2Fsvg%3E');
     background-repeat: no-repeat;
     background-position: right 12px center;
@@ -295,7 +300,7 @@ h2 {
 }
 
 .cta-button:hover {
-    background-color: #005F7D; /* Darker Xylem Blue */
+    background-color: #005F7D;
     transform: translateY(-2px);
 }
 
@@ -408,7 +413,6 @@ footer {
         padding: 0 20px;
     }
 
-    /* Responsive table logic */
     .results-table, .results-table thead, .results-table tbody, .results-table th, .results-table td, .results-table tr {
         display: block;
     }
