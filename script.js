@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOM loaded - using new logic with Turnover calculation.");
+    console.log("DOM loaded - using new logic with Turnover and Cart button.");
 
     // --- Database ---
     let database = [];
@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const filterOptions = document.getElementById('filterOptions');
     const pumpOptions = document.getElementById('pumpOptions');
     
-    // --- NEW Inputs and Outputs ---
     const poolVolumeInput = document.getElementById('poolVolume');
     const circulationRateInput = document.getElementById('circulationRate');
     const turnoverResultSection = document.getElementById('turnoverResultSection');
@@ -23,6 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultsSection = document.getElementById('resultsSection');
     const noResultsMessage = document.getElementById('noResultsMessage');
     const resultsBody = document.getElementById('results-body');
+
+    // --- NEW: Add to Cart Button ---
+    const addToCartButton = document.getElementById('addToCartButton');
 
     // --- Load Database ---
     async function loadDatabase() {
@@ -60,10 +62,10 @@ document.addEventListener('DOMContentLoaded', () => {
     equipmentCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', () => {
             toggleSecondaryOptions();
-            // Clear old results when changing selections
             resultsSection.classList.add('hidden');
             noResultsMessage.classList.add('hidden');
-            turnoverResultSection.classList.add('hidden'); // Hide turnover too
+            turnoverResultSection.classList.add('hidden');
+            addToCartButton.classList.add('hidden'); // Hide cart button
             resultsBody.innerHTML = '';
         });
     });
@@ -74,9 +76,9 @@ document.addEventListener('DOMContentLoaded', () => {
         resultsBody.innerHTML = ''; 
         resultsSection.classList.add('hidden');
         noResultsMessage.classList.add('hidden');
-        turnoverResultSection.classList.add('hidden'); // Hide on new calc
+        turnoverResultSection.classList.add('hidden');
+        addToCartButton.classList.add('hidden'); // Hide on new calc
         
-        // 1. Get and Validate Inputs
         const poolVolume = parseFloat(poolVolumeInput.value);
         const circRate = parseFloat(circulationRateInput.value);
 
@@ -89,12 +91,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 2. Calculate and Display Turnover Time
         const turnoverTime = poolVolume / circRate;
         turnoverResultText.textContent = `${turnoverTime.toFixed(2)} minutes`;
         turnoverResultSection.classList.remove('hidden');
 
-        // 3. Get Checked Equipment
         const checkedGroups = Array.from(equipmentCheckboxes)
                                    .filter(cb => cb.checked)
                                    .map(cb => cb.value);
@@ -105,7 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let allMatchingModels = [];
 
-        // 4. Loop through and find equipment
         for (const selectedGroup of checkedGroups) {
             let groupModels = database.filter(item => item.Grouping === selectedGroup);
 
@@ -130,7 +129,6 @@ document.addEventListener('DOMContentLoaded', () => {
             allMatchingModels = allMatchingModels.concat(flowMatchedModels);
         }
 
-        // 5. Display all found results
         displayResults(allMatchingModels);
     });
 
@@ -143,6 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         resultsSection.classList.remove('hidden');
+        addToCartButton.classList.remove('hidden'); // Show cart button
 
         const buildLink = (filename, text) => {
             if (filename) {
@@ -162,6 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const flowMin = model["Min Flow"];
             const flowMax = isNaN(parseFloat(model["Max Flow"])) ? " +" : ` - ${model["Max Flow"]}`;
             const flowRange = `${flowMin}${flowMax}`;
+            const partNumber = model["Part Number"] || ''; // Get part number
             
             const specLink = buildLink(model['Written Specification'], 'Spec');
             const cutSheetLink = buildLink(model['Cut Sheet'], 'Cut Sheet');
@@ -170,10 +170,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const linksHtml = [specLink, cutSheetLink, gaLink, cadLink].filter(link => link).join(' ');
 
-            // !!! UPDATED THIS LINE !!!
+            // --- !!! NEW <td> ADDED for checkbox !!! ---
             tr.innerHTML = `
+                <td class="select-column" data-label="Select">
+                    <input type="checkbox" class="bom-checkbox" value="${partNumber}">
+                </td>
                 <td data-label="Description">${model["Equipment Type"] || 'N/A'}</td>
-                <td data-label="Part Number">${model["Part Number"] || 'N/A'}</td>
+                <td data-label="Part Number">${partNumber || 'N/A'}</td>
                 <td data-label="Model">${model.Model || 'N/A'}</td>
                 <td data-label="Flowrate Range (GPM)">${flowRange}</td>
                 <td data-label="Downloads" class="downloads-cell">${linksHtml.length > 0 ? linksHtml : 'N/A'}</td>
@@ -182,6 +185,45 @@ document.addEventListener('DOMContentLoaded', () => {
             resultsBody.appendChild(tr);
         });
     }
+
+    // --- !!! NEW EVENT LISTENER FOR CART BUTTON !!! ---
+    addToCartButton.addEventListener('click', () => {
+        const checkedBoxes = document.querySelectorAll('.bom-checkbox:checked');
+        
+        if (checkedBoxes.length === 0) {
+            alert('Please select at least one item to add to the cart.');
+            return;
+        }
+
+        const partNumberList = [];
+        checkedBoxes.forEach(box => {
+            if (box.value) { // Only add if the part number isn't empty
+                partNumberList.push(box.value);
+            }
+        });
+
+        if (partNumberList.length === 0) {
+            alert('The selected items do not have part numbers to add.');
+            return;
+        }
+
+        // --- This is the "connect to ecommerce" part ---
+        // 1. Log for developer
+        console.log('Part numbers to add to cart:', partNumberList);
+
+        // 2. Create a hypothetical URL to send to your e-commerce site
+        // (Replace 'https://your-ecommerce-site.com/cart/add' with the real URL)
+        const baseUrl = 'https://your-ecommerce-site.com/cart/add';
+        const partsQuery = partNumberList.join(','); // e.g., "1003-8647,GRDN-3"
+        const ecommerceUrl = `${baseUrl}?parts=${encodeURIComponent(partsQuery)}`;
+
+        // 3. Show the user what's happening (for this demo)
+        alert(`The following part numbers would be sent to the cart:\n${partNumberList.join('\n')}\n\nRedirecting to:\n${ecommerceUrl}`);
+        
+        // 4. (Optional) To automatically redirect the user, uncomment the line below:
+        // window.location.href = ecommerceUrl; 
+    });
+
 
     // --- Initialize ---
     loadDatabase();
