@@ -96,6 +96,14 @@ h2 {
     padding-bottom: 10px;
 }
 
+h3 {
+    text-align: center;
+    color: #343a40;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+
 /* Section Styling */
 .input-section, .system-type-selection, .results-section, .equipment-selection {
     padding: 0; 
@@ -275,7 +283,20 @@ h2 {
     transform: translateY(0);
 }
 
-/* --- CTA Button Styling REMOVED --- */
+
+/* --- NEW: Turnover Result Styling --- */
+.turnover-result {
+    font-size: 1.5em; /* Make it stand out */
+    font-weight: 700;
+    color: #007DA3; /* Use brand color */
+    text-align: center;
+    background-color: #e9f5ff; /* Light blue background */
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid #cce7ef;
+    margin-top: -10px; /* Pull it up a bit */
+    margin-bottom: 25px;
+}
 
 
 /* Results Table Styling */
@@ -310,9 +331,7 @@ h2 {
     background-color: #e9f5ff;
 }
 
-/* --- .select-column styles REMOVED --- */
-
-/* --- NEW: Styling for Download Links in Table --- */
+/* Styling for Download Links in Table */
 .results-table td.downloads-cell {
     text-align: center;
     white-space: nowrap;
@@ -325,9 +344,6 @@ h2 {
     display: inline-block;
 }
 
-
-/* Downloads Section Styling */
-/* --- .downloads-grid REMOVED --- */
 
 /* This style is now used by the links in the table */
 .download-link {
@@ -414,8 +430,6 @@ footer {
         text-align: right;
         min-height: 24px;
     }
-    
-    /* Removed responsive style for .select-column */
 
     .results-table td:last-child {
         border-bottom: 0;
