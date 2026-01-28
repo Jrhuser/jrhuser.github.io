@@ -55,7 +55,7 @@ header {
     font-weight: 700;
 }
 
-/* Main Content */
+/* Main Content Area */
 main {
     padding: 40px;
     max-width: 1320px;
@@ -198,7 +198,7 @@ h2 {
     margin-top: 20px;
 }
 
-/* Results Section */
+/* Results Table Section */
 .turnover-result {
     font-size: 1.5em;
     font-weight: 700;
@@ -244,7 +244,7 @@ h2 {
     color: white;
 }
 
-/* Responsiveness */
+/* Mobile Responsiveness */
 @media (max-width: 768px) {
     .button-group { flex-direction: column; }
     
