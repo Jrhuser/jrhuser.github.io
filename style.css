@@ -1,269 +1,63 @@
-/* General Layout and Typography */
-html, body {
-    height: 100%;
-}
-
+/* General Layout */
+html, body { height: 100%; }
 body {
     font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f7f6;
-    color: #333;
-    line-height: 1.6;
-    display: flex;
-    flex-direction: column;
+    margin: 0; padding: 0;
+    background-color: #f4f7f6; color: #333;
+    line-height: 1.6; display: flex; flex-direction: column;
 }
+.container { width: 100%; background-color: #ffffff; flex-grow: 1; }
 
-.container {
-    width: 100%;
-    background-color: #ffffff;
-    flex-grow: 1;
-}
+header { background-color: #007DA3; color: #ffffff; padding: 0 40px; height: 70px; }
+.header-content { display: flex; align-items: center; justify-content: space-between; height: 100%; }
+.logo { height: 30px; }
+.main-nav { display: flex; gap: 24px; flex-grow: 1; justify-content: center; }
+.main-nav a { color: #ffffff; text-decoration: none; font-weight: 700; }
 
-/* Header Styling */
-header {
-    background-color: #007DA3;
-    color: #ffffff;
-    padding: 0 40px;
-    height: 70px;
-    box-sizing: border-box;
-}
+main { padding: 40px; max-width: 1320px; margin: 0 auto; }
+h2 { color: #007DA3; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; margin-bottom: 25px; }
 
-.header-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 100%;
-}
+/* Equipment Selection Column Logic */
+.radio-group-icons { display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
+.equipment-selection-column { flex: 1; min-width: 180px; display: flex; flex-direction: column; gap: 10px; }
+.equipment-icon-wrapper { background-color: #f8f9fa; border: 2px solid #ced4da; border-radius: 8px; cursor: pointer; width: 100%; }
+.equipment-icon-wrapper label { display: flex; flex-direction: column; align-items: center; padding: 20px; cursor: pointer; font-weight: 700; gap: 12px; }
+.equipment-icon { max-width: 80px; }
+.equipment-icon-wrapper:has(input:checked) { background-color: #007DA3; color: #ffffff; border-color: #007DA3; }
+.equipment-icon-wrapper input { display: none; }
 
-.logo {
-    height: 30px;
-    width: auto;
-}
+/* Inline UV Dropdown */
+.inline-dropdown { margin-top: 5px; }
+.inline-dropdown select { border: 2px solid #007DA3; }
 
-.main-nav {
-    display: flex;
-    gap: 24px;
-    flex-grow: 1;
-    justify-content: center;
-}
+.button-group { display: flex; gap: 15px; margin: 30px 0; }
+#calculateButton, #resetButton { flex: 1; padding: 16px; font-size: 1.1em; font-weight: 700; border-radius: 6px; cursor: pointer; border: none; }
+#calculateButton { background-color: #61D604; color: white; }
+#resetButton { background-color: #f1f3f5; color: #495057; border: 1px solid #ced4da; }
 
-.main-nav a {
-    color: #ffffff;
-    text-decoration: none;
-    font-weight: 700;
-}
-
-/* Content Sections */
-main {
-    padding: 40px;
-    max-width: 1320px;
-    margin: 0 auto;
-}
-
-h2 {
-    color: #007DA3;
-    font-size: 1.6em;
-    border-bottom: 2px solid #e0e0e0;
-    padding-bottom: 10px;
-    margin-bottom: 25px;
-}
-
-/* Equipment Selection Cards */
-.radio-group-icons {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 25px;
-    flex-wrap: wrap;
-}
-
-.equipment-icon-wrapper {
-    flex: 1;
-    min-width: 180px;
-    background-color: #f8f9fa;
-    border: 2px solid #ced4da;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-}
-
-.equipment-icon-wrapper label {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    cursor: pointer;
-    font-weight: 700;
-    gap: 12px;
-}
-
-.equipment-icon {
-    max-width: 80px;
-    height: auto;
-}
-
-.equipment-icon-wrapper:has(input:checked) {
-    background-color: #007DA3;
-    color: #ffffff;
-    border-color: #007DA3;
-}
-
-.equipment-icon-wrapper input {
-    display: none;
-}
-
-/* Input Fields and Dropdowns */
-.input-section {
-    margin-bottom: 30px;
-}
-
-.parameter-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 25px;
-}
-
-.input-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-}
-
-.input-group select, .input-group input {
-    width: 100%;
-    padding: 14px;
-    border: 1px solid #ced4da;
-    border-radius: 6px;
-    font-size: 1em;
-}
-
-.hidden {
-    display: none !important;
-}
-
-/* Action Button Group */
-.button-group {
-    display: flex;
-    gap: 15px;
-    margin: 30px 0;
-}
-
-#calculateButton, #resetButton {
-    flex: 1;
-    padding: 16px;
-    font-size: 1.1em;
-    font-weight: 700;
-    border-radius: 6px;
-    cursor: pointer;
-    border: none;
-    transition: background 0.2s;
-}
-
-#calculateButton {
-    background-color: #61D604;
-    color: white;
-}
-
-#resetButton {
-    background-color: #f1f3f5;
-    color: #495057;
-    border: 1px solid #ced4da;
-}
-
-/* Turnover Result Highlight */
 .turnover-result {
-    font-size: 1.5em;
-    font-weight: 700;
-    color: #007DA3;
-    text-align: center;
-    background-color: #e9f5ff;
-    padding: 20px;
-    border-radius: 6px;
-    border: 2px solid #007DA3;
+    font-size: 1.5em; font-weight: 700; color: #007DA3; text-align: center;
+    background-color: #e9f5ff; padding: 20px; border-radius: 6px; border: 2px solid #007DA3;
 }
 
-/* Bill of Materials Table */
-.results-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
+/* Results Table */
+.results-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+.results-table th, .results-table td { border: 1px solid #dee2e6; padding: 15px; text-align: left; }
+.results-table th { background-color: #007DA3; color: white; font-size: 0.8em; text-transform: uppercase; }
 
-.results-table th, .results-table td {
-    border: 1px solid #dee2e6;
-    padding: 15px;
-    text-align: left;
-}
-
-.results-table th {
-    background-color: #007DA3;
-    color: white;
-    font-size: 0.8em;
-    text-transform: uppercase;
-}
-
-/* Technical Doc Links as Buttons */
 .download-link {
-    display: inline-block;
-    background-color: #f8f9fa;
-    border: 1px solid #adb5bd;
-    padding: 6px 12px;
-    text-decoration: none;
-    color: #007DA3;
-    font-size: 0.8em;
-    border-radius: 4px;
-    margin: 4px 2px;
-    font-weight: 500;
-    text-align: center;
+    display: inline-block; background-color: #f8f9fa; border: 1px solid #adb5bd;
+    padding: 6px 10px; text-decoration: none; color: #007DA3; font-size: 0.8em;
+    border-radius: 4px; margin: 4px 2px; font-weight: 500; text-align: center;
 }
+.download-link:hover { background-color: #007DA3; color: white; }
 
-.download-link:hover {
-    background-color: #007DA3;
-    color: white;
-}
+#addToCartButton { width: 100%; padding: 18px; background-color: #007DA3; color: white; font-weight: 700; font-size: 1.2em; border: none; border-radius: 6px; cursor: pointer; margin-top: 25px; }
 
-#addToCartButton {
-    width: 100%;
-    padding: 18px;
-    background-color: #007DA3;
-    color: white;
-    font-weight: 700;
-    font-size: 1.2em;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-top: 25px;
-}
-
-/* Mobile Responsiveness */
 @media (max-width: 768px) {
     .button-group { flex-direction: column; }
-    
-    .results-table, .results-table thead, .results-table tbody, .results-table th, .results-table td, .results-table tr {
-        display: block;
-    }
-    
-    .results-table tr { margin-bottom: 20px; border: 1px solid #dee2e6; border-radius: 8px; }
-    
-    .results-table td {
-        position: relative;
-        padding-left: 50%;
-        text-align: right;
-        min-height: 45px;
-    }
-    
-    .results-table td::before {
-        content: attr(data-label);
-        position: absolute;
-        left: 15px;
-        font-weight: 700;
-        text-align: left;
-    }
+    .results-table td { display: block; padding-left: 50%; text-align: right; position: relative; }
+    .results-table td::before { content: attr(data-label); position: absolute; left: 15px; font-weight: 700; }
 }
 
-footer {
-    background-color: #343a40;
-    color: white;
-    text-align: center;
-    padding: 25px 0;
-}
+footer { background-color: #343a40; color: white; text-align: center; padding: 25px 0; }
