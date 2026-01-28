@@ -34,7 +34,6 @@
             <section class="equipment-selection">
                 <h2>Select Equipment Type(s)</h2>
                 <div class="radio-group-icons">
-                    
                     <div class="equipment-icon-wrapper">
                         <input type="checkbox" id="radioFilter" name="equipmentGroup" value="Filter">
                         <label for="radioFilter">
@@ -42,7 +41,6 @@
                             Filter
                         </label>
                     </div>
-                    
                     <div class="equipment-icon-wrapper">
                         <input type="checkbox" id="radioPump" name="equipmentGroup" value="Pump">
                         <label for="radioPump">
@@ -50,7 +48,6 @@
                             Pump
                         </label>
                     </div>
-
                     <div class="equipment-icon-wrapper">
                         <input type="checkbox" id="radioStrainer" name="equipmentGroup" value="Strainer">
                         <label for="radioStrainer">
@@ -58,7 +55,6 @@
                             Strainer
                         </label>
                     </div>
-
                     <div class="equipment-icon-wrapper">
                         <input type="checkbox" id="radioUV" name="equipmentGroup" value="UV">
                         <label for="radioUV">
@@ -66,7 +62,6 @@
                             UV
                         </label>
                     </div>
-
                     <div class="equipment-icon-wrapper">
                         <input type="checkbox" id="radioValveKit" name="equipmentGroup" value="Valve Kit">
                         <label for="radioValveKit">
@@ -82,8 +77,19 @@
                     <div id="filterOptions" class="input-group hidden">
                         <label for="filterType">Filter Type:</label>
                         <select id="filterType">
-                            <option value="Defender">Defender</option>
+                            <option value="Defender">Defender (Standard)</option>
+                            <option value="Defender Reduced Height">Defender (Reduced Height)</option>
+                            <option value="Defender Assero">Defender Assero</option>
+                            <option value="Defender Virtuo">Defender Virtuo</option>
                             <option value="Sand Filter">Sand Filter</option>
+                        </select>
+                    </div>
+
+                    <div id="uvOptions" class="input-group hidden">
+                        <label for="uvType">UV Technology:</label>
+                        <select id="uvType">
+                            <option value="Medium Pressure UV">Medium Pressure (Wafer)</option>
+                            <option value="Low Pressure UV">Low Pressure (Ti)</option>
                         </select>
                     </div>
 
@@ -111,7 +117,10 @@
                 </div>
             </section>
 
-            <button id="calculateButton">Build Pump Room</button>
+            <div class="button-group">
+                <button id="calculateButton">Build Pump Room</button>
+                <button id="resetButton">Clear All</button>
+            </div>
 
             <section id="turnoverResultSection" class="input-section hidden">
                 <h3>System Turnover Time</h3>
@@ -123,11 +132,12 @@
                 <table class="results-table">
                     <thead>
                         <tr>
-                            <th class="select-column">Select</th>
+                            <th class="select-column"><input type="checkbox" id="selectAllBOM"></th>
                             <th>Description</th> 
                             <th>Part Number</th>
                             <th>Model</th>
                             <th>Flowrate (GPM)</th>
+                            <th>Footprint (in)</th>
                             <th>Downloads</th>
                         </tr>
                     </thead>
@@ -136,14 +146,12 @@
             </section>
 
             <button id="addToCartButton" class="hidden">Add to Ecommerce Cart</button>
-
             <p id="noResultsMessage" class="no-results hidden">No suitable models found for the given criteria.</p>
-
         </main>
     </div>
 
     <footer>
-        <p>© 2025 Xylem Inc. All rights reserved.</p>
+        <p>© 2026 Xylem Inc. All rights reserved.</p>
     </footer>
 
     <script src="script.js"></script>
