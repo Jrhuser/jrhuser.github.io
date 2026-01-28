@@ -1,4 +1,4 @@
-/* General Layout */
+/* General Layout and Typography */
 html, body {
     height: 100%;
 }
@@ -20,11 +20,13 @@ body {
     flex-grow: 1;
 }
 
+/* Header Styling */
 header {
     background-color: #007DA3;
     color: #ffffff;
     padding: 0 40px;
     height: 70px;
+    box-sizing: border-box;
 }
 
 .header-content {
@@ -34,8 +36,25 @@ header {
     height: 100%;
 }
 
-.logo { height: 30px; }
+.logo {
+    height: 30px;
+    width: auto;
+}
 
+.main-nav {
+    display: flex;
+    gap: 24px;
+    flex-grow: 1;
+    justify-content: center;
+}
+
+.main-nav a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+/* Content Sections */
 main {
     padding: 40px;
     max-width: 1320px;
@@ -44,6 +63,7 @@ main {
 
 h2 {
     color: #007DA3;
+    font-size: 1.6em;
     border-bottom: 2px solid #e0e0e0;
     padding-bottom: 10px;
     margin-bottom: 25px;
@@ -64,6 +84,7 @@ h2 {
     border: 2px solid #ced4da;
     border-radius: 8px;
     cursor: pointer;
+    transition: all 0.2s ease-in-out;
 }
 
 .equipment-icon-wrapper label {
@@ -76,7 +97,10 @@ h2 {
     gap: 12px;
 }
 
-.equipment-icon { max-width: 80px; }
+.equipment-icon {
+    max-width: 80px;
+    height: auto;
+}
 
 .equipment-icon-wrapper:has(input:checked) {
     background-color: #007DA3;
@@ -84,9 +108,40 @@ h2 {
     border-color: #007DA3;
 }
 
-.equipment-icon-wrapper input { display: none; }
+.equipment-icon-wrapper input {
+    display: none;
+}
 
-/* Action Buttons */
+/* Input Fields and Dropdowns */
+.input-section {
+    margin-bottom: 30px;
+}
+
+.parameter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.input-group select, .input-group input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 1em;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Action Button Group */
 .button-group {
     display: flex;
     gap: 15px;
@@ -101,11 +156,21 @@ h2 {
     border-radius: 6px;
     cursor: pointer;
     border: none;
+    transition: background 0.2s;
 }
 
-#calculateButton { background-color: #61D604; color: white; }
-#resetButton { background-color: #f1f3f5; color: #495057; border: 1px solid #ced4da; }
+#calculateButton {
+    background-color: #61D604;
+    color: white;
+}
 
+#resetButton {
+    background-color: #f1f3f5;
+    color: #495057;
+    border: 1px solid #ced4da;
+}
+
+/* Turnover Result Highlight */
 .turnover-result {
     font-size: 1.5em;
     font-weight: 700;
@@ -117,7 +182,7 @@ h2 {
     border: 2px solid #007DA3;
 }
 
-/* Results Table */
+/* Bill of Materials Table */
 .results-table {
     width: 100%;
     border-collapse: collapse;
@@ -137,19 +202,18 @@ h2 {
     text-transform: uppercase;
 }
 
-/* Technical Docs Button Styling */
+/* Technical Doc Links as Buttons */
 .download-link {
     display: inline-block;
     background-color: #f8f9fa;
     border: 1px solid #adb5bd;
-    padding: 6px 10px;
+    padding: 6px 12px;
     text-decoration: none;
     color: #007DA3;
     font-size: 0.8em;
     border-radius: 4px;
     margin: 4px 2px;
     font-weight: 500;
-    white-space: normal;
     text-align: center;
 }
 
@@ -158,19 +222,42 @@ h2 {
     color: white;
 }
 
+#addToCartButton {
+    width: 100%;
+    padding: 18px;
+    background-color: #007DA3;
+    color: white;
+    font-weight: 700;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 25px;
+}
+
+/* Mobile Responsiveness */
 @media (max-width: 768px) {
     .button-group { flex-direction: column; }
-    .results-table td {
+    
+    .results-table, .results-table thead, .results-table tbody, .results-table th, .results-table td, .results-table tr {
         display: block;
+    }
+    
+    .results-table tr { margin-bottom: 20px; border: 1px solid #dee2e6; border-radius: 8px; }
+    
+    .results-table td {
+        position: relative;
         padding-left: 50%;
         text-align: right;
-        position: relative;
+        min-height: 45px;
     }
+    
     .results-table td::before {
         content: attr(data-label);
         position: absolute;
         left: 15px;
         font-weight: 700;
+        text-align: left;
     }
 }
 
