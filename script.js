@@ -26,8 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loadDatabase() {
         try {
-            // Renamed reference for clarity
-            const response = await fetch('products.json'); 
+            const response = await fetch('products.json');
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             database = await response.json();
         } catch (error) {
@@ -79,7 +78,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const poolVolume = parseFloat(poolVolumeInput.value);
         const circRate = parseFloat(circulationRateInput.value);
 
-        if (isNaN(poolVolume) || isNaN(circRate)) return alert("Please enter valid Volume and Flow Rate.");
+        if (isNaN(poolVolume) || isNaN(circRate) || circRate <= 0) {
+            alert("Please enter a valid Volume and Flow Rate.");
+            return;
+        }
 
         turnoverResultText.textContent = `${(poolVolume / circRate).toFixed(2)} minutes`;
         turnoverResultSection.classList.remove('hidden');
@@ -103,7 +105,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const flowMatched = groupModels.filter(item => {
                 const min = parseFloat(item["Min Flow"]);
                 const max = parseFloat(item["Max Flow"]);
-                return circRate >= min && (isNaN(max) || circRate <= max);
+                // If Max Flow is null or NaN, we treat it as an open range
+                const isMaxValid = !isNaN(max) && max !== null;
+                return circRate >= min && (!isMaxValid || circRate <= max);
             });
             allMatchingModels = allMatchingModels.concat(flowMatched);
         }
@@ -121,31 +125,41 @@ document.addEventListener('DOMContentLoaded', () => {
             const footprint = model["Footprint"] || 'N/A';
             const desc = model["Nema Rating"] ? `${model["Equipment Type"]} (${model["Nema Rating"]})` : (model["Equipment Type"] || 'N/A');
 
-            const buildLink = (file, label) => file ? `<a href="product/${file}" target="_blank" class="download-link">${label}</a>` : '';
+            const buildLink = (file, label) => {
+                if (!file) return '';
+                // Standardize file paths if necessary
+                return `<a href="docs/${file}" target="_blank" class="download-link">${label}</a>`;
+            };
+
             const links = [
                 buildLink(model['Written Specification'], 'Spec'),
                 buildLink(model['Cut Sheet'], 'Cut Sheet'),
-                buildLink(model['GA'], 'GA'),
-                buildLink(model['CAD'], 'CAD')
+                buildLink(model['GA'], 'GA')
             ].filter(l => l).join(' ');
 
             tr.innerHTML = `
                 <td><input type="checkbox" class="bom-checkbox" value="${partNum}"></td>
-                <td data-label="Description">${desc}</td>
+                <td data-label="Equipment Type">${desc}</td>
                 <td data-label="Part Number">${partNum}</td>
-                <td data-label="Model">${model.Model || 'N/A'}</td>
+                <td data-label="Model Name">${model.Model || 'N/A'}</td>
                 <td data-label="Flow Range">${model["Min Flow"]} - ${model["Max Flow"] || '+'}</td>
                 <td data-label="Footprint">${footprint}</td>
-                <td data-label="Docs">${links || 'N/A'}</td>
+                <td data-label="Technical Docs">${links || 'N/A'}</td>
             `;
             resultsBody.appendChild(tr);
         });
     }
 
     addToCartButton.addEventListener('click', () => {
-        const checked = Array.from(document.querySelectorAll('.bom-checkbox:checked')).map(cb => cb.value).filter(v => v !== 'N/A');
-        if (checked.length === 0) return alert('Select items with part numbers to continue.');
-        alert(`Successfully added ${checked.length} items to your cart.`);
+        const checked = Array.from(document.querySelectorAll('.bom-checkbox:checked'))
+                             .map(cb => cb.value)
+                             .filter(v => v !== 'N/A');
+        
+        if (checked.length === 0) {
+            alert('Please select at least one product with a part number.');
+            return;
+        }
+        alert(`Request sent for Part Numbers: ${checked.join(', ')}`);
     });
 
     loadDatabase();
