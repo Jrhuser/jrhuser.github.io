@@ -139,9 +139,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     addToCartButton.addEventListener('click', () => {
-        const checked = Array.from(document.querySelectorAll('.bom-checkbox:checked')).map(cb => cb.value).filter(v => v !== 'N/A');
-        if (checked.length === 0) return alert('Select items to continue.');
-        alert(`Adding items to cart: ${checked.join(', ')}`);
+        const checkedRows = Array.from(document.querySelectorAll('.bom-checkbox:checked')).map(cb => {
+            const row = cb.closest('tr');
+            return {
+                partNumber: cb.value,
+                modelName: row.querySelector('[data-label="Model Name"]').textContent
+            };
+        }).filter(item => item.partNumber !== 'N/A');
+
+        if (checkedRows.length === 0) {
+            alert('Please select at least one product with a part number to request a quote.');
+            return;
+        }
+
+        const emailRecipient = 'kenneth.roche@xylem.com';
+        const subject = encodeURIComponent('Quote Request: Pump Room Equipment Selection');
+        
+        let bodyText = 'I would like to request a quote for the following equipment:\n\n';
+        checkedRows.forEach((item, index) => {
+            bodyText += `${index + 1}. Model: ${item.modelName} (Part #: ${item.partNumber})\n`;
+        });
+        
+        const mailtoUrl = `mailto:${emailRecipient}?subject=${subject}&body=${encodeURIComponent(bodyText)}`;
+        window.location.href = mailtoUrl;
     });
 
     loadDatabase();
