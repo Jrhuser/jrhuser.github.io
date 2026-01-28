@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     let database = [];
 
-    // UI Elements
     const equipmentCheckboxes = document.querySelectorAll('input[name="equipmentGroup"]');
     const filterCheckbox = document.getElementById('radioFilter');
     const pumpCheckbox = document.getElementById('radioPump');
@@ -19,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.getElementById('calculateButton');
     const resetButton = document.getElementById('resetButton');
     const resultsSection = document.getElementById('resultsSection');
-    const noResultsMessage = document.getElementById('noResultsMessage');
     const resultsBody = document.getElementById('results-body');
     const addToCartButton = document.getElementById('addToCartButton');
     const selectAllBOM = document.getElementById('selectAllBOM');
@@ -40,20 +38,17 @@ document.addEventListener('DOMContentLoaded', () => {
         uvOptions.classList.toggle('hidden', !uvCheckbox.checked);
     }
 
-    // Reset All Logic
     resetButton.addEventListener('click', () => {
         equipmentCheckboxes.forEach(cb => cb.checked = false);
         poolVolumeInput.value = '';
         circulationRateInput.value = '';
         selectAllBOM.checked = false;
         resultsSection.classList.add('hidden');
-        noResultsMessage.classList.add('hidden');
         turnoverResultSection.classList.add('hidden');
         resultsBody.innerHTML = '';
         toggleSecondaryOptions();
     });
 
-    // Bulk Select BOM
     selectAllBOM.addEventListener('change', (e) => {
         const checkboxes = document.querySelectorAll('.bom-checkbox');
         checkboxes.forEach(cb => cb.checked = e.target.checked);
@@ -63,7 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
         checkbox.addEventListener('change', () => {
             toggleSecondaryOptions();
             resultsSection.classList.add('hidden');
-            noResultsMessage.classList.add('hidden');
             turnoverResultSection.classList.add('hidden');
             resultsBody.innerHTML = '';
         });
@@ -72,23 +66,22 @@ document.addEventListener('DOMContentLoaded', () => {
     calculateButton.addEventListener('click', () => {
         resultsBody.innerHTML = ''; 
         resultsSection.classList.add('hidden');
-        noResultsMessage.classList.add('hidden');
         selectAllBOM.checked = false;
         
         const poolVolume = parseFloat(poolVolumeInput.value);
         const circRate = parseFloat(circulationRateInput.value);
 
-        if (isNaN(poolVolume) || isNaN(circRate) || circRate <= 0) {
+        if (isNaN(poolVolume) || isNaN(circRate) || poolVolume <= 0) {
             alert("Please enter a valid Volume and Flow Rate.");
             return;
         }
 
-        turnoverResultText.textContent = `${(poolVolume / circRate).toFixed(2)} minutes`;
+        // Calculation: (GPM * 60 minutes * 24 hours) / Total Volume
+        const turnoversPerDay = (circRate * 1440) / poolVolume;
+        turnoverResultText.textContent = `${turnoversPerDay.toFixed(2)} Turnovers per Day`;
         turnoverResultSection.classList.remove('hidden');
 
         const checkedGroups = Array.from(equipmentCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
-        if (checkedGroups.length === 0) return;
-
         let allMatchingModels = [];
 
         for (const selectedGroup of checkedGroups) {
@@ -105,9 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const flowMatched = groupModels.filter(item => {
                 const min = parseFloat(item["Min Flow"]);
                 const max = parseFloat(item["Max Flow"]);
-                // If Max Flow is null or NaN, we treat it as an open range
-                const isMaxValid = !isNaN(max) && max !== null;
-                return circRate >= min && (!isMaxValid || circRate <= max);
+                return circRate >= min && (isNaN(max) || max === null || circRate <= max);
             });
             allMatchingModels = allMatchingModels.concat(flowMatched);
         }
@@ -116,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function displayResults(models) {
-        if (models.length === 0) return noResultsMessage.classList.remove('hidden');
+        if (models.length === 0) return;
         resultsSection.classList.remove('hidden');
 
         models.forEach((model) => {
@@ -125,16 +116,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const footprint = model["Footprint"] || 'N/A';
             const desc = model["Nema Rating"] ? `${model["Equipment Type"]} (${model["Nema Rating"]})` : (model["Equipment Type"] || 'N/A');
 
-            const buildLink = (file, label) => {
-                if (!file) return '';
-                // Standardize file paths if necessary
-                return `<a href="docs/${file}" target="_blank" class="download-link">${label}</a>`;
-            };
+            const buildLink = (file, label) => file ? `<a href="docs/${file}" target="_blank" class="download-link">${label}</a>` : '';
 
-            const links = [
-                buildLink(model['Written Specification'], 'Spec'),
-                buildLink(model['Cut Sheet'], 'Cut Sheet'),
-                buildLink(model['GA'], 'GA')
+            const linksHtml = [
+                buildLink(model['Cut Sheet'], 'Product Sheet'),
+                buildLink(model['GA'], 'Additional Info/ Pump Curve'),
+                buildLink(model['Written Specification'], 'Written Specification')
             ].filter(l => l).join(' ');
 
             tr.innerHTML = `
@@ -144,22 +131,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td data-label="Model Name">${model.Model || 'N/A'}</td>
                 <td data-label="Flow Range">${model["Min Flow"]} - ${model["Max Flow"] || '+'}</td>
                 <td data-label="Footprint">${footprint}</td>
-                <td data-label="Technical Docs">${links || 'N/A'}</td>
+                <td data-label="Technical Docs">${linksHtml || 'N/A'}</td>
             `;
             resultsBody.appendChild(tr);
         });
     }
 
     addToCartButton.addEventListener('click', () => {
-        const checked = Array.from(document.querySelectorAll('.bom-checkbox:checked'))
-                             .map(cb => cb.value)
-                             .filter(v => v !== 'N/A');
-        
-        if (checked.length === 0) {
-            alert('Please select at least one product with a part number.');
-            return;
-        }
-        alert(`Request sent for Part Numbers: ${checked.join(', ')}`);
+        const checked = Array.from(document.querySelectorAll('.bom-checkbox:checked')).map(cb => cb.value).filter(v => v !== 'N/A');
+        if (checked.length === 0) return alert('Select items to continue.');
+        alert(`Request sent for: ${checked.join(', ')}`);
     });
 
     loadDatabase();
