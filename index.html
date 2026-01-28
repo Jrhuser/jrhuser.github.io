@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Pump Room</title>
+    <title>The Pump Room | Equipment Selector</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -19,12 +19,9 @@
                 <a href="#">Brands</a>
                 <a href="#">Resources</a>
                 <a href="#">About Xylem</a>
-                <a href="#">eCommerce</a>
             </nav>
             <div class="header-icons">
-                <i class="fa-solid fa-magnifying-glass"></i>
                 <i class="fa-solid fa-cart-shopping"></i>
-                <i class="fa-solid fa-bars"></i>
             </div>
         </div>
     </header>
@@ -37,36 +34,22 @@
                     <div class="equipment-icon-wrapper">
                         <input type="checkbox" id="radioFilter" name="equipmentGroup" value="Filter">
                         <label for="radioFilter">
-                            <img src="defender_filter.png" alt="Filter Equipment" class="equipment-icon">
+                            <img src="defender_filter.png" alt="Filter" class="equipment-icon">
                             Filter
                         </label>
                     </div>
                     <div class="equipment-icon-wrapper">
                         <input type="checkbox" id="radioPump" name="equipmentGroup" value="Pump">
                         <label for="radioPump">
-                            <img src="nb-530.png" alt="Pump Equipment" class="equipment-icon">
+                            <img src="nb-530.png" alt="Pump" class="equipment-icon">
                             Pump
-                        </label>
-                    </div>
-                    <div class="equipment-icon-wrapper">
-                        <input type="checkbox" id="radioStrainer" name="equipmentGroup" value="Strainer">
-                        <label for="radioStrainer">
-                            <img src="guardian.png" alt="Strainer Equipment" class="equipment-icon">
-                            Strainer
                         </label>
                     </div>
                     <div class="equipment-icon-wrapper">
                         <input type="checkbox" id="radioUV" name="equipmentGroup" value="UV">
                         <label for="radioUV">
-                            <img src="ets.png" alt="UV Equipment" class="equipment-icon">
+                            <img src="ets.png" alt="UV" class="equipment-icon">
                             UV
-                        </label>
-                    </div>
-                    <div class="equipment-icon-wrapper">
-                        <input type="checkbox" id="radioValveKit" name="equipmentGroup" value="Valve Kit">
-                        <label for="radioValveKit">
-                            <img src="dominion.png" alt="Valve Kit Equipment" class="equipment-icon">
-                            Valve Kit
                         </label>
                     </div>
                 </div>
@@ -75,7 +58,7 @@
             <section id="secondaryOptions" class="input-section">
                 <div class="parameter-grid">
                     <div id="filterOptions" class="input-group hidden">
-                        <label for="filterType">Filter Type:</label>
+                        <label for="filterType">Filter Technology:</label>
                         <select id="filterType">
                             <option value="Defender">Defender (Standard)</option>
                             <option value="Defender Reduced Height">Defender (Reduced Height)</option>
@@ -94,24 +77,24 @@
                     </div>
 
                     <div id="pumpOptions" class="input-group hidden">
-                        <label for="pumpVoltage">Voltage:</label>
+                        <label for="pumpVoltage">Pump Voltage:</label>
                         <select id="pumpVoltage">
-                            <option value="230/460">230/460</option>
-                            <option value="575">575</option>
+                            <option value="230/460">230/460V</option>
+                            <option value="575">575V</option>
                         </select>
                     </div>
                 </div>
             </section>
 
-            <section id="flowRateSection" class="input-section">
-                <h2>Enter System Parameters</h2>
+            <section class="input-section">
+                <h2>System Parameters</h2>
                 <div class="parameter-grid">
                     <div class="input-group">
                         <label for="poolVolume">Pool Volume (Gallons):</label>
                         <input type="number" id="poolVolume" placeholder="e.g., 50000">
                     </div>
                     <div class="input-group">
-                        <label for="circulationRate">Circulation Rate (GPM):</label>
+                        <label for="circulationRate">Flow Rate (GPM):</label>
                         <input type="number" id="circulationRate" placeholder="e.g., 500">
                     </div>
                 </div>
@@ -119,11 +102,11 @@
 
             <div class="button-group">
                 <button id="calculateButton">Build Pump Room</button>
-                <button id="resetButton">Clear All</button>
+                <button id="resetButton">Clear Selection</button>
             </div>
 
             <section id="turnoverResultSection" class="input-section hidden">
-                <h3>System Turnover Time</h3>
+                <h3>Calculated Turnover Time</h3>
                 <p id="turnoverResultText" class="turnover-result"></p>
             </section>
 
@@ -132,21 +115,23 @@
                 <table class="results-table">
                     <thead>
                         <tr>
-                            <th class="select-column"><input type="checkbox" id="selectAllBOM"></th>
+                            <th style="width: 40px;"><input type="checkbox" id="selectAllBOM"></th>
                             <th>Description</th> 
                             <th>Part Number</th>
                             <th>Model</th>
-                            <th>Flowrate (GPM)</th>
+                            <th>Flow Range</th>
                             <th>Footprint (in)</th>
-                            <th>Downloads</th>
+                            <th>Docs</th>
                         </tr>
                     </thead>
                     <tbody id="results-body"></tbody>
                 </table>
+                <button id="addToCartButton">Add Selected to Cart</button>
             </section>
 
-            <button id="addToCartButton" class="hidden">Add to Ecommerce Cart</button>
-            <p id="noResultsMessage" class="no-results hidden">No suitable models found for the given criteria.</p>
+            <p id="noResultsMessage" class="no-results hidden" style="text-align: center; color: red; font-weight: bold; margin-top: 20px;">
+                No matching equipment found for your parameters.
+            </p>
         </main>
     </div>
 
