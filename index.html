@@ -29,27 +29,27 @@
     <div class="container">
         <main>
             <section class="equipment-selection">
-                <h2>Select Equipment Type(s)</h2>
+                <h2>Select Equipment Group(s)</h2>
                 <div class="radio-group-icons">
                     <div class="equipment-icon-wrapper">
                         <input type="checkbox" id="radioFilter" name="equipmentGroup" value="Filter">
                         <label for="radioFilter">
                             <img src="defender_filter.png" alt="Filter" class="equipment-icon">
-                            Filter
+                            Filtration
                         </label>
                     </div>
                     <div class="equipment-icon-wrapper">
                         <input type="checkbox" id="radioPump" name="equipmentGroup" value="Pump">
                         <label for="radioPump">
                             <img src="nb-530.png" alt="Pump" class="equipment-icon">
-                            Pump
+                            Pumps
                         </label>
                     </div>
                     <div class="equipment-icon-wrapper">
                         <input type="checkbox" id="radioUV" name="equipmentGroup" value="UV">
                         <label for="radioUV">
                             <img src="ets.png" alt="UV" class="equipment-icon">
-                            UV
+                            Disinfection (UV)
                         </label>
                     </div>
                 </div>
@@ -60,24 +60,21 @@
                     <div id="filterOptions" class="input-group hidden">
                         <label for="filterType">Filter Technology:</label>
                         <select id="filterType">
-                            <option value="Defender">Defender (Standard)</option>
-                            <option value="Defender Reduced Height">Defender (Reduced Height)</option>
-                            <option value="Defender Assero">Defender Assero</option>
-                            <option value="Defender Virtuo">Defender Virtuo</option>
-                            <option value="Sand Filter">Sand Filter</option>
+                            <option value="RMF">Regenerative Media (RMF)</option>
+                            <option value="Sand Filter">Sand Filtration</option>
                         </select>
                     </div>
 
                     <div id="uvOptions" class="input-group hidden">
                         <label for="uvType">UV Technology:</label>
                         <select id="uvType">
-                            <option value="Medium Pressure UV">Medium Pressure (Wafer)</option>
-                            <option value="Low Pressure UV">Low Pressure (Ti)</option>
+                            <option value="Medium Pressure UV">Medium Pressure UV</option>
+                            <option value="Low Pressure UV">Low Pressure UV</option>
                         </select>
                     </div>
 
                     <div id="pumpOptions" class="input-group hidden">
-                        <label for="pumpVoltage">Pump Voltage:</label>
+                        <label for="pumpVoltage">Required Voltage:</label>
                         <select id="pumpVoltage">
                             <option value="230/460">230/460V</option>
                             <option value="575">575V</option>
@@ -91,11 +88,11 @@
                 <div class="parameter-grid">
                     <div class="input-group">
                         <label for="poolVolume">Pool Volume (Gallons):</label>
-                        <input type="number" id="poolVolume" placeholder="e.g., 50000">
+                        <input type="number" id="poolVolume" placeholder="e.g., 100000">
                     </div>
                     <div class="input-group">
-                        <label for="circulationRate">Flow Rate (GPM):</label>
-                        <input type="number" id="circulationRate" placeholder="e.g., 500">
+                        <label for="circulationRate">Design Flow Rate (GPM):</label>
+                        <input type="number" id="circulationRate" placeholder="e.g., 800">
                     </div>
                 </div>
             </section>
@@ -106,31 +103,33 @@
             </div>
 
             <section id="turnoverResultSection" class="input-section hidden">
-                <h3>Calculated Turnover Time</h3>
+                <h3>Calculated Turnover</h3>
                 <p id="turnoverResultText" class="turnover-result"></p>
             </section>
 
             <section id="resultsSection" class="results-section hidden">
                 <h2>Bill of Materials</h2>
-                <table class="results-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 40px;"><input type="checkbox" id="selectAllBOM"></th>
-                            <th>Description</th> 
-                            <th>Part Number</th>
-                            <th>Model</th>
-                            <th>Flow Range</th>
-                            <th>Footprint (in)</th>
-                            <th>Docs</th>
-                        </tr>
-                    </thead>
-                    <tbody id="results-body"></tbody>
-                </table>
+                <div class="table-container">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 40px;"><input type="checkbox" id="selectAllBOM"></th>
+                                <th>Equipment Type</th> 
+                                <th>Part Number</th>
+                                <th>Model Name</th>
+                                <th>Flow Range (GPM)</th>
+                                <th>Footprint (L x W x H)</th>
+                                <th>Technical Docs</th>
+                            </tr>
+                        </thead>
+                        <tbody id="results-body"></tbody>
+                    </table>
+                </div>
                 <button id="addToCartButton">Add Selected to Cart</button>
             </section>
 
-            <p id="noResultsMessage" class="no-results hidden" style="text-align: center; color: red; font-weight: bold; margin-top: 20px;">
-                No matching equipment found for your parameters.
+            <p id="noResultsMessage" class="no-results hidden">
+                No matching equipment found for the specified flow rate.
             </p>
         </main>
     </div>
