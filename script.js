@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     let database = [];
 
+    // UI Elements
     const equipmentCheckboxes = document.querySelectorAll('input[name="equipmentGroup"]');
     const filterCheckbox = document.getElementById('radioFilter');
     const pumpCheckbox = document.getElementById('radioPump');
@@ -29,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             database = await response.json();
         } catch (error) {
-            console.error("Failed to load database:", error);
+            console.error("Database error:", error);
         }
     }
 
@@ -39,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
         uvOptions.classList.toggle('hidden', !uvCheckbox.checked);
     }
 
-    // Reset Logic
+    // Reset All
     resetButton.addEventListener('click', () => {
         equipmentCheckboxes.forEach(cb => cb.checked = false);
         poolVolumeInput.value = '';
@@ -48,12 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {
         resultsSection.classList.add('hidden');
         noResultsMessage.classList.add('hidden');
         turnoverResultSection.classList.add('hidden');
-        addToCartButton.classList.add('hidden');
         resultsBody.innerHTML = '';
         toggleSecondaryOptions();
     });
 
-    // Bulk Select Logic
+    // Bulk Select
     selectAllBOM.addEventListener('change', (e) => {
         const checkboxes = document.querySelectorAll('.bom-checkbox');
         checkboxes.forEach(cb => cb.checked = e.target.checked);
@@ -65,9 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
             resultsSection.classList.add('hidden');
             noResultsMessage.classList.add('hidden');
             turnoverResultSection.classList.add('hidden');
-            addToCartButton.classList.add('hidden');
             resultsBody.innerHTML = '';
-            selectAllBOM.checked = false;
         });
     });
 
@@ -78,9 +76,9 @@ document.addEventListener('DOMContentLoaded', () => {
         selectAllBOM.checked = false;
         
         const poolVolume = parseFloat(poolVolumeInput.value);
-        const circRate = parseFloat(circulationRateInput.value);
+        const circRate = parseFloat(circulationRateRateInput.value);
 
-        if (isNaN(poolVolume) || isNaN(circRate)) return alert("Please enter valid parameters.");
+        if (isNaN(poolVolume) || isNaN(circRate)) return alert("Please enter valid Volume and Flow Rate.");
 
         turnoverResultText.textContent = `${(poolVolume / circRate).toFixed(2)} minutes`;
         turnoverResultSection.classList.remove('hidden');
@@ -113,15 +111,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function displayResults(models) {
-        if (models.length === 0) {
-            noResultsMessage.classList.remove('hidden');
-            return;
-        }
-
+        if (models.length === 0) return noResultsMessage.classList.remove('hidden');
         resultsSection.classList.remove('hidden');
-        addToCartButton.classList.remove('hidden');
 
-        models.sort((a, b) => a.Grouping.localeCompare(b.Grouping)).forEach((model) => {
+        models.forEach((model) => {
             const tr = document.createElement('tr');
             const partNum = model["Part Number"] || 'N/A';
             const footprint = model["Footprint"] || 'N/A';
@@ -136,13 +129,13 @@ document.addEventListener('DOMContentLoaded', () => {
             ].filter(l => l).join(' ');
 
             tr.innerHTML = `
-                <td class="select-column"><input type="checkbox" class="bom-checkbox" value="${partNum}"></td>
+                <td><input type="checkbox" class="bom-checkbox" value="${partNum}"></td>
                 <td data-label="Description">${desc}</td>
                 <td data-label="Part Number">${partNum}</td>
                 <td data-label="Model">${model.Model || 'N/A'}</td>
-                <td data-label="Flowrate">${model["Min Flow"]} - ${model["Max Flow"] || '+'}</td>
+                <td data-label="Flow Range">${model["Min Flow"]} - ${model["Max Flow"] || '+'}</td>
                 <td data-label="Footprint">${footprint}</td>
-                <td class="downloads-cell">${links || 'N/A'}</td>
+                <td data-label="Docs">${links || 'N/A'}</td>
             `;
             resultsBody.appendChild(tr);
         });
@@ -150,10 +143,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     addToCartButton.addEventListener('click', () => {
         const checked = Array.from(document.querySelectorAll('.bom-checkbox:checked')).map(cb => cb.value).filter(v => v !== 'N/A');
-        if (checked.length === 0) return alert('Please select items with part numbers.');
-        alert(`Adding the following parts to cart:\n${checked.join('\n')}`);
+        if (checked.length === 0) return alert('Select items to continue.');
+        alert(`Added ${checked.length} items to cart.`);
     });
 
     loadDatabase();
-    toggleSecondaryOptions();
 });
