@@ -70,7 +70,7 @@ h2 {
     margin-bottom: 25px;
 }
 
-/* Equipment Icons Selection */
+/* Equipment Selection Cards */
 .radio-group-icons {
     display: flex;
     gap: 15px;
@@ -80,13 +80,12 @@ h2 {
 
 .equipment-icon-wrapper {
     flex: 1;
-    min-width: 150px;
-    background-color: #e9ecef;
-    border: 1px solid #ced4da;
+    min-width: 180px;
+    background-color: #f8f9fa;
+    border: 2px solid #ced4da;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
+    transition: all 0.2s ease-in-out;
 }
 
 .equipment-icon-wrapper label {
@@ -97,8 +96,8 @@ h2 {
     padding: 20px;
     width: 100%;
     cursor: pointer;
-    font-weight: 500;
-    gap: 10px;
+    font-weight: 700;
+    gap: 12px;
 }
 
 .equipment-icon {
@@ -107,43 +106,43 @@ h2 {
 }
 
 .equipment-icon-wrapper:hover {
-    background-color: #cce7ef;
+    background-color: #e9f5ff;
+    border-color: #007DA3;
 }
 
 .equipment-icon-wrapper:has(input:checked) {
     background-color: #007DA3;
     color: #ffffff;
     border-color: #007DA3;
-    box-shadow: 0 4px 10px rgba(0, 125, 163, 0.3);
 }
 
 .equipment-icon-wrapper input {
     display: none;
 }
 
-/* Form Inputs */
+/* Input Styles */
 .input-section {
     margin-bottom: 30px;
 }
 
 .parameter-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
 }
 
 .input-group label {
     display: block;
     margin-bottom: 8px;
     font-weight: 500;
+    color: #555;
 }
 
 .input-group select, .input-group input {
     width: 100%;
-    padding: 12px;
+    padding: 14px;
     border: 1px solid #ced4da;
-    border-radius: 5px;
-    box-sizing: border-box;
+    border-radius: 6px;
     font-size: 1em;
 }
 
@@ -151,7 +150,7 @@ h2 {
     display: none !important;
 }
 
-/* Buttons */
+/* Action Buttons */
 .button-group {
     display: flex;
     gap: 15px;
@@ -160,13 +159,13 @@ h2 {
 
 #calculateButton, #resetButton {
     flex: 1;
-    padding: 15px;
+    padding: 16px;
     font-size: 1.1em;
     font-weight: 700;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
     border: none;
-    transition: transform 0.2s;
+    transition: background 0.2s;
 }
 
 #calculateButton {
@@ -175,15 +174,13 @@ h2 {
 }
 
 #resetButton {
-    background-color: #e9ecef;
+    background-color: #f1f3f5;
     color: #495057;
     border: 1px solid #ced4da;
 }
 
-#calculateButton:hover, #resetButton:hover {
-    transform: translateY(-2px);
-    opacity: 0.9;
-}
+#calculateButton:hover { background-color: #55b803; }
+#resetButton:hover { background-color: #e9ecef; }
 
 #addToCartButton {
     width: 100%;
@@ -193,20 +190,14 @@ h2 {
     font-weight: 700;
     font-size: 1.2em;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
-    margin-top: 20px;
+    margin-top: 25px;
 }
 
-/* Results Table Section */
-.turnover-result {
-    font-size: 1.5em;
-    font-weight: 700;
-    color: #007DA3;
-    text-align: center;
-    background-color: #e9f5ff;
-    padding: 20px;
-    border-radius: 5px;
+/* Results Table */
+.table-container {
+    overflow-x: auto;
 }
 
 .results-table {
@@ -216,8 +207,8 @@ h2 {
 }
 
 .results-table th, .results-table td {
-    border: 1px solid #e9ecef;
-    padding: 15px;
+    border: 1px solid #dee2e6;
+    padding: 16px;
     text-align: left;
 }
 
@@ -225,46 +216,51 @@ h2 {
     background-color: #007DA3;
     color: white;
     text-transform: uppercase;
-    font-size: 0.85em;
+    font-size: 0.8em;
+    letter-spacing: 0.5px;
 }
 
 .download-link {
     background-color: #f8f9fa;
-    border: 1px solid #ced4da;
-    padding: 5px 10px;
+    border: 1px solid #adb5bd;
+    padding: 6px 12px;
     text-decoration: none;
-    color: #333;
-    font-size: 0.8em;
+    color: #007DA3;
+    font-size: 0.85em;
     border-radius: 4px;
-    margin-right: 5px;
+    margin-right: 6px;
+    font-weight: 500;
 }
 
 .download-link:hover {
     background-color: #007DA3;
     color: white;
+    border-color: #007DA3;
 }
 
-/* Mobile Responsiveness */
+/* Mobile Styling */
 @media (max-width: 768px) {
+    header { padding: 0 15px; }
     .button-group { flex-direction: column; }
     
     .results-table, .results-table thead, .results-table tbody, .results-table th, .results-table td, .results-table tr {
         display: block;
     }
     
-    .results-table tr { margin-bottom: 15px; border: 1px solid #e9ecef; }
+    .results-table tr { margin-bottom: 20px; border: 1px solid #007DA3; border-radius: 8px; }
     
     .results-table td {
         position: relative;
         padding-left: 50%;
         text-align: right;
+        min-height: 45px;
     }
     
     .results-table td::before {
         content: attr(data-label);
         position: absolute;
         left: 15px;
-        font-weight: 600;
+        font-weight: 700;
         text-align: left;
     }
 }
@@ -273,6 +269,6 @@ footer {
     background-color: #343a40;
     color: white;
     text-align: center;
-    padding: 20px 0;
+    padding: 25px 0;
     margin-top: auto;
 }
