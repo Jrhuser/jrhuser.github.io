@@ -76,7 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Daily Turnover Calculation: (GPM * 1440) / Volume
         const turnoversPerDay = (circRate * 1440) / poolVolume;
         turnoverResultText.textContent = `${turnoversPerDay.toFixed(2)} Turnovers per Day`;
         turnoverResultSection.classList.remove('hidden');
@@ -92,7 +91,9 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (selectedGroup === 'Pump') {
                 groupModels = groupModels.filter(item => item.Power === document.getElementById('pumpVoltage').value);
             } else if (selectedGroup === 'UV') {
-                groupModels = groupModels.filter(item => item["Equipment Type"] === document.getElementById('uvType').value);
+                const tech = document.getElementById('uvType').value;
+                const nema = document.getElementById('nemaRating').value;
+                groupModels = groupModels.filter(item => item["Equipment Type"] === tech && item["Nema Rating"] === nema);
             }
 
             const flowMatched = groupModels.filter(item => {
@@ -118,7 +119,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const buildLink = (file, label) => file ? `<a href="docs/${file}" target="_blank" class="download-link">${label}</a>` : '';
 
-            // Mapping requested labels to document fields
             const linksHtml = [
                 buildLink(model['Cut Sheet'], 'Product Sheet'),
                 buildLink(model['GA'], 'Additional Info/ Pump Curve'),
@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
     addToCartButton.addEventListener('click', () => {
         const checked = Array.from(document.querySelectorAll('.bom-checkbox:checked')).map(cb => cb.value).filter(v => v !== 'N/A');
         if (checked.length === 0) return alert('Select items to continue.');
-        alert(`Adding ${checked.length} items to cart.`);
+        alert(`Adding items to cart: ${checked.join(', ')}`);
     });
 
     loadDatabase();
