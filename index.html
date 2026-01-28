@@ -30,20 +30,40 @@
             <section class="equipment-selection">
                 <h2>Select Equipment Group(s)</h2>
                 <div class="radio-group-icons">
-                    <div class="equipment-icon-wrapper">
-                        <input type="checkbox" id="radioFilter" name="equipmentGroup" value="Filter">
-                        <label for="radioFilter">
-                            <img src="defender_filter.png" alt="Filter" class="equipment-icon">
-                            Filtration
-                        </label>
+                    <div class="equipment-selection-column">
+                        <div class="equipment-icon-wrapper">
+                            <input type="checkbox" id="radioFilter" name="equipmentGroup" value="Filter">
+                            <label for="radioFilter">
+                                <img src="defender_filter.png" alt="Filter" class="equipment-icon">
+                                Filtration
+                            </label>
+                        </div>
+                        <div id="filterOptions" class="input-group hidden inline-dropdown">
+                            <label for="filterType">Filter Technology:</label>
+                            <select id="filterType">
+                                <option value="RMF">Regenerative Media (RMF)</option>
+                                <option value="Sand Filter">Sand Filtration</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="equipment-icon-wrapper">
-                        <input type="checkbox" id="radioPump" name="equipmentGroup" value="Pump">
-                        <label for="radioPump">
-                            <img src="nb-530.png" alt="Pump" class="equipment-icon">
-                            Pumps
-                        </label>
+
+                    <div class="equipment-selection-column">
+                        <div class="equipment-icon-wrapper">
+                            <input type="checkbox" id="radioPump" name="equipmentGroup" value="Pump">
+                            <label for="radioPump">
+                                <img src="nb-530.png" alt="Pump" class="equipment-icon">
+                                Pumps
+                            </label>
+                        </div>
+                        <div id="pumpOptions" class="input-group hidden inline-dropdown">
+                            <label for="pumpVoltage">Required Voltage:</label>
+                            <select id="pumpVoltage">
+                                <option value="230/460">230/460V</option>
+                                <option value="575">575V</option>
+                            </select>
+                        </div>
                     </div>
+
                     <div class="equipment-selection-column">
                         <div class="equipment-icon-wrapper">
                             <input type="checkbox" id="radioUV" name="equipmentGroup" value="UV">
@@ -58,26 +78,12 @@
                                 <option value="Medium Pressure UV">Medium Pressure UV</option>
                                 <option value="Low Pressure UV">Low Pressure UV</option>
                             </select>
+                            <label for="nemaRating" style="margin-top: 10px;">Enclosure Rating:</label>
+                            <select id="nemaRating">
+                                <option value="N4x">NEMA 4X (Outdoor)</option>
+                                <option value="N12">NEMA 12 (Indoor)</option>
+                            </select>
                         </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="secondaryOptions" class="input-section">
-                <div class="parameter-grid">
-                    <div id="filterOptions" class="input-group hidden">
-                        <label for="filterType">Filter Technology:</label>
-                        <select id="filterType">
-                            <option value="RMF">Regenerative Media (RMF)</option>
-                            <option value="Sand Filter">Sand Filtration</option>
-                        </select>
-                    </div>
-                    <div id="pumpOptions" class="input-group hidden">
-                        <label for="pumpVoltage">Required Voltage:</label>
-                        <select id="pumpVoltage">
-                            <option value="230/460">230/460V</option>
-                            <option value="575">575V</option>
-                        </select>
                     </div>
                 </div>
             </section>
