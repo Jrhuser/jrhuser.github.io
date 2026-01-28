@@ -26,7 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loadDatabase() {
         try {
-            const response = await fetch('selection-database (2).json');
+            // Renamed reference for clarity
+            const response = await fetch('products.json'); 
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             database = await response.json();
         } catch (error) {
@@ -40,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         uvOptions.classList.toggle('hidden', !uvCheckbox.checked);
     }
 
-    // Reset All
+    // Reset All Logic
     resetButton.addEventListener('click', () => {
         equipmentCheckboxes.forEach(cb => cb.checked = false);
         poolVolumeInput.value = '';
@@ -53,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleSecondaryOptions();
     });
 
-    // Bulk Select
+    // Bulk Select BOM
     selectAllBOM.addEventListener('change', (e) => {
         const checkboxes = document.querySelectorAll('.bom-checkbox');
         checkboxes.forEach(cb => cb.checked = e.target.checked);
@@ -76,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         selectAllBOM.checked = false;
         
         const poolVolume = parseFloat(poolVolumeInput.value);
-        const circRate = parseFloat(circulationRateRateInput.value);
+        const circRate = parseFloat(circulationRateInput.value);
 
         if (isNaN(poolVolume) || isNaN(circRate)) return alert("Please enter valid Volume and Flow Rate.");
 
@@ -143,8 +144,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     addToCartButton.addEventListener('click', () => {
         const checked = Array.from(document.querySelectorAll('.bom-checkbox:checked')).map(cb => cb.value).filter(v => v !== 'N/A');
-        if (checked.length === 0) return alert('Select items to continue.');
-        alert(`Added ${checked.length} items to cart.`);
+        if (checked.length === 0) return alert('Select items with part numbers to continue.');
+        alert(`Successfully added ${checked.length} items to your cart.`);
     });
 
     loadDatabase();
