@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Calculation: (GPM * 60 minutes * 24 hours) / Total Volume
+        // Daily Turnover Calculation: (GPM * 1440) / Volume
         const turnoversPerDay = (circRate * 1440) / poolVolume;
         turnoverResultText.textContent = `${turnoversPerDay.toFixed(2)} Turnovers per Day`;
         turnoverResultSection.classList.remove('hidden');
@@ -118,6 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const buildLink = (file, label) => file ? `<a href="docs/${file}" target="_blank" class="download-link">${label}</a>` : '';
 
+            // Mapping requested labels to document fields
             const linksHtml = [
                 buildLink(model['Cut Sheet'], 'Product Sheet'),
                 buildLink(model['GA'], 'Additional Info/ Pump Curve'),
@@ -140,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
     addToCartButton.addEventListener('click', () => {
         const checked = Array.from(document.querySelectorAll('.bom-checkbox:checked')).map(cb => cb.value).filter(v => v !== 'N/A');
         if (checked.length === 0) return alert('Select items to continue.');
-        alert(`Request sent for: ${checked.join(', ')}`);
+        alert(`Adding ${checked.length} items to cart.`);
     });
 
     loadDatabase();
