@@ -1,495 +1,84 @@
-/* General Body and Container Styling */
-html, body {
-    height: 100%;
-}
+/* ... Keep existing General Body, Header, and Icon styles ... */
 
-body {
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f7f6;
-    color: #333;
-    line-height: 1.6;
-    display: flex;
-    flex-direction: column;
-}
-
-.container {
-    width: 100%;
-    background-color: #ffffff;
-    flex-grow: 1;
-}
-
-/* --- HEADER STYLING --- */
-header {
-    background-color: #007DA3;
-    color: #ffffff;
-    padding: 0 40px;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.header-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 70px;
-    width: 100%;
-}
-
-.logo {
-    height: 30px;
-    width: auto;
-    flex-shrink: 0;
-}
-
-.main-nav {
-    display: flex;
-    justify-content: center;
-    gap: 24px;
-    flex-grow: 1;
-}
-
-.main-nav a {
-    color: #ffffff;
-    text-decoration: none;
-    font-size: 1em;
-    font-weight: 700;
-    padding: 10px 0;
-    position: relative;
-    transition: color 0.3s ease;
-}
-
-.main-nav a:hover {
-    color: #cce7ef;
-}
-
-.header-icons {
-    display: flex;
-    align-items: center;
-    gap: 25px;
-    font-size: 1.2em;
-}
-
-.header-icons i {
-    cursor: pointer;
-    transition: color 0.3s ease;
-}
-
-.header-icons i:hover {
-    color: #cce7ef;
-}
-
-/* Main Content Styling */
-main {
-    padding: 40px;
-    max-width: 1320px;
-    margin: 0 auto;
-}
-
-h2 {
-    color: #007DA3;
-    font-size: 1.6em;
-    margin-top: 0;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #e0e0e0;
-    padding-bottom: 10px;
-}
-
-h3 {
-    text-align: center;
-    color: #343a40;
-    margin-top: 0;
-    margin-bottom: 10px;
-}
-
-
-/* Section Styling */
-.input-section, .system-type-selection, .results-section, .equipment-selection {
-    padding: 0; 
-    border: none;
-    box-shadow: none;
-    margin-bottom: 25px;
-    background-color: transparent;
-}
-
-.hidden {
-    display: none !important;
-}
-
-/* --- Icon Checkbox Group Styling --- */
-.radio-group-icons {
+.button-group {
     display: flex;
     gap: 15px;
-    margin-bottom: 15px;
-    flex-wrap: wrap;
-    justify-content: space-around;
+    margin: 20px 0 30px 0;
 }
 
-.equipment-icon-wrapper {
-    display: flex; 
-    background-color: #e9ecef;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-    border: 1px solid #ced4da;
-    font-weight: 500;
-    color: #495057;
-    text-align: center;
-    min-width: 120px;
-    flex-grow: 1;
-    flex-basis: 150px;
-}
-
-.equipment-icon {
-    max-width: 100px;
-    height: auto;
-    display: block;
-    margin-bottom: 5px;
-}
-
-.equipment-icon-wrapper label {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
+#calculateButton, #resetButton {
+    flex: 1;
     padding: 15px;
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box; 
-    background-color: transparent;
     border: none;
-    margin: 0;
-    cursor: pointer;
-}
-
-.equipment-icon-wrapper:has(input[type="checkbox"]:checked) {
-    background-color: #007DA3;
-    color: #ffffff;
-    border-color: #007DA3;
-    box-shadow: 0 4px 8px rgba(0, 125, 163, 0.3);
-}
-
-.equipment-icon-wrapper:has(input[type="checkbox"]:checked) label {
-    color: #ffffff;
-}
-
-.equipment-icon-wrapper:hover {
-    background-color: #CCE7EF;
-    border-color: #007DA3;
-}
-
-.equipment-icon-wrapper input[type="checkbox"] {
-    display: none;
-}
-
-
-/* Input Group Styling (for main flow rate and dropdowns) */
-.input-group {
-    margin-bottom: 18px;
-    display: flex;
-    flex-direction: column;
-}
-
-.input-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-    color: #343a40;
-}
-
-.input-group input[type="number"] {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ced4da;
     border-radius: 5px;
-    font-size: 1em;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    box-sizing: border-box;
-}
-
-.input-group input[type="number"]:focus {
-    border-color: #007DA3;
-    box-shadow: 0 0 0 0.2rem rgba(0, 125, 163, 0.25);
-    outline: none;
-}
-
-/* Styling for <select> dropdowns */
-.input-group select {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ced4da;
-    border-radius: 5px;
-    font-size: 1em;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    box-sizing: border-box;
-    background-color: #fff;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%2D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%208l5%205%205-5z%22%20fill%3D%22%23495057%22%2F%3E%3C%2Fsvg%3E');
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    background-size: 12px;
+    font-size: 1.2em;
+    font-weight: 700;
     cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.3s ease;
 }
 
-.input-group select:focus {
-    border-color: #007DA3;
-    box-shadow: 0 0 0 0.2rem rgba(0, 125, 163, 0.25);
-    outline: none;
-}
-
-
-.parameter-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-}
-
-.note {
-    font-size: 0.9em;
-    color: #6c757d;
-    margin-top: -10px;
-    margin-bottom: 20px;
-}
-
-/* Button Styling */
 #calculateButton {
-    display: block;
-    width: 100%;
-    padding: 15px 25px;
     background-color: #61D604;
     color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 1.2em;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    margin-top: 20px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 10px rgba(97, 214, 4, 0.25);
 }
 
-#calculateButton:hover {
-    background-color: #55b803;
+#resetButton {
+    background-color: #e9ecef;
+    color: #495057;
+    border: 1px solid #ced4da;
+}
+
+#calculateButton:hover, #resetButton:hover {
     transform: translateY(-2px);
+    opacity: 0.9;
 }
 
-#calculateButton:active {
-    background-color: #4a9f03;
-    transform: translateY(0);
-}
-
-/* --- NEW: Add to Cart Button Styling --- */
-#addToCartButton {
-    display: block;
-    width: 100%;
-    padding: 15px 25px;
-    background-color: #007DA3; /* Xylem Blue */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 1.2em;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    margin-top: -10px; /* Pull it up a bit */
-    margin-bottom: 30px;
-    box-shadow: 0 4px 10px rgba(0, 125, 163, 0.25);
-}
-
-#addToCartButton:hover {
-    background-color: #005F7D; /* Darker Blue */
-    transform: translateY(-2px);
-}
-
-#addToCartButton:active {
-    background-color: #004a61;
-    transform: translateY(0);
-}
-
-
-/* --- NEW: Turnover Result Styling --- */
-.turnover-result {
-    font-size: 1.5em; 
-    font-weight: 700;
-    color: #007DA3; 
-    text-align: center;
-    background-color: #e9f5ff; 
-    padding: 20px;
-    border-radius: 5px;
-    border: 1px solid #cce7ef;
-    margin-top: -10px;
-    margin-bottom: 25px;
-}
-
-
-/* Results Table Styling */
 .results-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-    font-size: 0.95em;
-    border-radius: 5px; 
-    overflow: hidden;
 }
 
 .results-table th, .results-table td {
     border: 1px solid #e9ecef;
     padding: 12px 15px;
     text-align: left;
-    vertical-align: middle;
 }
 
 .results-table th {
     background-color: #007DA3;
     color: white;
-    font-weight: 600;
-    text-transform: uppercase;
 }
 
-.results-table tbody tr:nth-child(even) {
-    background-color: #f8f9fa;
-}
-
-.results-table tbody tr:hover {
-    background-color: #e9f5ff;
-}
-
-/* --- NEW: Select Column Styling --- */
-.select-column {
-    text-align: center;
-    vertical-align: middle;
-}
-
-.select-column input[type="checkbox"] {
+#selectAllBOM {
     transform: scale(1.5);
     cursor: pointer;
 }
 
-/* Styling for Download Links in Table */
-.results-table td.downloads-cell {
-    text-align: center;
-    white-space: nowrap;
-}
-
-.results-table .download-link {
-    padding: 5px 10px;
-    font-size: 0.85em;
-    margin: 2px;
-    display: inline-block;
-}
-
-
-/* This style is now used by the links in the table */
-.download-link {
-    background-color: #e9ecef;
-    color: #343a40;
-    padding: 10px 20px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: 500;
-    border: 1px solid #ced4da;
-    transition: background-color 0.3s, color 0.3s, transform 0.2s;
-}
-
-.download-link:hover {
-    background-color: #007DA3;
-    color: #ffffff;
-    border-color: #007DA3;
-    transform: translateY(-2px);
-}
-
-/* No Results Message */
-.no-results {
-    text-align: center;
-    color: #dc3545;
-    font-size: 1.1em;
-    margin-top: 20px;
-    padding: 15px;
-    background-color: #ffebe5;
-    border: 1px solid #dc3545;
-    border-radius: 5px;
-}
-
-/* Footer Styling */
-footer {
-    background-color: #343a40;
-    color: #ffffff;
-    text-align: center;
-    padding: 15px 0;
-    font-size: 0.9em;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 1024px) {
-    .main-nav {
-        display: none;
-    }
-}
-
 @media (max-width: 768px) {
-    main {
-        padding: 20px;
-    }
-    
-    .header-content {
-        height: 60px;
-    }
-    
-    header {
-        padding: 0 20px;
-    }
-
     .results-table, .results-table thead, .results-table tbody, .results-table th, .results-table td, .results-table tr {
         display: block;
     }
 
-    .results-table thead tr {
-        position: absolute;
-        top: -9999px;
-        left: -9999px;
-    }
-
-    .results-table tr {
-        border: 1px solid #e9ecef;
-        margin-bottom: 10px;
-        border-radius: 5px;
-        overflow: hidden;
-    }
+    .results-table tr { margin-bottom: 10px; border: 1px solid #e9ecef; }
 
     .results-table td {
-        border: none;
-        border-bottom: 1px solid #eee;
         position: relative;
         padding-left: 50%;
         text-align: right;
-        min-height: 24px;
-    }
-    
-    /* --- NEW: Responsive style for select column --- */
-    .results-table td.select-column {
-        display: flex;
-        align-items: center;
-        justify-content: flex-end; /* Aligns checkbox to the right */
-    }
-
-    .results-table td:last-child {
-        border-bottom: 0;
     }
 
     .results-table td::before {
         content: attr(data-label);
         position: absolute;
         left: 15px;
-        width: calc(50% - 30px);
-        padding-right: 10px;
-        white-space: nowrap;
-        text-align: left;
         font-weight: 600;
-        color: #343a40;
+        text-align: left;
+    }
+}
+
+@media (max-width: 480px) {
+    .button-group {
+        flex-direction: column;
     }
 }
