@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (turnoversPerDay < 4.0) {
             turnoverResultText.style.color = "red";
-            alert("Warning: Below 4.0 turnovers per day standard.");
+            alert("Warning: Calculated turnover rate is below the 4.0 health standard.");
         } else {
             turnoverResultText.style.color = "#007DA3";
         }
@@ -88,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const flowMatched = groupModels.filter(item => {
                 const min = parseFloat(item["Min Flow"]);
                 const max = parseFloat(item["Max Flow"]);
+                // Handle open-ended max flow
                 return circRate >= min && (isNaN(max) || max === null || circRate <= max);
             });
             allMatchingModels = allMatchingModels.concat(flowMatched);
@@ -98,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function displayResults(models) {
         if (models.length === 0) {
-            alert("No matching equipment found for this Flow Rate/Voltage.");
+            alert("No matching equipment found for this specific Flow Rate/Configuration.");
             return;
         }
         resultsSection.classList.remove('hidden');
@@ -108,6 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const partNum = model["Part Number"] || 'N/A';
             const buildLink = (file, label) => file ? `<a href="product/${file}" target="_blank" class="download-link">${label}</a>` : '';
 
+            // Mapping to your new JSON keys
             const linksHtml = [
                 buildLink(model['Product Sheet'], 'Product Sheet'),
                 buildLink(model['Additional Info/Pump Curve'], 'Additional Info/ Pump Curve'),
@@ -116,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             tr.innerHTML = `
                 <td><input type="checkbox" class="bom-checkbox" value="${partNum}"></td>
-                <td>${model["Equipment Type"]}</td>
+                <td>${model["Equipment Type"] || 'N/A'}</td>
                 <td>${partNum}</td>
                 <td data-label="Model Name">${model.Model || 'N/A'}</td>
                 <td>${model["Min Flow"]} - ${model["Max Flow"] || '+'}</td>
@@ -130,11 +132,13 @@ document.addEventListener('DOMContentLoaded', () => {
     addToCartButton.addEventListener('click', () => {
         const checkedRows = Array.from(document.querySelectorAll('.bom-checkbox:checked')).map(cb => {
             const row = cb.closest('tr');
-            return `Model: ${row.querySelector('[data-label="Model Name"]').textContent} (Part #: ${cb.value})`;
+            return `- Model: ${row.querySelector('[data-label="Model Name"]').textContent} (Part #: ${cb.value})`;
         });
 
-        if (checkedRows.length === 0) return alert('Select items first.');
-        const mailtoUrl = `mailto:kenneth.roche@xylem.com?subject=Quote Request&body=${encodeURIComponent(checkedRows.join('\n'))}`;
+        if (checkedRows.length === 0) return alert('Please select products from the Bill of Materials.');
+        
+        const body = `I would like to request a quote for the following equipment:\n\n${checkedRows.join('\n')}`;
+        const mailtoUrl = `mailto:kenneth.roche@xylem.com?subject=Quote Request&body=${encodeURIComponent(body)}`;
         window.location.href = mailtoUrl;
     });
 
