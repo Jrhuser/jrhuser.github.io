@@ -80,7 +80,6 @@ document.addEventListener('DOMContentLoaded', () => {
         turnoverResultText.textContent = `${turnoversPerDay.toFixed(2)} Turnovers per Day`;
         turnoverResultSection.classList.remove('hidden');
 
-        // NEW: Health Standard Validation
         if (turnoversPerDay < 4.0) {
             turnoverResultText.style.color = "red";
             alert("Warning: The calculated turnover rate is below the 4.0 turnovers per day health standard.");
@@ -129,10 +128,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const buildLink = (file, label) => file ? `<a href="product/${file}" target="_blank" class="download-link">${label}</a>` : '';
 
-            // Corrected Mapping
+            // UPDATED MAPPING TO MATCH YOUR NEW JSON KEYS
             const linksHtml = [
-                buildLink(model['Cut Sheet'], 'Product Sheet'),
-                buildLink(model['GA'], 'Additional Info/ Pump Curve'),
+                buildLink(model['Product Sheet'], 'Product Sheet'),
+                buildLink(model['Additional Info/Pump Curve'], 'Additional Info/ Pump Curve'),
                 buildLink(model['Written Specification'], 'Written Specification')
             ].filter(l => l).join(' ');
 
