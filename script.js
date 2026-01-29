@@ -42,32 +42,14 @@ document.addEventListener('DOMContentLoaded', () => {
         equipmentCheckboxes.forEach(cb => cb.checked = false);
         poolVolumeInput.value = '';
         circulationRateInput.value = '';
-        selectAllBOM.checked = false;
         resultsSection.classList.add('hidden');
         turnoverResultSection.classList.add('hidden');
         resultsBody.innerHTML = '';
         toggleSecondaryOptions();
     });
 
-    selectAllBOM.addEventListener('change', (e) => {
-        const checkboxes = document.querySelectorAll('.bom-checkbox');
-        checkboxes.forEach(cb => cb.checked = e.target.checked);
-    });
-
-    equipmentCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', () => {
-            toggleSecondaryOptions();
-            resultsSection.classList.add('hidden');
-            turnoverResultSection.classList.add('hidden');
-            resultsBody.innerHTML = '';
-        });
-    });
-
     calculateButton.addEventListener('click', () => {
         resultsBody.innerHTML = ''; 
-        resultsSection.classList.add('hidden');
-        selectAllBOM.checked = false;
-        
         const poolVolume = parseFloat(poolVolumeInput.value);
         const circRate = parseFloat(circulationRateInput.value);
 
@@ -82,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (turnoversPerDay < 4.0) {
             turnoverResultText.style.color = "red";
-            alert("Warning: The calculated turnover rate is below the 4.0 turnovers per day health standard.");
+            alert("Warning: Below 4.0 turnovers per day standard.");
         } else {
             turnoverResultText.style.color = "#007DA3";
         }
@@ -96,13 +78,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (selectedGroup === 'Filter') {
                 groupModels = groupModels.filter(item => item["Equipment Type"] === document.getElementById('filterType').value);
             } else if (selectedGroup === 'Pump') {
-                groupModels = groupModels.filter(item => item.Power === document.getElementById('pumpVoltage').value);
+                const selectedVoltage = document.getElementById('pumpVoltage').value;
+                groupModels = groupModels.filter(item => item.Power === selectedVoltage);
             } else if (selectedGroup === 'UV') {
                 const nema = document.getElementById('nemaRating').value;
-                groupModels = groupModels.filter(item => 
-                    item["Equipment Type"] === "Medium Pressure UV" && 
-                    item["Nema Rating"] === nema
-                );
+                groupModels = groupModels.filter(item => item["Equipment Type"] === "Medium Pressure UV" && item["Nema Rating"] === nema);
             }
 
             const flowMatched = groupModels.filter(item => {
@@ -117,18 +97,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function displayResults(models) {
-        if (models.length === 0) return;
+        if (models.length === 0) {
+            alert("No matching equipment found for this Flow Rate/Voltage.");
+            return;
+        }
         resultsSection.classList.remove('hidden');
 
         models.forEach((model) => {
             const tr = document.createElement('tr');
             const partNum = model["Part Number"] || 'N/A';
-            const footprint = model["Footprint"] || 'N/A';
-            const desc = model["Nema Rating"] ? `${model["Equipment Type"]} (${model["Nema Rating"]})` : (model["Equipment Type"] || 'N/A');
-
             const buildLink = (file, label) => file ? `<a href="product/${file}" target="_blank" class="download-link">${label}</a>` : '';
 
-            // UPDATED MAPPING TO MATCH YOUR NEW JSON KEYS
             const linksHtml = [
                 buildLink(model['Product Sheet'], 'Product Sheet'),
                 buildLink(model['Additional Info/Pump Curve'], 'Additional Info/ Pump Curve'),
@@ -137,12 +116,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             tr.innerHTML = `
                 <td><input type="checkbox" class="bom-checkbox" value="${partNum}"></td>
-                <td data-label="Equipment Type">${desc}</td>
-                <td data-label="Part Number">${partNum}</td>
+                <td>${model["Equipment Type"]}</td>
+                <td>${partNum}</td>
                 <td data-label="Model Name">${model.Model || 'N/A'}</td>
-                <td data-label="Flow Range">${model["Min Flow"]} - ${model["Max Flow"] || '+'}</td>
-                <td data-label="Footprint">${footprint}</td>
-                <td data-label="Technical Docs">${linksHtml || 'N/A'}</td>
+                <td>${model["Min Flow"]} - ${model["Max Flow"] || '+'}</td>
+                <td>${model["Footprint"] || 'N/A'}</td>
+                <td>${linksHtml || 'N/A'}</td>
             `;
             resultsBody.appendChild(tr);
         });
@@ -151,28 +130,14 @@ document.addEventListener('DOMContentLoaded', () => {
     addToCartButton.addEventListener('click', () => {
         const checkedRows = Array.from(document.querySelectorAll('.bom-checkbox:checked')).map(cb => {
             const row = cb.closest('tr');
-            return {
-                partNumber: cb.value,
-                modelName: row.querySelector('[data-label="Model Name"]').textContent
-            };
-        }).filter(item => item.partNumber !== 'N/A');
-
-        if (checkedRows.length === 0) {
-            alert('Please select at least one product with a part number to request a quote.');
-            return;
-        }
-
-        const emailRecipient = 'kenneth.roche@xylem.com';
-        const subject = encodeURIComponent('Quote Request: Pump Room Equipment Selection');
-        
-        let bodyText = 'I would like to request a quote for the following equipment:\n\n';
-        checkedRows.forEach((item, index) => {
-            bodyText += `${index + 1}. Model: ${item.modelName} (Part #: ${item.partNumber})\n`;
+            return `Model: ${row.querySelector('[data-label="Model Name"]').textContent} (Part #: ${cb.value})`;
         });
-        
-        const mailtoUrl = `mailto:${emailRecipient}?subject=${subject}&body=${encodeURIComponent(bodyText)}`;
+
+        if (checkedRows.length === 0) return alert('Select items first.');
+        const mailtoUrl = `mailto:kenneth.roche@xylem.com?subject=Quote Request&body=${encodeURIComponent(checkedRows.join('\n'))}`;
         window.location.href = mailtoUrl;
     });
 
     loadDatabase();
+    equipmentCheckboxes.forEach(checkbox => checkbox.addEventListener('change', toggleSecondaryOptions));
 });
