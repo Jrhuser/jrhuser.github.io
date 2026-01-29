@@ -19,9 +19,6 @@
                 <a href="#">Resources</a>
                 <a href="#">About Xylem</a>
             </nav>
-            <div class="header-icons">
-                <i class="fa-solid fa-cart-shopping"></i>
-            </div>
         </div>
     </header>
 
@@ -46,6 +43,7 @@
                             </select>
                         </div>
                     </div>
+
                     <div class="equipment-selection-column">
                         <div class="equipment-icon-wrapper">
                             <input type="checkbox" id="radioPump" name="equipmentGroup" value="Pump">
@@ -62,6 +60,7 @@
                             </select>
                         </div>
                     </div>
+
                     <div class="equipment-selection-column">
                         <div class="equipment-icon-wrapper">
                             <input type="checkbox" id="radioUV" name="equipmentGroup" value="UV">
@@ -107,30 +106,26 @@
 
             <section id="resultsSection" class="results-section hidden">
                 <h2>Bill of Materials</h2>
-                <div class="table-container">
-                    <table class="results-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 40px;"><input type="checkbox" id="selectAllBOM"></th>
-                                <th>Equipment Type</th> 
-                                <th>Part Number</th>
-                                <th>Model Name</th>
-                                <th>Flow Range (GPM)</th>
-                                <th>Footprint (L x W x H)</th>
-                                <th>Technical Docs</th>
-                            </tr>
-                        </thead>
-                        <tbody id="results-body"></tbody>
-                    </table>
-                </div>
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px;"><input type="checkbox" id="selectAllBOM"></th>
+                            <th>Equipment Type</th> 
+                            <th>Part Number</th>
+                            <th>Model Name</th>
+                            <th>Flow Range (GPM)</th>
+                            <th>Footprint</th>
+                            <th>Technical Docs</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-body"></tbody>
+                </table>
                 <button id="addToCartButton">Request Quote</button>
             </section>
         </main>
     </div>
 
-    <footer>
-        <p>© 2026 Xylem Inc. All rights reserved.</p>
-    </footer>
+    <footer><p>© 2026 Xylem Inc. All rights reserved.</p></footer>
     <script src="script.js"></script>
 </body>
 </html>
