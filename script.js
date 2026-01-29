@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loadDatabase() {
         try {
-            const response = await fetch('products.json');
+            const response = await fetch('product.json');
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             database = await response.json();
         } catch (error) {
@@ -76,6 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // Daily Turnover Calculation: (GPM * 1440) / Volume
         const turnoversPerDay = (circRate * 1440) / poolVolume;
         turnoverResultText.textContent = `${turnoversPerDay.toFixed(2)} Turnovers per Day`;
         turnoverResultSection.classList.remove('hidden');
@@ -91,9 +92,11 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (selectedGroup === 'Pump') {
                 groupModels = groupModels.filter(item => item.Power === document.getElementById('pumpVoltage').value);
             } else if (selectedGroup === 'UV') {
-                const tech = document.getElementById('uvType').value;
                 const nema = document.getElementById('nemaRating').value;
-                groupModels = groupModels.filter(item => item["Equipment Type"] === tech && item["Nema Rating"] === nema);
+                groupModels = groupModels.filter(item => 
+                    item["Equipment Type"] === "Medium Pressure UV" && 
+                    item["Nema Rating"] === nema
+                );
             }
 
             const flowMatched = groupModels.filter(item => {
@@ -117,7 +120,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const footprint = model["Footprint"] || 'N/A';
             const desc = model["Nema Rating"] ? `${model["Equipment Type"]} (${model["Nema Rating"]})` : (model["Equipment Type"] || 'N/A');
 
-            const buildLink = (file, label) => file ? `<a href="docs/${file}" target="_blank" class="download-link">${label}</a>` : '';
+            // Set to 'product/' folder path
+            const buildLink = (file, label) => file ? `<a href="product/${file}" target="_blank" class="download-link">${label}</a>` : '';
 
             const linksHtml = [
                 buildLink(model['Cut Sheet'], 'Product Sheet'),
