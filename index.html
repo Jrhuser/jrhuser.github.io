@@ -26,59 +26,7 @@
         <main>
             <section class="equipment-selection">
                 <h2>Select Equipment Group(s)</h2>
-                <div class="radio-group-icons">
-                    <div class="equipment-selection-column">
-                        <div class="equipment-icon-wrapper">
-                            <input type="checkbox" id="radioFilter" name="equipmentGroup" value="Filter">
-                            <label for="radioFilter">
-                                <img src="defender_filter.png" alt="Filter" class="equipment-icon">
-                                Filtration
-                            </label>
-                        </div>
-                        <div id="filterOptions" class="input-group hidden inline-dropdown">
-                            <label for="filterType">Filter Technology:</label>
-                            <select id="filterType">
-                                <option value="RMF">Regenerative Media (RMF)</option>
-                                <option value="Sand Filter">Sand Filtration</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="equipment-selection-column">
-                        <div class="equipment-icon-wrapper">
-                            <input type="checkbox" id="radioPump" name="equipmentGroup" value="Pump">
-                            <label for="radioPump">
-                                <img src="nb-530.png" alt="Pump" class="equipment-icon">
-                                Pumps
-                            </label>
-                        </div>
-                        <div id="pumpOptions" class="input-group hidden inline-dropdown">
-                            <label for="pumpVoltage">Required Voltage:</label>
-                            <select id="pumpVoltage">
-                                <option value="230/460">230/460V</option>
-                                <option value="575">575V</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="equipment-selection-column">
-                        <div class="equipment-icon-wrapper">
-                            <input type="checkbox" id="radioUV" name="equipmentGroup" value="UV">
-                            <label for="radioUV">
-                                <img src="ets.png" alt="UV" class="equipment-icon">
-                                Disinfection (UV)
-                            </label>
-                        </div>
-                        <div id="uvOptions" class="input-group hidden inline-dropdown">
-                            <label for="nemaRating">Enclosure Rating:</label>
-                            <select id="nemaRating">
-                                <option value="N4x">NEMA 4X (Outdoor)</option>
-                                <option value="N12">NEMA 12 (Indoor)</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </section>
+                </section>
 
             <section class="input-section">
                 <h2>System Parameters</h2>
@@ -99,33 +47,13 @@
                 <button id="resetButton">Clear Selection</button>
             </div>
 
-            <section id="turnoverResultSection" class="input-section hidden">
-                <h3>Calculated Daily Turnovers</h3>
-                <p id="turnoverResultText" class="turnover-result"></p>
-            </section>
-
-            <section id="resultsSection" class="results-section hidden">
-                <h2>Bill of Materials</h2>
-                <table class="results-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 40px;"><input type="checkbox" id="selectAllBOM"></th>
-                            <th>Equipment Type</th> 
-                            <th>Part Number</th>
-                            <th>Model Name</th>
-                            <th>Flow Range (GPM)</th>
-                            <th>Footprint</th>
-                            <th>Technical Docs</th>
-                        </tr>
-                    </thead>
-                    <tbody id="results-body"></tbody>
-                </table>
-                <button id="addToCartButton">Request Quote</button>
-            </section>
-        </main>
+            </main>
     </div>
 
-    <footer><p>© 2026 Xylem Inc. All rights reserved.</p></footer>
+    <footer>
+        <p>© 2026 Xylem Inc. All rights reserved.</p>
+    </footer>
+
     <script src="script.js"></script>
 </body>
 </html>
