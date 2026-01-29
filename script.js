@@ -53,20 +53,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const poolVolume = parseFloat(poolVolumeInput.value);
         const circRate = parseFloat(circulationRateInput.value);
 
-        if (isNaN(poolVolume) || isNaN(circRate) || poolVolume <= 0) {
-            alert("Please enter a valid Volume and Flow Rate.");
+        if (isNaN(circRate) || circRate <= 0) {
+            alert("Please enter a valid Recirculation Rate (GPM).");
             return;
         }
 
-        const turnoversPerDay = (circRate * 1440) / poolVolume;
-        turnoverResultText.textContent = `${turnoversPerDay.toFixed(2)} Turnovers per Day`;
-        turnoverResultSection.classList.remove('hidden');
+        if (!isNaN(poolVolume) && poolVolume > 0) {
+            const turnoversPerDay = (circRate * 1440) / poolVolume;
+            turnoverResultText.textContent = `${turnoversPerDay.toFixed(2)} Turnovers per Day`;
+            turnoverResultSection.classList.remove('hidden');
 
-        if (turnoversPerDay < 4.0) {
-            turnoverResultText.style.color = "red";
-            alert("Warning: Calculated turnover rate is below the 4.0 health standard.");
+            if (turnoversPerDay < 4.0) {
+                turnoverResultText.style.color = "red";
+                alert("Warning: The calculated turnover rate is below the 4.0 turnovers per day health standard.");
+            } else {
+                turnoverResultText.style.color = "#007DA3";
+            }
         } else {
-            turnoverResultText.style.color = "#007DA3";
+            turnoverResultSection.classList.add('hidden');
         }
 
         const checkedGroups = Array.from(equipmentCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
@@ -82,13 +86,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 groupModels = groupModels.filter(item => item.Power === selectedVoltage);
             } else if (selectedGroup === 'UV') {
                 const nema = document.getElementById('nemaRating').value;
-                groupModels = groupModels.filter(item => item["Equipment Type"] === "Medium Pressure UV" && item["Nema Rating"] === nema);
+                groupModels = groupModels.filter(item => 
+                    item["Equipment Type"] === "Medium Pressure UV" && 
+                    item["Nema Rating"] === nema
+                );
             }
 
             const flowMatched = groupModels.filter(item => {
                 const min = parseFloat(item["Min Flow"]);
                 const max = parseFloat(item["Max Flow"]);
-                // Handle open-ended max flow
                 return circRate >= min && (isNaN(max) || max === null || circRate <= max);
             });
             allMatchingModels = allMatchingModels.concat(flowMatched);
@@ -99,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function displayResults(models) {
         if (models.length === 0) {
-            alert("No matching equipment found for this specific Flow Rate/Configuration.");
+            alert("No matching equipment found for this Recirculation Rate/Configuration.");
             return;
         }
         resultsSection.classList.remove('hidden');
@@ -109,7 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const partNum = model["Part Number"] || 'N/A';
             const buildLink = (file, label) => file ? `<a href="product/${file}" target="_blank" class="download-link">${label}</a>` : '';
 
-            // Mapping to your new JSON keys
             const linksHtml = [
                 buildLink(model['Product Sheet'], 'Product Sheet'),
                 buildLink(model['Additional Info/Pump Curve'], 'Additional Info/ Pump Curve'),
@@ -135,9 +140,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return `- Model: ${row.querySelector('[data-label="Model Name"]').textContent} (Part #: ${cb.value})`;
         });
 
-        if (checkedRows.length === 0) return alert('Please select products from the Bill of Materials.');
+        if (checkedRows.length === 0) return alert('Please select products first.');
         
-        const body = `I would like to request a quote for the following equipment:\n\n${checkedRows.join('\n')}`;
+        const body = `I would like to request a quote for:\n\n${checkedRows.join('\n')}`;
         const mailtoUrl = `mailto:kenneth.roche@xylem.com?subject=Quote Request&body=${encodeURIComponent(body)}`;
         window.location.href = mailtoUrl;
     });
