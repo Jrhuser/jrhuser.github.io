@@ -1,90 +1,43 @@
-/* General Layout and Pinned Footer Logic */
-html, body {
-    height: 100%;
-    margin: 0;
-}
+html, body { height: 100%; font-family: 'Roboto', sans-serif; background-color: #f4f7f6; margin: 0; }
+.container { width: 100%; background-color: #ffffff; padding-bottom: 50px; }
+header { background-color: #007DA3; color: #ffffff; padding: 20px 40px; }
+.logo { height: 30px; }
+main { padding: 40px; max-width: 1200px; margin: 0 auto; }
+h2 { color: #007DA3; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; }
 
-body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #f4f7f6;
-    color: #333;
-    line-height: 1.6;
-    display: flex;
-    flex-direction: column; /* Allows footer to be pushed to bottom */
-}
+/* Selection Columns */
+.radio-group-icons { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 30px; }
+.equipment-selection-column { flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 10px; }
+.equipment-icon-wrapper { background-color: #f8f9fa; border: 2px solid #ced4da; border-radius: 8px; cursor: pointer; text-align: center; }
+.equipment-icon-wrapper label { display: block; padding: 20px; cursor: pointer; font-weight: 700; }
+.equipment-icon { max-width: 60px; margin-bottom: 10px; }
+.equipment-icon-wrapper:has(input:checked) { background-color: #007DA3; color: white; border-color: #007DA3; }
+.equipment-icon-wrapper input { display: none; }
 
-.container {
-    width: 100%;
-    background-color: #ffffff;
-    flex: 1 0 auto; /* Ensures main content expands to fill space */
-}
+.inline-dropdown select { width: 100%; border: 2px solid #007DA3; border-radius: 6px; padding: 10px; }
 
-/* Header Styling - Corrected Distribution */
-header {
-    background-color: #007DA3;
-    color: #ffffff;
-    padding: 0 40px;
-    height: 70px;
-    display: flex;
-    align-items: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.header-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 1320px;
-    margin: 0 auto;
-}
-
-.logo {
-    height: 35px;
-    width: auto;
-}
-
-.main-nav {
-    display: flex;
-    gap: 30px;
-}
-
-.main-nav a {
-    color: #ffffff;
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 0.95em;
-    transition: opacity 0.2s;
-}
-
-.main-nav a:hover {
-    opacity: 0.8;
-}
-
-/* Main Content Padding */
-main {
-    padding: 40px;
-    max-width: 1320px;
-    margin: 0 auto;
-}
-
-/* Footer Styling - Corrected Pinned Bottom */
-footer {
-    background-color: #343a40;
-    color: #ffffff;
-    text-align: center;
-    padding: 25px 0;
-    flex-shrink: 0; /* Prevents footer from squishing */
-    font-size: 0.9em;
-}
-
-/* Other UI Elements (Buttons & Inputs) */
+/* Rounded Corners for Parameters */
 .parameter-grid .input-group input { 
     width: 100%; padding: 15px; border: 1px solid #ced4da; 
     border-radius: 12px; font-size: 1.1em; box-sizing: border-box; 
+    transition: 0.3s;
 }
+.parameter-grid .input-group input:focus { border-color: #007DA3; outline: none; box-shadow: 0 0 5px rgba(0, 125, 163, 0.2); }
 
+/* Buttons */
 .button-group { display: flex; gap: 15px; margin-top: 30px; }
-#calculateButton { background-color: #61D604; color: white; flex: 2; padding: 15px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; }
+#calculateButton { background-color: #61D604; color: white; flex: 2; padding: 15px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+#calculateButton:hover { background-color: #55b803; }
 #resetButton { background-color: #f1f3f5; flex: 1; padding: 15px; border: 1px solid #ced4da; border-radius: 6px; cursor: pointer; }
+
+/* Results */
+.turnover-result { font-size: 1.5em; font-weight: 700; text-align: center; background: #e9f5ff; padding: 20px; border-radius: 8px; border: 2px solid #007DA3; }
+.results-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+.results-table th, .results-table td { border: 1px solid #dee2e6; padding: 12px; text-align: left; }
+.results-table th { background-color: #007DA3; color: white; }
+
+.download-link { background: #f8f9fa; border: 1px solid #adb5bd; padding: 5px 10px; text-decoration: none; color: #007DA3; border-radius: 4px; font-size: 0.8em; margin-right: 5px; }
+#addToCartButton { width: 100%; padding: 20px; background: #007DA3; color: white; border: none; border-radius: 6px; font-size: 1.2em; font-weight: 700; margin-top: 20px; cursor: pointer; transition: 0.3s; }
+#addToCartButton:hover { background-color: #005f7d; }
+
 .hidden { display: none !important; }
