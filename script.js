@@ -76,10 +76,17 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Daily Turnover Calculation: (GPM * 1440) / Volume
         const turnoversPerDay = (circRate * 1440) / poolVolume;
         turnoverResultText.textContent = `${turnoversPerDay.toFixed(2)} Turnovers per Day`;
         turnoverResultSection.classList.remove('hidden');
+
+        // NEW: Health Standard Validation
+        if (turnoversPerDay < 4.0) {
+            turnoverResultText.style.color = "red";
+            alert("Warning: The calculated turnover rate is below the 4.0 turnovers per day health standard.");
+        } else {
+            turnoverResultText.style.color = "#007DA3";
+        }
 
         const checkedGroups = Array.from(equipmentCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
         let allMatchingModels = [];
@@ -120,9 +127,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const footprint = model["Footprint"] || 'N/A';
             const desc = model["Nema Rating"] ? `${model["Equipment Type"]} (${model["Nema Rating"]})` : (model["Equipment Type"] || 'N/A');
 
-            // Set to 'product/' folder path
             const buildLink = (file, label) => file ? `<a href="product/${file}" target="_blank" class="download-link">${label}</a>` : '';
 
+            // Corrected Mapping
             const linksHtml = [
                 buildLink(model['Cut Sheet'], 'Product Sheet'),
                 buildLink(model['GA'], 'Additional Info/ Pump Curve'),
