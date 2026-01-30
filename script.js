@@ -40,28 +40,52 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    let lastEdited = null;
+
+    function toMinutes(val, unit) {
+        if (unit === 'hours') return val * 60;
+        if (unit === 'perday') return (24 * 60) / val;
+        return val;
+    }
+
+    function fromMinutes(minutes, unit) {
+        if (unit === 'hours') return minutes / 60;
+        if (unit === 'perday') return (24 * 60) / minutes;
+        return minutes;
+    }
+
     function calcFlowRate() {
         const volume = parseFloat(poolVolumeInput.value);
         const turnoverVal = parseFloat(turnoverValueInput.value);
         if (volume > 0 && turnoverVal > 0) {
-            const unit = turnoverUnitSelect.value;
-            let minutes;
-            if (unit === 'hours') {
-                minutes = turnoverVal * 60;
-            } else if (unit === 'perday') {
-                minutes = (24 * 60) / turnoverVal;
-            } else {
-                minutes = turnoverVal;
-            }
+            const minutes = toMinutes(turnoverVal, turnoverUnitSelect.value);
             circulationRateInput.value = Math.ceil(volume / minutes);
         } else {
             circulationRateInput.value = '';
         }
     }
 
-    [poolVolumeInput, turnoverValueInput, turnoverUnitSelect].forEach(el => {
-        el.addEventListener('input', calcFlowRate);
-        el.addEventListener('change', calcFlowRate);
+    function calcTurnover() {
+        const volume = parseFloat(poolVolumeInput.value);
+        const flowRate = parseFloat(circulationRateInput.value);
+        if (volume > 0 && flowRate > 0) {
+            const minutes = volume / flowRate;
+            const converted = fromMinutes(minutes, turnoverUnitSelect.value);
+            turnoverValueInput.value = Math.round(converted * 100) / 100;
+        } else {
+            turnoverValueInput.value = '';
+        }
+    }
+
+    turnoverValueInput.addEventListener('input', () => { lastEdited = 'turnover'; calcFlowRate(); });
+    circulationRateInput.addEventListener('input', () => { lastEdited = 'flowRate'; calcTurnover(); });
+    poolVolumeInput.addEventListener('input', () => {
+        if (lastEdited === 'flowRate') calcTurnover();
+        else calcFlowRate();
+    });
+    turnoverUnitSelect.addEventListener('change', () => {
+        if (lastEdited === 'flowRate') calcTurnover();
+        else calcFlowRate();
     });
 
     function handleEquipmentToggle() {
