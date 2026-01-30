@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleEquipmentToggle() {
         toggleSecondaryOptions();
-        resultsSection.classList.add('hidden'); // Hide results if user changes categories
+        resultsSection.classList.add('hidden'); 
     }
 
     function toggleSecondaryOptions() {
@@ -184,7 +184,8 @@ document.addEventListener('DOMContentLoaded', () => {
 Products:
 ${checkedItems.join('\n')}`;
 
-        window.location.href = `mailto:kenneth.roche@xylem.com?subject=Quote Request&body=${encodeURIComponent(emailBody)}`;
+        // Updated Subject Line here
+        window.location.href = `mailto:kenneth.roche@xylem.com?subject=Pump Room - Quote Request&body=${encodeURIComponent(emailBody)}`;
     });
 
     loadDatabase();
