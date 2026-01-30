@@ -105,20 +105,55 @@
 
             <section id="resultsSection" class="results-section hidden">
                 <h2>Bill of Materials</h2>
-                <table class="results-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 40px;"><input type="checkbox" id="selectAllBOM"></th>
-                            <th>Equipment Type</th> 
-                            <th>Part Number</th>
-                            <th>Model Name</th>
-                            <th>Flow Range (GPM)</th>
-                            <th>Footprint</th>
-                            <th>Technical Docs</th>
-                        </tr>
-                    </thead>
-                    <tbody id="results-body"></tbody>
-                </table>
+
+                <div id="filterTableSection" class="hidden result-category">
+                    <h3>Filtration</h3>
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 40px;">Select</th>
+                                <th>Part Number</th>
+                                <th>Model Name</th>
+                                <th>Flow Range (GPM)</th>
+                                <th>Technical Docs</th>
+                            </tr>
+                        </thead>
+                        <tbody id="filter-results-body"></tbody>
+                    </table>
+                </div>
+
+                <div id="pumpTableSection" class="hidden result-category">
+                    <h3>Pumps</h3>
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 40px;">Select</th>
+                                <th>Part Number</th>
+                                <th>Model Name</th>
+                                <th>Flow Range (GPM)</th>
+                                <th>Technical Docs</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pump-results-body"></tbody>
+                    </table>
+                </div>
+
+                <div id="uvTableSection" class="hidden result-category">
+                    <h3>Disinfection (UV)</h3>
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 40px;">Select</th>
+                                <th>Part Number</th>
+                                <th>Model Name</th>
+                                <th>Flow Range (GPM)</th>
+                                <th>Technical Docs</th>
+                            </tr>
+                        </thead>
+                        <tbody id="uv-results-body"></tbody>
+                    </table>
+                </div>
+
                 <button id="addToCartButton">Request Quote</button>
             </section>
         </main>
