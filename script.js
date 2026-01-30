@@ -102,7 +102,20 @@ document.addEventListener('DOMContentLoaded', () => {
             let groupModels = products.filter(item => item.Grouping === selectedGroup);
 
             if (selectedGroup === 'Filter') {
-                groupModels = groupModels.filter(item => item["Equipment Type"] === document.getElementById('filterType').value);
+                const filterType = document.getElementById('filterType').value;
+                groupModels = groupModels.filter(item => item["Equipment Type"] === filterType);
+                if (filterType === 'RMF') {
+                    const ceilingVal = document.getElementById('ceilingHeight').value;
+                    const heightLimit = ceilingVal === '8' ? 81 : ceilingVal === '9' ? 93 : null;
+                    if (heightLimit) {
+                        groupModels = groupModels.filter(item => {
+                            const footprint = item["Footprint LxWxH (Inches)"];
+                            if (!footprint) return false;
+                            const height = parseFloat(footprint.split('x').pop());
+                            return !isNaN(height) && height < heightLimit;
+                        });
+                    }
+                }
             } else if (selectedGroup === 'Pump') {
                 const volt = document.getElementById('pumpVoltage').value;
                 groupModels = groupModels.filter(item => String(item.Power) === volt);
