@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const resetButton = document.getElementById('resetButton');
     const resultsSection = document.getElementById('resultsSection');
     
-    // Table Selectors
     const tables = {
         Filter: { section: document.getElementById('filterTableSection'), body: document.getElementById('filter-results-body') },
         Pump: { section: document.getElementById('pumpTableSection'), body: document.getElementById('pump-results-body') },
@@ -70,7 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     calculateButton.addEventListener('click', () => {
-        // Clear all previous results
         Object.values(tables).forEach(t => {
             t.body.innerHTML = '';
             t.section.classList.add('hidden');
@@ -83,7 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const checkedGroups = Array.from(equipmentCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
-        let allMatchingModels = [];
         const products = database["product-DB"] || [];
 
         for (const selectedGroup of checkedGroups) {
@@ -104,17 +101,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const max = parseFloat(item["Max Flow"]);
                 return circRate >= min && (isNaN(max) || max === null || circRate <= max);
             });
-            allMatchingModels = allMatchingModels.concat(flowMatched);
-        }
 
-        displayResults(allMatchingModels);
+            displayResults(flowMatched);
+        }
     });
 
     function displayResults(models) {
-        if (models.length === 0) {
-            alert("No matching equipment found.");
-            return;
-        }
+        if (models.length === 0) return;
         resultsSection.classList.remove('hidden');
 
         models.forEach(model => {
@@ -124,14 +117,22 @@ document.addEventListener('DOMContentLoaded', () => {
             tables[group].section.classList.remove('hidden');
             const tr = document.createElement('tr');
             const partNum = model["Part Number"] || 'N/A';
+            
+            // Re-implementation of Technical Document Links
             const buildLink = (file, label) => file ? `<a href="product/${file}" target="_blank" class="download-link">${label}</a>` : '';
+
+            const linksHtml = [
+                buildLink(model['Product Sheet'], 'Product Sheet'),
+                buildLink(model['Additional Info/Pump Curve'], 'Additional Info'),
+                buildLink(model['Written Specification'], 'Spec')
+            ].filter(l => l).join(' ');
 
             tr.innerHTML = `
                 <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}"></td>
                 <td>${partNum}</td>
                 <td>${model.Model || 'N/A'}</td>
                 <td>${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
-                <td>${buildLink(model['Product Sheet'], 'Docs')}</td>
+                <td>${linksHtml || 'N/A'}</td>
             `;
             tables[group].body.appendChild(tr);
         });
