@@ -88,8 +88,12 @@
                         <input type="number" id="poolVolume" placeholder="e.g., 100000">
                     </div>
                     <div class="input-group">
-                        <label for="circulationRate">Design Flow Rate (GPM):</label>
-                        <input type="number" id="circulationRate" placeholder="e.g., 800">
+                        <label for="turnoverMinutes">Required Turnover (Minutes):</label>
+                        <input type="number" id="turnoverMinutes" placeholder="e.g., 360">
+                    </div>
+                    <div class="input-group">
+                        <label for="circulationRate">Calculated Design Flow Rate (GPM):</label>
+                        <input type="number" id="circulationRate" placeholder="Calculated result" readonly style="background-color: #f1f3f5;">
                     </div>
                 </div>
             </section>
@@ -98,11 +102,6 @@
                 <button id="calculateButton">Build Pump Room</button>
                 <button id="resetButton">Clear Selection</button>
             </div>
-
-            <section id="turnoverResultSection" class="input-section hidden">
-                <h3>Calculated Daily Turnovers</h3>
-                <p id="turnoverResultText" class="turnover-result"></p>
-            </section>
 
             <section id="resultsSection" class="results-section hidden">
                 <h2>Bill of Materials</h2>
