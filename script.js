@@ -118,12 +118,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const tr = document.createElement('tr');
             const partNum = model["Part Number"] || 'N/A';
             
-            // Re-implementation of Technical Document Links
             const buildLink = (file, label) => file ? `<a href="product/${file}" target="_blank" class="download-link">${label}</a>` : '';
+
+            // Conditional label: "Pump Curve" for pumps, "Additional Info" for others
+            const secondaryDocLabel = (group === 'Pump') ? 'Pump Curve' : 'Additional Info';
 
             const linksHtml = [
                 buildLink(model['Product Sheet'], 'Product Sheet'),
-                buildLink(model['Additional Info/Pump Curve'], 'Additional Info'),
+                buildLink(model['Additional Info/Pump Curve'], secondaryDocLabel),
                 buildLink(model['Written Specification'], 'Spec')
             ].filter(l => l).join(' ');
 
