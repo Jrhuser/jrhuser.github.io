@@ -14,7 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const uvOptions = document.getElementById('uvOptions');
     
     const poolVolumeInput = document.getElementById('poolVolume');
-    const turnoverMinutesInput = document.getElementById('turnoverMinutes');
+    const turnoverValueInput = document.getElementById('turnoverValue');
+    const turnoverUnitSelect = document.getElementById('turnoverUnit');
     const circulationRateInput = document.getElementById('circulationRate');
     
     const calculateButton = document.getElementById('calculateButton');
@@ -39,16 +40,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    [poolVolumeInput, turnoverMinutesInput].forEach(input => {
-        input.addEventListener('input', () => {
-            const volume = parseFloat(poolVolumeInput.value);
-            const minutes = parseFloat(turnoverMinutesInput.value);
-            if (volume > 0 && minutes > 0) {
-                circulationRateInput.value = Math.ceil(volume / minutes);
+    function calcFlowRate() {
+        const volume = parseFloat(poolVolumeInput.value);
+        const turnoverVal = parseFloat(turnoverValueInput.value);
+        if (volume > 0 && turnoverVal > 0) {
+            const unit = turnoverUnitSelect.value;
+            let minutes;
+            if (unit === 'hours') {
+                minutes = turnoverVal * 60;
+            } else if (unit === 'perday') {
+                minutes = (24 * 60) / turnoverVal;
             } else {
-                circulationRateInput.value = '';
+                minutes = turnoverVal;
             }
-        });
+            circulationRateInput.value = Math.ceil(volume / minutes);
+        } else {
+            circulationRateInput.value = '';
+        }
+    }
+
+    [poolVolumeInput, turnoverValueInput, turnoverUnitSelect].forEach(el => {
+        el.addEventListener('input', calcFlowRate);
+        el.addEventListener('change', calcFlowRate);
     });
 
     function handleEquipmentToggle() {
@@ -65,7 +78,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     resetButton.addEventListener('click', () => {
         equipmentCheckboxes.forEach(cb => cb.checked = false);
-        [poolVolumeInput, turnoverMinutesInput, circulationRateInput].forEach(i => i.value = '');
+        [poolVolumeInput, turnoverValueInput, circulationRateInput].forEach(i => i.value = '');
+        turnoverUnitSelect.value = 'minutes';
         resultsSection.classList.add('hidden');
         Object.values(tables).forEach(t => {
             t.body.innerHTML = '';
@@ -190,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const emailBody = `Quote Request Details:
 - Volume: ${poolVolumeInput.value} Gal
-- Turnover: ${turnoverMinutesInput.value} Min
+- Turnover: ${turnoverValueInput.value} ${turnoverUnitSelect.options[turnoverUnitSelect.selectedIndex].text}
 - Flow: ${circulationRateInput.value} GPM
 
 Products:

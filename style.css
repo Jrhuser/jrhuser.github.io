@@ -165,6 +165,29 @@ h3 {
     box-shadow: 0 0 5px rgba(0, 125, 163, 0.2);
 }
 
+.turnover-row {
+    display: flex;
+    gap: 8px;
+}
+
+.turnover-row input {
+    flex: 1;
+}
+
+.turnover-row select {
+    padding: 14px 10px;
+    border: 1px solid #ced4da;
+    border-radius: 12px;
+    font-size: 1em;
+    background-color: #fff;
+}
+
+.turnover-row select:focus {
+    border-color: #007DA3;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 125, 163, 0.2);
+}
+
 .helper-text {
     font-size: 0.85em;
     color: #6c757d;
