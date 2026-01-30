@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const circRate = parseFloat(circulationRateInput.value);
         if (isNaN(circRate) || circRate <= 0) {
-            alert("Please calculate a Flow Rate first.");
+            alert("Please enter a Design Flow Rate.");
             return;
         }
 
