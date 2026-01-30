@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     let database = { "product-DB": [] };
 
-    // DOM Selectors
+    // Selectors
     const equipmentCheckboxes = document.querySelectorAll('input[name="equipmentGroup"]');
     const filterCheckbox = document.getElementById('radioFilter');
     const pumpCheckbox = document.getElementById('radioPump');
@@ -18,9 +18,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculateButton = document.getElementById('calculateButton');
     const resetButton = document.getElementById('resetButton');
     const resultsSection = document.getElementById('resultsSection');
-    const resultsBody = document.getElementById('results-body');
+    
+    // Table Selectors
+    const tables = {
+        Filter: { section: document.getElementById('filterTableSection'), body: document.getElementById('filter-results-body') },
+        Pump: { section: document.getElementById('pumpTableSection'), body: document.getElementById('pump-results-body') },
+        UV: { section: document.getElementById('uvTableSection'), body: document.getElementById('uv-results-body') }
+    };
+
     const addToCartButton = document.getElementById('addToCartButton');
-    const selectAllBOM = document.getElementById('selectAllBOM');
 
     // Load Database
     async function loadDatabase() {
@@ -33,15 +39,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Live Calculation: Flow Rate = Volume / Turnover Minutes
+    // Live Calculation
     [poolVolumeInput, turnoverMinutesInput].forEach(input => {
         input.addEventListener('input', () => {
             const volume = parseFloat(poolVolumeInput.value);
             const minutes = parseFloat(turnoverMinutesInput.value);
-
             if (volume > 0 && minutes > 0) {
-                const calculatedFlow = Math.ceil(volume / minutes);
-                circulationRateInput.value = calculatedFlow;
+                circulationRateInput.value = Math.ceil(volume / minutes);
             } else {
                 circulationRateInput.value = '';
             }
@@ -56,28 +60,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     resetButton.addEventListener('click', () => {
         equipmentCheckboxes.forEach(cb => cb.checked = false);
-        poolVolumeInput.value = '';
-        turnoverMinutesInput.value = '';
-        circulationRateInput.value = '';
+        [poolVolumeInput, turnoverMinutesInput, circulationRateInput].forEach(i => i.value = '');
         resultsSection.classList.add('hidden');
-        resultsBody.innerHTML = '';
-        if (selectAllBOM) selectAllBOM.checked = false;
+        Object.values(tables).forEach(t => {
+            t.body.innerHTML = '';
+            t.section.classList.add('hidden');
+        });
         toggleSecondaryOptions();
     });
 
-    if (selectAllBOM) {
-        selectAllBOM.addEventListener('change', () => {
-            const checkboxes = document.querySelectorAll('.bom-checkbox');
-            checkboxes.forEach(cb => cb.checked = selectAllBOM.checked);
-        });
-    }
-
     calculateButton.addEventListener('click', () => {
-        resultsBody.innerHTML = ''; 
-        const circRate = parseFloat(circulationRateInput.value);
+        // Clear all previous results
+        Object.values(tables).forEach(t => {
+            t.body.innerHTML = '';
+            t.section.classList.add('hidden');
+        });
 
+        const circRate = parseFloat(circulationRateInput.value);
         if (isNaN(circRate) || circRate <= 0) {
-            alert("Please enter a valid Pool Volume and Turnover Time to calculate the Flow Rate.");
+            alert("Please calculate a Flow Rate first.");
             return;
         }
 
@@ -88,18 +89,16 @@ document.addEventListener('DOMContentLoaded', () => {
         for (const selectedGroup of checkedGroups) {
             let groupModels = products.filter(item => item.Grouping === selectedGroup);
 
-            // Group-specific filtering
             if (selectedGroup === 'Filter') {
                 groupModels = groupModels.filter(item => item["Equipment Type"] === document.getElementById('filterType').value);
             } else if (selectedGroup === 'Pump') {
-                const selectedVoltage = document.getElementById('pumpVoltage').value;
-                groupModels = groupModels.filter(item => String(item.Power) === selectedVoltage);
+                const volt = document.getElementById('pumpVoltage').value;
+                groupModels = groupModels.filter(item => String(item.Power) === volt);
             } else if (selectedGroup === 'UV') {
                 const nema = document.getElementById('nemaRating').value;
                 groupModels = groupModels.filter(item => item["Nema Rating"] === nema);
             }
 
-            // Global Flow Matching
             const flowMatched = groupModels.filter(item => {
                 const min = parseFloat(item["Min Flow (gpm)"]) || 0;
                 const max = parseFloat(item["Max Flow"]);
@@ -113,53 +112,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function displayResults(models) {
         if (models.length === 0) {
-            alert("No matching equipment found for this Flow Rate.");
-            resultsSection.classList.add('hidden');
+            alert("No matching equipment found.");
             return;
         }
         resultsSection.classList.remove('hidden');
 
-        models.forEach((model) => {
+        models.forEach(model => {
+            const group = model.Grouping;
+            if (!tables[group]) return;
+
+            tables[group].section.classList.remove('hidden');
             const tr = document.createElement('tr');
             const partNum = model["Part Number"] || 'N/A';
             const buildLink = (file, label) => file ? `<a href="product/${file}" target="_blank" class="download-link">${label}</a>` : '';
 
             tr.innerHTML = `
-                <td><input type="checkbox" class="bom-checkbox" value="${partNum}"></td>
-                <td>${model["Equipment Type"]}</td>
+                <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}"></td>
                 <td>${partNum}</td>
-                <td data-label="Model Name">${model.Model || 'N/A'}</td>
+                <td>${model.Model || 'N/A'}</td>
                 <td>${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
-                <td>${model["Footprint LxWxH (Inches)"] || 'N/A'}</td>
                 <td>${buildLink(model['Product Sheet'], 'Docs')}</td>
             `;
-            resultsBody.appendChild(tr);
+            tables[group].body.appendChild(tr);
         });
     }
 
     addToCartButton.addEventListener('click', () => {
-        const checkedRows = Array.from(document.querySelectorAll('.bom-checkbox:checked')).map(cb => {
-            const row = cb.closest('tr');
-            const modelName = row.querySelector('[data-label="Model Name"]').textContent;
-            return `- ${modelName} (Part #: ${cb.value})`;
+        const checkedItems = Array.from(document.querySelectorAll('.bom-checkbox:checked')).map(cb => {
+            return `- ${cb.getAttribute('data-model')} (Part #: ${cb.value})`;
         });
 
-        if (checkedRows.length === 0) return alert('Select items first.');
+        if (checkedItems.length === 0) return alert('Select items first.');
 
-        const emailBody = `I would like a quote for the following equipment selection:
+        const emailBody = `Quote Request Details:
+- Volume: ${poolVolumeInput.value} Gal
+- Turnover: ${turnoverMinutesInput.value} Min
+- Flow: ${circulationRateInput.value} GPM
 
-SYSTEM PARAMETERS:
-- Pool Volume: ${poolVolumeInput.value} Gallons
-- Turnover Rate: ${turnoverMinutesInput.value} Minutes
-- Design Flow Rate: ${circulationRateInput.value} GPM
+Products:
+${checkedItems.join('\n')}`;
 
-SELECTED PRODUCTS:
-${checkedRows.join('\n')}
-
-Please provide technical submittals and a price quotation.`;
-
-        const mailtoUrl = `mailto:kenneth.roche@xylem.com?subject=Quote Request - ${circulationRateInput.value} GPM System&body=${encodeURIComponent(emailBody)}`;
-        window.location.href = mailtoUrl;
+        window.location.href = `mailto:kenneth.roche@xylem.com?subject=Quote Request&body=${encodeURIComponent(emailBody)}`;
     });
 
     loadDatabase();
