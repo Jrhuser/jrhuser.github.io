@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Live Calculation
+    // Live Calculation: Flow Rate = Volume / Minutes
     [poolVolumeInput, turnoverMinutesInput].forEach(input => {
         input.addEventListener('input', () => {
             const volume = parseFloat(poolVolumeInput.value);
@@ -69,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     calculateButton.addEventListener('click', () => {
+        // Clear all previous results
         Object.values(tables).forEach(t => {
             t.body.innerHTML = '';
             t.section.classList.add('hidden');
@@ -120,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const buildLink = (file, label) => file ? `<a href="product/${file}" target="_blank" class="download-link">${label}</a>` : '';
 
-            // Conditional label: "Pump Curve" for pumps, "Additional Info" for others
+            // Restored Logic: Label is "Pump Curve" for pumps, "Additional Info" for others
             const secondaryDocLabel = (group === 'Pump') ? 'Pump Curve' : 'Additional Info';
 
             const linksHtml = [
@@ -129,13 +130,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 buildLink(model['Written Specification'], 'Spec')
             ].filter(l => l).join(' ');
 
-            tr.innerHTML = `
-                <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}"></td>
-                <td>${partNum}</td>
-                <td>${model.Model || 'N/A'}</td>
-                <td>${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
-                <td>${linksHtml || 'N/A'}</td>
-            `;
+            // Pumps get 7 columns; others get 5 columns
+            if (group === 'Pump') {
+                tr.innerHTML = `
+                    <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}"></td>
+                    <td>${partNum}</td>
+                    <td>${model.Model || 'N/A'}</td>
+                    <td>${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
+                    <td>${model["Best Efficiency Flow (gpm)"] || 'N/A'}</td>
+                    <td>${model["TDH @ Best Efficieny"] || 'N/A'}</td>
+                    <td>${linksHtml || 'N/A'}</td>
+                `;
+            } else {
+                tr.innerHTML = `
+                    <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}"></td>
+                    <td>${partNum}</td>
+                    <td>${model.Model || 'N/A'}</td>
+                    <td>${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
+                    <td>${linksHtml || 'N/A'}</td>
+                `;
+            }
             tables[group].body.appendChild(tr);
         });
     }
