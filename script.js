@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     let database = { "product-DB": [] };
 
-    // DOM Selectors
+    // Selectors
     const equipmentCheckboxes = document.querySelectorAll('input[name="equipmentGroup"]');
     const filterCheckbox = document.getElementById('radioFilter');
     const pumpCheckbox = document.getElementById('radioPump');
@@ -27,7 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const addToCartButton = document.getElementById('addToCartButton');
 
-    // Load Database
     async function loadDatabase() {
         try {
             const response = await fetch('product.json');
@@ -38,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Live Calculation
+    // Live Calculation: Flow = Volume / Minutes
     [poolVolumeInput, turnoverMinutesInput].forEach(input => {
         input.addEventListener('input', () => {
             const volume = parseFloat(poolVolumeInput.value);
@@ -51,11 +50,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Toggle options and reset results if unselected
     function handleEquipmentToggle() {
         toggleSecondaryOptions();
-        // Clear results section when categories change to ensure fresh 'Build'
-        resultsSection.classList.add('hidden');
+        resultsSection.classList.add('hidden'); // Hide results if user changes categories
     }
 
     function toggleSecondaryOptions() {
@@ -76,7 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     calculateButton.addEventListener('click', () => {
-        // Reset and Hide previous results
         resultsSection.classList.add('hidden');
         Object.values(tables).forEach(t => {
             t.body.innerHTML = '';
@@ -103,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
         checkedGroups.forEach(selectedGroup => {
             let groupModels = products.filter(item => item.Grouping === selectedGroup);
 
-            // Category Specific Filtering
             if (selectedGroup === 'Filter') {
                 groupModels = groupModels.filter(item => item["Equipment Type"] === document.getElementById('filterType').value);
             } else if (selectedGroup === 'Pump') {
@@ -114,7 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 groupModels = groupModels.filter(item => item["Nema Rating"] === nema);
             }
 
-            // Flow Matching
             const flowMatched = groupModels.filter(item => {
                 const min = parseFloat(item["Min Flow (gpm)"]) || 0;
                 const max = parseFloat(item["Max Flow"]);
@@ -151,6 +145,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
                     <td>${model["Best Efficiency Flow (gpm)"] || 'N/A'}</td>
                     <td>${model["TDH @ Best Efficieny"] || 'N/A'}</td>
+                    <td>${linksHtml || 'N/A'}</td>
+                `;
+            } else if (group === 'Filter') {
+                tr.innerHTML = `
+                    <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}"></td>
+                    <td>${partNum}</td>
+                    <td>${model.Model || 'N/A'}</td>
+                    <td>${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
+                    <td>${model["Footprint LxWxH (Inches)"] || 'N/A'}</td>
                     <td>${linksHtml || 'N/A'}</td>
                 `;
             } else {
