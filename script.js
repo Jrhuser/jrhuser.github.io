@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const addToCartButton = document.getElementById('addToCartButton');
 
-    // Load Database
+    // Load Database from product.json
     async function loadDatabase() {
         try {
             const response = await fetch('product.json');
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     calculateButton.addEventListener('click', () => {
-        // Clear all previous results
+        // Clear all previous results and hide all sections
         Object.values(tables).forEach(t => {
             t.body.innerHTML = '';
             t.section.classList.add('hidden');
@@ -81,9 +81,19 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const checkedGroups = Array.from(equipmentCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
+        // Get currently checked equipment groups
+        const checkedGroups = Array.from(equipmentCheckboxes)
+            .filter(cb => cb.checked)
+            .map(cb => cb.value);
+
+        if (checkedGroups.length === 0) {
+            alert("Please select at least one equipment group.");
+            return;
+        }
+
         const products = database["product-DB"] || [];
 
+        // Only process products if their Grouping is among the selected groups
         for (const selectedGroup of checkedGroups) {
             let groupModels = products.filter(item => item.Grouping === selectedGroup);
 
@@ -97,31 +107,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 groupModels = groupModels.filter(item => item["Nema Rating"] === nema);
             }
 
+            // Global Flow Matching based on Design Flow Rate
             const flowMatched = groupModels.filter(item => {
                 const min = parseFloat(item["Min Flow (gpm)"]) || 0;
                 const max = parseFloat(item["Max Flow"]);
                 return circRate >= min && (isNaN(max) || max === null || circRate <= max);
             });
 
-            displayResults(flowMatched);
+            // Display results for the matched category
+            displayResults(flowMatched, selectedGroup);
         }
     });
 
-    function displayResults(models) {
-        if (models.length === 0) return;
+    function displayResults(models, group) {
+        if (models.length === 0 || !tables[group]) return;
+
         resultsSection.classList.remove('hidden');
+        tables[group].section.classList.remove('hidden');
 
         models.forEach(model => {
-            const group = model.Grouping;
-            if (!tables[group]) return;
-
-            tables[group].section.classList.remove('hidden');
             const tr = document.createElement('tr');
             const partNum = model["Part Number"] || 'N/A';
             
             const buildLink = (file, label) => file ? `<a href="product/${file}" target="_blank" class="download-link">${label}</a>` : '';
 
-            // Restored Logic: Label is "Pump Curve" for pumps, "Additional Info" for others
             const secondaryDocLabel = (group === 'Pump') ? 'Pump Curve' : 'Additional Info';
 
             const linksHtml = [
@@ -130,7 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 buildLink(model['Written Specification'], 'Spec')
             ].filter(l => l).join(' ');
 
-            // Pumps get 7 columns; others get 5 columns
             if (group === 'Pump') {
                 tr.innerHTML = `
                     <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}"></td>
