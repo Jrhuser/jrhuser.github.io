@@ -146,12 +146,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (flowMatched.length > 0) {
                 resultsSection.classList.remove('hidden');
-                displayResults(flowMatched, selectedGroup);
+                displayResults(flowMatched, selectedGroup, circRate);
             }
         });
     });
 
-    function displayResults(models, group) {
+    function displayResults(models, group, circRate) {
         tables[group].section.classList.remove('hidden');
 
         models.forEach(model => {
@@ -176,10 +176,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>${linksHtml || 'N/A'}</td>
                 `;
             } else if (group === 'Filter') {
+                const nsf2Area = parseFloat(model["NSF 2.0 Filter Area (sq ft)"]);
+                const nsf3Area = parseFloat(model["NSF 3.0 Filter Area (sq ft)"]);
+                const nsf2Flux = (nsf2Area > 0 && circRate > 0) ? (nsf2Area / circRate).toFixed(2) : 'N/A';
+                const nsf3Flux = (nsf3Area > 0 && circRate > 0) ? (nsf3Area / circRate).toFixed(2) : 'N/A';
                 tr.innerHTML = `
                     <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}"></td>
                     <td>${model.Model || 'N/A'}</td>
                     <td>${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
+                    <td>${nsf2Flux}</td>
+                    <td>${nsf3Flux}</td>
                     <td>${model["Footprint LxWxH (Inches)"] || 'N/A'}</td>
                     <td>${linksHtml || 'N/A'}</td>
                 `;
