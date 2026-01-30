@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 groupModels = groupModels.filter(item => item["Equipment Type"] === filterType);
                 if (filterType === 'RMF') {
                     const ceilingVal = document.getElementById('ceilingHeight').value;
-                    const heightLimit = ceilingVal === '8' ? 81 : ceilingVal === '9' ? 93 : null;
+                    const heightLimit = ceilingVal === '8' ? 81 : ceilingVal === '9' ? 93 : ceilingVal === '10' ? 107 : null;
                     if (heightLimit) {
                         groupModels = groupModels.filter(item => {
                             const footprint = item["Footprint LxWxH (Inches)"];
