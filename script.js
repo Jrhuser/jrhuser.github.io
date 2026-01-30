@@ -37,7 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Live Calculation: Flow = Volume / Minutes
     [poolVolumeInput, turnoverMinutesInput].forEach(input => {
         input.addEventListener('input', () => {
             const volume = parseFloat(poolVolumeInput.value);
@@ -140,7 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (group === 'Pump') {
                 tr.innerHTML = `
                     <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}"></td>
-                    <td>${partNum}</td>
                     <td>${model.Model || 'N/A'}</td>
                     <td>${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
                     <td>${model["Best Efficiency Flow (gpm)"] || 'N/A'}</td>
@@ -150,7 +148,6 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (group === 'Filter') {
                 tr.innerHTML = `
                     <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}"></td>
-                    <td>${partNum}</td>
                     <td>${model.Model || 'N/A'}</td>
                     <td>${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
                     <td>${model["Footprint LxWxH (Inches)"] || 'N/A'}</td>
@@ -159,7 +156,6 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 tr.innerHTML = `
                     <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}"></td>
-                    <td>${partNum}</td>
                     <td>${model.Model || 'N/A'}</td>
                     <td>${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
                     <td>${linksHtml || 'N/A'}</td>
@@ -184,7 +180,6 @@ document.addEventListener('DOMContentLoaded', () => {
 Products:
 ${checkedItems.join('\n')}`;
 
-        // Updated Subject Line here
         window.location.href = `mailto:kenneth.roche@xylem.com?subject=Pump Room - Quote Request&body=${encodeURIComponent(emailBody)}`;
     });
 
