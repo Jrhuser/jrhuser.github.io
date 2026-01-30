@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const uvCheckbox = document.getElementById('radioUV');
     
     const filterOptions = document.getElementById('filterOptions');
+    const ceilingHeightOptions = document.getElementById('ceilingHeightOptions');
+    const filterTypeSelect = document.getElementById('filterType');
     const pumpOptions = document.getElementById('pumpOptions');
     const uvOptions = document.getElementById('uvOptions');
     
@@ -56,6 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function toggleSecondaryOptions() {
         filterOptions.classList.toggle('hidden', !filterCheckbox.checked);
+        ceilingHeightOptions.classList.toggle('hidden', !(filterCheckbox.checked && filterTypeSelect.value === 'RMF'));
         pumpOptions.classList.toggle('hidden', !pumpCheckbox.checked);
         uvOptions.classList.toggle('hidden', !uvCheckbox.checked);
     }
@@ -185,4 +188,5 @@ ${checkedItems.join('\n')}`;
 
     loadDatabase();
     equipmentCheckboxes.forEach(checkbox => checkbox.addEventListener('change', handleEquipmentToggle));
+    filterTypeSelect.addEventListener('change', toggleSecondaryOptions);
 });
