@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const ceilingHeightOptions = document.getElementById('ceilingHeightOptions');
     const filterTypeSelect = document.getElementById('filterType');
     const pumpOptions = document.getElementById('pumpOptions');
+    const driveOptions = document.getElementById('driveOptions');
+    const driveTypeSelect = document.getElementById('driveType');
     const uvOptions = document.getElementById('uvOptions');
     
     const poolVolumeInput = document.getElementById('poolVolume');
@@ -97,6 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
         filterOptions.classList.toggle('hidden', !filterCheckbox.checked);
         ceilingHeightOptions.classList.toggle('hidden', !(filterCheckbox.checked && filterTypeSelect.value === 'RMF'));
         pumpOptions.classList.toggle('hidden', !pumpCheckbox.checked);
+        driveOptions.classList.toggle('hidden', !pumpCheckbox.checked);
         uvOptions.classList.toggle('hidden', !uvCheckbox.checked);
     }
 
@@ -212,13 +215,17 @@ document.addEventListener('DOMContentLoaded', () => {
             ].filter(l => l).join(' ');
 
             if (group === 'Pump') {
+                const driveValue = driveTypeSelect.value;
+                const vfdLink = buildLink('VFD-GreenDrive.pdf', 'VFD');
+                const pumpLinksHtml = [linksHtml, vfdLink].filter(l => l).join(' ');
                 tr.innerHTML = `
                     <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}"></td>
                     <td>${model.Model || 'N/A'}</td>
+                    <td>${driveValue}</td>
                     <td>${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
                     <td>${model["Best Efficiency Flow (gpm)"] || 'N/A'}</td>
                     <td>${model["TDH @ Best Efficieny"] || 'N/A'}</td>
-                    <td>${linksHtml || 'N/A'}</td>
+                    <td>${pumpLinksHtml || 'N/A'}</td>
                 `;
             } else if (group === 'Filter') {
                 const isRMF = filterTypeSelect.value === 'RMF';
