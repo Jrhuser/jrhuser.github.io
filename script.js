@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const ceilingHeightOptions = document.getElementById('ceilingHeightOptions');
     const filterTypeSelect = document.getElementById('filterType');
     const pumpOptions = document.getElementById('pumpOptions');
+    const driveOptions = document.getElementById('driveOptions');
+    const driveTypeSelect = document.getElementById('driveType');
     const uvOptions = document.getElementById('uvOptions');
     
     const poolVolumeInput = document.getElementById('poolVolume');
@@ -23,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultsSection = document.getElementById('resultsSection');
     
     const tables = {
-        Filter: { section: document.getElementById('filterTableSection'), body: document.getElementById('filter-results-body') },
+        Filter: { section: document.getElementById('filterTableSection'), body: document.getElementById('filter-results-body'), head: document.querySelector('#filterTableSection thead tr') },
         Pump: { section: document.getElementById('pumpTableSection'), body: document.getElementById('pump-results-body') },
         UV: { section: document.getElementById('uvTableSection'), body: document.getElementById('uv-results-body') }
     };
@@ -97,6 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
         filterOptions.classList.toggle('hidden', !filterCheckbox.checked);
         ceilingHeightOptions.classList.toggle('hidden', !(filterCheckbox.checked && filterTypeSelect.value === 'RMF'));
         pumpOptions.classList.toggle('hidden', !pumpCheckbox.checked);
+        driveOptions.classList.toggle('hidden', !pumpCheckbox.checked);
         uvOptions.classList.toggle('hidden', !uvCheckbox.checked);
     }
 
@@ -178,6 +181,27 @@ document.addEventListener('DOMContentLoaded', () => {
     function displayResults(models, group, circRate) {
         tables[group].section.classList.remove('hidden');
 
+        if (group === 'Filter') {
+            const isRMF = filterTypeSelect.value === 'RMF';
+            if (isRMF) {
+                tables.Filter.head.innerHTML = `
+                    <th style="width: 40px;">Select</th>
+                    <th>Model Name</th>
+                    <th>Flow Range (GPM)</th>
+                    <th>NSF 2.0 Flux</th>
+                    <th>NSF 3.0 Flux</th>
+                    <th>Footprint</th>
+                    <th>Technical Docs</th>`;
+            } else {
+                tables.Filter.head.innerHTML = `
+                    <th style="width: 40px;">Select</th>
+                    <th>Model Name</th>
+                    <th>Flow Range (GPM)</th>
+                    <th>Footprint</th>
+                    <th>Technical Docs</th>`;
+            }
+        }
+
         models.forEach(model => {
             const tr = document.createElement('tr');
             const partNum = model["Part Number"] || 'N/A';
@@ -191,28 +215,43 @@ document.addEventListener('DOMContentLoaded', () => {
             ].filter(l => l).join(' ');
 
             if (group === 'Pump') {
+                const driveValue = driveTypeSelect.value;
+                const vfdLink = buildLink('VFD-GreenDrive.pdf', 'VFD');
+                const pumpLinksHtml = [linksHtml, vfdLink].filter(l => l).join(' ');
                 tr.innerHTML = `
                     <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}"></td>
                     <td>${model.Model || 'N/A'}</td>
+                    <td>${driveValue}</td>
                     <td>${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
                     <td>${model["Best Efficiency Flow (gpm)"] || 'N/A'}</td>
                     <td>${model["TDH @ Best Efficieny"] || 'N/A'}</td>
-                    <td>${linksHtml || 'N/A'}</td>
+                    <td>${pumpLinksHtml || 'N/A'}</td>
                 `;
             } else if (group === 'Filter') {
-                const nsf2Area = parseFloat(model["NSF 2.0 Filter Area (sq ft)"]);
-                const nsf3Area = parseFloat(model["NSF 3.0 Filter Area (sq ft)"]);
-                const nsf2Flux = (nsf2Area > 0 && circRate > 0) ? (nsf2Area / circRate).toFixed(2) : 'N/A';
-                const nsf3Flux = (nsf3Area > 0 && circRate > 0) ? (nsf3Area / circRate).toFixed(2) : 'N/A';
-                tr.innerHTML = `
-                    <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}"></td>
-                    <td>${model.Model || 'N/A'}</td>
-                    <td>${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
-                    <td>${nsf2Flux}</td>
-                    <td>${nsf3Flux}</td>
-                    <td>${model["Footprint LxWxH (Inches)"] || 'N/A'}</td>
-                    <td>${linksHtml || 'N/A'}</td>
-                `;
+                const isRMF = filterTypeSelect.value === 'RMF';
+                if (isRMF) {
+                    const nsf2Area = parseFloat(model["NSF 2.0 Filter Area (sq ft)"]);
+                    const nsf3Area = parseFloat(model["NSF 3.0 Filter Area (sq ft)"]);
+                    const nsf2Flux = (nsf2Area > 0 && circRate > 0) ? (nsf2Area / circRate).toFixed(2) : 'N/A';
+                    const nsf3Flux = (nsf3Area > 0 && circRate > 0) ? (nsf3Area / circRate).toFixed(2) : 'N/A';
+                    tr.innerHTML = `
+                        <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}"></td>
+                        <td>${model.Model || 'N/A'}</td>
+                        <td>${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
+                        <td>${nsf2Flux}</td>
+                        <td>${nsf3Flux}</td>
+                        <td>${model["Footprint LxWxH (Inches)"] || 'N/A'}</td>
+                        <td>${linksHtml || 'N/A'}</td>
+                    `;
+                } else {
+                    tr.innerHTML = `
+                        <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}"></td>
+                        <td>${model.Model || 'N/A'}</td>
+                        <td>${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
+                        <td>${model["Footprint LxWxH (Inches)"] || 'N/A'}</td>
+                        <td>${linksHtml || 'N/A'}</td>
+                    `;
+                }
             } else {
                 tr.innerHTML = `
                     <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}"></td>
