@@ -274,7 +274,25 @@ h3 {
     color: white;
 }
 
-#addToCartButton { 
+#downloadAllButton {
+    width: 100%;
+    padding: 18px;
+    background-color: #61D604;
+    color: white;
+    font-weight: 700;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 25px;
+    transition: 0.3s;
+}
+
+#downloadAllButton:hover {
+    background-color: #4fb003;
+}
+
+#addToCartButton {
     width: 100%; 
     padding: 18px; 
     background-color: #007DA3; 
