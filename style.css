@@ -276,16 +276,16 @@ h3 {
 
 #downloadAllButton {
     width: 100%;
-    padding: 18px;
+    padding: 16px;
     background-color: #61D604;
     color: white;
     font-weight: 700;
-    font-size: 1.2em;
+    font-size: 1.1em;
     border: none;
     border-radius: 6px;
     cursor: pointer;
     margin-top: 25px;
-    transition: 0.3s;
+    transition: 0.2s;
 }
 
 #downloadAllButton:hover {
