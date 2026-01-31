@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const addToCartButton = document.getElementById('addToCartButton');
+    const downloadAllButton = document.getElementById('downloadAllButton');
 
     async function loadDatabase() {
         try {
@@ -263,6 +264,49 @@ document.addEventListener('DOMContentLoaded', () => {
             tables[group].body.appendChild(tr);
         });
     }
+
+    downloadAllButton.addEventListener('click', async () => {
+        const checkedBoxes = Array.from(document.querySelectorAll('.bom-checkbox:checked'));
+        if (checkedBoxes.length === 0) return alert('Select items first.');
+
+        const products = database["product-DB"] || [];
+        const docFields = ['Product Sheet', 'Additional Info/Pump Curve', 'Written Specification'];
+        const files = new Set();
+
+        checkedBoxes.forEach(cb => {
+            const partNum = cb.value;
+            const product = products.find(p => p["Part Number"] === partNum);
+            if (product) {
+                docFields.forEach(field => {
+                    if (product[field]) files.add(product[field]);
+                });
+                if (product.Grouping === 'Pump') files.add('VFD-GreenDrive.pdf');
+            }
+        });
+
+        if (files.size === 0) return alert('No documents found for selected products.');
+
+        const zip = new JSZip();
+        const fetchPromises = Array.from(files).map(async filename => {
+            try {
+                const response = await fetch(`product/${filename}`);
+                if (response.ok) {
+                    const blob = await response.blob();
+                    zip.file(filename, blob);
+                }
+            } catch (e) {
+                console.error(`Failed to fetch ${filename}:`, e);
+            }
+        });
+
+        await Promise.all(fetchPromises);
+        const content = await zip.generateAsync({ type: 'blob' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(content);
+        link.download = 'Pump_Room_Technical_Docs.zip';
+        link.click();
+        URL.revokeObjectURL(link.href);
+    });
 
     addToCartButton.addEventListener('click', () => {
         const checkedItems = Array.from(document.querySelectorAll('.bom-checkbox:checked')).map(cb => {
