@@ -315,11 +315,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (checkedItems.length === 0) return alert('Select items first.');
 
-        const driveSelection = driveTypeSelect.value === 'Green Drive VFD' ? '\n- Drive: Green Drive VFD' : '';
         const emailBody = `Quote Request Details:
 - Volume: ${poolVolumeInput.value} Gal
 - Turnover: ${turnoverValueInput.value} ${turnoverUnitSelect.options[turnoverUnitSelect.selectedIndex].text}
-- Flow: ${circulationRateInput.value} GPM${driveSelection}
+- Flow: ${circulationRateInput.value} GPM
+- Drive: ${driveTypeSelect.value}
 
 Products:
 ${checkedItems.join('\n')}`;
