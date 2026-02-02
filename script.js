@@ -233,8 +233,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (isRMF) {
                     const nsf2Area = parseFloat(model["NSF 2.0 Filter Area (sq ft)"]);
                     const nsf3Area = parseFloat(model["NSF 3.0 Filter Area (sq ft)"]);
-                    const nsf2Flux = (nsf2Area > 0 && circRate > 0) ? (nsf2Area / circRate).toFixed(2) : 'N/A';
-                    const nsf3Flux = (nsf3Area > 0 && circRate > 0) ? (nsf3Area / circRate).toFixed(2) : 'N/A';
+                    const nsf2Flux = (nsf2Area > 0 && circRate > 0) ? (circRate / nsf2Area).toFixed(2) : 'N/A';
+                    const nsf3Flux = (nsf3Area > 0 && circRate > 0) ? (circRate / nsf3Area).toFixed(2) : 'N/A';
                     tr.innerHTML = `
                         <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}"></td>
                         <td>${model.Model || 'N/A'}</td>
