@@ -310,19 +310,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     addToCartButton.addEventListener('click', () => {
         const checkedItems = Array.from(document.querySelectorAll('.bom-checkbox:checked')).map(cb => {
-            return `- ${cb.getAttribute('data-model')} (Part #: ${cb.value})`;
+            const line = `- ${cb.getAttribute('data-model')} (Part #: ${cb.value})`;
+            const row = cb.closest('tr');
+            const isInPumpTable = row && row.closest('#pumpTableSection');
+            if (isInPumpTable && driveTypeSelect.value === 'Green Drive VFD') {
+                return line + '\n- Drive: Green Drive VFD';
+            }
+            return line;
         });
 
         if (checkedItems.length === 0) return alert('Select items first.');
 
-        const emailBody = `Quote Request Details:
-- Volume: ${poolVolumeInput.value} Gal
-- Turnover: ${turnoverValueInput.value} ${turnoverUnitSelect.options[turnoverUnitSelect.selectedIndex].text}
-- Flow: ${circulationRateInput.value} GPM
-- Drive: ${driveTypeSelect.value}
+        const details = [];
+        details.push(`- Volume: ${poolVolumeInput.value} Gal`);
+        details.push(`- Turnover: ${turnoverValueInput.value} ${turnoverUnitSelect.options[turnoverUnitSelect.selectedIndex].text}`);
+        details.push(`- Flow: ${circulationRateInput.value} GPM`);
+        if (filterCheckbox.checked) {
+            details.push(`- Filter Technology: ${filterTypeSelect.value}`);
+            if (filterTypeSelect.value === 'RMF') {
+                const ceilingSelect = document.getElementById('ceilingHeight');
+                details.push(`- Ceiling Height: ${ceilingSelect.options[ceilingSelect.selectedIndex].text}`);
+            }
+        }
+        if (pumpCheckbox.checked) {
+            details.push(`- Pump Voltage: ${document.getElementById('pumpVoltage').value}`);
+            details.push(`- Drive: ${driveTypeSelect.value}`);
+        }
+        if (uvCheckbox.checked) {
+            details.push(`- Enclosure Rating: ${document.getElementById('nemaRating').options[document.getElementById('nemaRating').selectedIndex].text}`);
+        }
 
-Products:
-${checkedItems.join('\n')}`;
+        const emailBody = `Quote Request Details:\n${details.join('\n')}\n\nProducts:\n${checkedItems.join('\n')}`;
 
         window.location.href = `mailto:kenneth.roche@xylem.com?subject=Pump Room - Quote Request&body=${encodeURIComponent(emailBody)}`;
     });
