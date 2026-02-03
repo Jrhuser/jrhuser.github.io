@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     let database = { "product-DB": [] };
 
+    
     // Selectors
     const equipmentCheckboxes = document.querySelectorAll('input[name="equipmentGroup"]');
     const filterCheckbox = document.getElementById('radioFilter');
@@ -349,3 +350,4 @@ document.addEventListener('DOMContentLoaded', () => {
     equipmentCheckboxes.forEach(checkbox => checkbox.addEventListener('change', handleEquipmentToggle));
     filterTypeSelect.addEventListener('change', toggleSecondaryOptions);
 });
+
