@@ -350,7 +350,11 @@ document.addEventListener('DOMContentLoaded', () => {
             details.push(`- Enclosure Rating: ${document.getElementById('nemaRating').options[document.getElementById('nemaRating').selectedIndex].text}`);
         }
 
-        const emailBody = `Quote Request Details:\n${details.join('\n')}\n\nProducts:\n${checkedItems.join('\n')}`;
+        let emailBody = `Quote Request Details:\n${details.join('\n')}\n\nProducts:\n${checkedItems.join('\n')}`;
+
+        if (projectZipInput.value) {
+            emailBody += `\n\nPlease include a freight quote to zip code ${projectZipInput.value}.`;
+        }
 
         window.location.href = `mailto:kenneth.roche@xylem.com?subject=Pump Room - Quote Request&body=${encodeURIComponent(emailBody)}`;
     });
