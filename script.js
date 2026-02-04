@@ -224,12 +224,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const pumpLinksHtml = [linksHtml, vfdLink].filter(l => l).join(' ');
                 tr.innerHTML = `
                     <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}"></td>
-                    <td>${model.Model || 'N/A'}</td>
-                    <td>${driveValue}</td>
-                    <td>${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
-                    <td>${model["Best Efficiency Flow (gpm)"] || 'N/A'}</td>
-                    <td>${model["TDH @ Best Efficieny"] || 'N/A'}</td>
-                    <td>${pumpLinksHtml || 'N/A'}</td>
+                    <td data-label="Model">${model.Model || 'N/A'}</td>
+                    <td data-label="Drive">${driveValue}</td>
+                    <td data-label="Flow Range">${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
+                    <td data-label="Best Efficiency">${model["Best Efficiency Flow (gpm)"] || 'N/A'}</td>
+                    <td data-label="TDH @ BEP">${model["TDH @ Best Efficieny"] || 'N/A'}</td>
+                    <td data-label="Docs">${pumpLinksHtml || 'N/A'}</td>
                 `;
             } else if (group === 'Filter') {
                 const isRMF = filterTypeSelect.value === 'RMF';
@@ -240,28 +240,28 @@ document.addEventListener('DOMContentLoaded', () => {
                     const nsf3Flux = (nsf3Area > 0 && circRate > 0) ? (circRate / nsf3Area).toFixed(2) : 'N/A';
                     tr.innerHTML = `
                         <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}"></td>
-                        <td>${model.Model || 'N/A'}</td>
-                        <td>${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
-                        <td>${nsf2Flux}</td>
-                        <td>${nsf3Flux}</td>
-                        <td>${model["Footprint LxWxH (Inches)"] || 'N/A'}</td>
-                        <td>${linksHtml || 'N/A'}</td>
+                        <td data-label="Model">${model.Model || 'N/A'}</td>
+                        <td data-label="Flow Range">${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
+                        <td data-label="NSF 2.0 Rate">${nsf2Flux}</td>
+                        <td data-label="NSF 3.0 Rate">${nsf3Flux}</td>
+                        <td data-label="Footprint">${model["Footprint LxWxH (Inches)"] || 'N/A'}</td>
+                        <td data-label="Docs">${linksHtml || 'N/A'}</td>
                     `;
                 } else {
                     tr.innerHTML = `
                         <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}"></td>
-                        <td>${model.Model || 'N/A'}</td>
-                        <td>${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
-                        <td>${model["Footprint LxWxH (Inches)"] || 'N/A'}</td>
-                        <td>${linksHtml || 'N/A'}</td>
+                        <td data-label="Model">${model.Model || 'N/A'}</td>
+                        <td data-label="Flow Range">${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
+                        <td data-label="Footprint">${model["Footprint LxWxH (Inches)"] || 'N/A'}</td>
+                        <td data-label="Docs">${linksHtml || 'N/A'}</td>
                     `;
                 }
             } else {
                 tr.innerHTML = `
                     <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}"></td>
-                    <td>${model.Model || 'N/A'}</td>
-                    <td>${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
-                    <td>${linksHtml || 'N/A'}</td>
+                    <td data-label="Model">${model.Model || 'N/A'}</td>
+                    <td data-label="Flow Range">${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
+                    <td data-label="Docs">${linksHtml || 'N/A'}</td>
                 `;
             }
             tables[group].body.appendChild(tr);
