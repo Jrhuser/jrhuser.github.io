@@ -278,7 +278,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         checkedBoxes.forEach(cb => {
             const partNum = cb.value;
-            const product = products.find(p => p["Part Number"] === partNum);
+            const modelName = cb.getAttribute('data-model');
+            // Look up by Part Number first, then by Model name as fallback
+            let product = products.find(p => p["Part Number"] === partNum);
+            if (!product && modelName) {
+                product = products.find(p => p.Model === modelName);
+            }
             if (product) {
                 docFields.forEach(field => {
                     if (product[field]) files.add(product[field]);
