@@ -315,22 +315,188 @@ h3 {
     display: none !important; 
 }
 
+/* Mobile Responsive Styles */
 @media (max-width: 768px) {
-    .button-group { flex-direction: column; }
-    .results-table, .results-table thead, .results-table tbody, .results-table th, .results-table td, .results-table tr { 
-        display: block; 
+    /* Header */
+    header {
+        padding: 0 15px;
+        height: 60px;
     }
-    .results-table td { 
-        padding-left: 50%; 
-        text-align: right; 
-        position: relative; 
+
+    .header-content {
+        justify-content: center;
     }
-    .results-table td::before { 
-        content: attr(data-label); 
-        position: absolute; 
-        left: 15px; 
-        font-weight: 700; 
-        text-align: left; 
+
+    .main-nav {
+        display: none;
+    }
+
+    .logo {
+        height: 25px;
+    }
+
+    /* Main content */
+    main {
+        padding: 20px 15px;
+    }
+
+    h2 {
+        font-size: 1.3em;
+        margin-bottom: 15px;
+    }
+
+    h3 {
+        font-size: 1.1em;
+        margin-top: 20px;
+    }
+
+    /* Equipment Selection */
+    .radio-group-icons {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .equipment-selection-column {
+        min-width: 100%;
+    }
+
+    .equipment-icon-wrapper label {
+        padding: 15px;
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 15px;
+    }
+
+    .equipment-icon {
+        max-width: 60px;
+    }
+
+    /* Parameter inputs */
+    .parameter-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .input-group input {
+        padding: 12px;
+        font-size: 16px; /* Prevents iOS zoom on focus */
+    }
+
+    .turnover-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .turnover-row select {
+        width: 100%;
+        font-size: 16px;
+    }
+
+    .inline-dropdown select {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+    /* Buttons */
+    .button-group {
+        flex-direction: column;
+        gap: 10px;
+        margin: 20px 0;
+    }
+
+    #calculateButton, #resetButton {
+        padding: 14px;
+        font-size: 1em;
+    }
+
+    #downloadAllButton, #addToCartButton {
+        padding: 14px;
+        font-size: 1em;
+        margin-top: 15px;
+    }
+
+    /* Results Tables - Card Layout */
+    .results-table {
+        border: none;
+    }
+
+    .results-table thead {
+        display: none;
+    }
+
+    .results-table tbody,
+    .results-table tr {
+        display: block;
+    }
+
+    .results-table tr {
+        background-color: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        padding: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .results-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 10px 5px;
+        border: none;
+        border-bottom: 1px solid #f0f0f0;
+        text-align: right;
+    }
+
+    .results-table td:last-child {
+        border-bottom: none;
+    }
+
+    .results-table td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        color: #007DA3;
+        text-align: left;
+        flex-shrink: 0;
+        margin-right: 10px;
+    }
+
+    .results-table td:first-child {
+        justify-content: center;
+    }
+
+    .results-table td:first-child::before {
+        display: none;
+    }
+
+    /* Technical doc links */
+    .download-link {
+        padding: 8px 10px;
+        font-size: 0.7em;
+        margin: 2px;
+    }
+
+    /* Footer */
+    footer {
+        padding: 15px 0;
+        font-size: 0.9em;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 380px) {
+    main {
+        padding: 15px 10px;
+    }
+
+    .equipment-icon {
+        max-width: 50px;
+    }
+
+    .download-link {
+        display: block;
+        text-align: center;
+        margin: 4px 0;
     }
 }
 
