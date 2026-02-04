@@ -192,8 +192,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     <th style="width: 40px;">Select</th>
                     <th>Model Name</th>
                     <th>Flow Range (GPM)</th>
-                    <th>NSF 2.0 Flux</th>
-                    <th>NSF 3.0 Flux</th>
+                    <th>NSF 2.0 Filtration Rate (gpm/sqft)</th>
+                    <th>NSF 3.0 Filtration Rate (gpm/sqft)</th>
                     <th>Footprint</th>
                     <th>Technical Docs</th>`;
             } else {
