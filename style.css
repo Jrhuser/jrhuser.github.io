@@ -462,7 +462,7 @@ h3 {
     }
 
     .results-table td:first-child {
-        justify-content: center;
+        justify-content: flex-start;
     }
 
     .results-table td:first-child::before {
