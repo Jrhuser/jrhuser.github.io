@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const driveTypeSelect = document.getElementById('driveType');
     const uvOptions = document.getElementById('uvOptions');
     
+    const projectNameInput = document.getElementById('projectName');
+    const projectZipInput = document.getElementById('projectZip');
+
     const poolVolumeInput = document.getElementById('poolVolume');
     const turnoverValueInput = document.getElementById('turnoverValue');
     const turnoverUnitSelect = document.getElementById('turnoverUnit');
@@ -106,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     resetButton.addEventListener('click', () => {
         equipmentCheckboxes.forEach(cb => cb.checked = false);
-        [poolVolumeInput, turnoverValueInput, circulationRateInput].forEach(i => i.value = '');
+        [projectNameInput, projectZipInput, poolVolumeInput, turnoverValueInput, circulationRateInput].forEach(i => i.value = '');
         turnoverUnitSelect.value = 'minutes';
         resultsSection.classList.add('hidden');
         Object.values(tables).forEach(t => {
@@ -322,6 +325,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (checkedItems.length === 0) return alert('Select items first.');
 
         const details = [];
+        if (projectNameInput.value) details.push(`- Project Name: ${projectNameInput.value}`);
+        if (projectZipInput.value) details.push(`- Project Zip Code: ${projectZipInput.value}`);
         details.push(`- Volume: ${poolVolumeInput.value} Gal`);
         details.push(`- Turnover: ${turnoverValueInput.value} ${turnoverUnitSelect.options[turnoverUnitSelect.selectedIndex].text}`);
         details.push(`- Flow: ${circulationRateInput.value} GPM`);
