@@ -488,7 +488,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        mailtoUrl += `?subject=${encodeURIComponent('Pump Room - Quote Request')}`;
+        // Build subject line with optional project name
+        let subject = 'Pump Room - Quote Request';
+        if (projectNameInput.value) {
+            subject += ` - ${projectNameInput.value}`;
+        }
+
+        mailtoUrl += `?subject=${encodeURIComponent(subject)}`;
         if (ccEmails.length > 0) {
             mailtoUrl += `&cc=${encodeURIComponent(ccEmails.join(','))}`;
         }
