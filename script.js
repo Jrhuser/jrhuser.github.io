@@ -356,7 +356,10 @@ document.addEventListener('DOMContentLoaded', () => {
             emailBody += `\n\nPlease include a freight quote to zip code ${projectZipInput.value}.`;
         }
 
-        window.location.href = `mailto:kenneth.roche@xylem.com?subject=Pump Room - Quote Request&body=${encodeURIComponent(emailBody)}`;
+        const mailtoUrl = `mailto:kenneth.roche@xylem.com?subject=${encodeURIComponent('Pump Room - Quote Request')}&body=${encodeURIComponent(emailBody)}`;
+        const mailLink = document.createElement('a');
+        mailLink.href = mailtoUrl;
+        mailLink.click();
     });
 
     loadDatabase();
