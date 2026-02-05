@@ -50,10 +50,11 @@ header {
     font-weight: 700; 
 }
 
-main { 
-    padding: 40px; 
-    max-width: 1320px; 
-    margin: 0 auto; 
+main {
+    padding: 40px;
+    width: 95%;
+    max-width: 95%;
+    margin: 0 auto;
 }
 
 h2 { 
