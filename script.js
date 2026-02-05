@@ -63,8 +63,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (firstChar === 'V') return 'BC';  // British Columbia
             if (firstChar === 'T') return 'AB';  // Alberta
             if (firstChar === 'Y') return 'YT';  // Yukon
-            if (firstChar === 'X') return 'NT';  // Northwest Territories
-            return null; // Other Canadian provinces not mapped
+            if (firstChar === 'X') return 'NU';  // Nunavut / Northwest Territories
+            if (firstChar === 'S') return 'SK';  // Saskatchewan
+            if (firstChar === 'R') return 'MB';  // Manitoba
+            if ('KLMNP'.includes(firstChar)) return 'ON';  // Ontario
+            if ('GHJ'.includes(firstChar)) return 'QC';  // Quebec
+            if (firstChar === 'A') return 'NL';  // Newfoundland and Labrador
+            if (firstChar === 'E') return 'NB';  // New Brunswick
+            if (firstChar === 'B') return 'NS';  // Nova Scotia
+            if (firstChar === 'C') return 'PE';  // Prince Edward Island
+            return null; // Other postal codes not mapped
         }
 
         // US zip codes
