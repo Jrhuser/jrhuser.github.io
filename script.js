@@ -17,6 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const projectNameInput = document.getElementById('projectName');
     const projectZipInput = document.getElementById('projectZip');
+    const systemNameInput = document.getElementById('systemName');
+
+    // Array to accumulate multiple systems for quote
+    const quoteSystems = [];
 
     const poolVolumeInput = document.getElementById('poolVolume');
     const turnoverValueInput = document.getElementById('turnoverValue');
@@ -109,13 +113,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     resetButton.addEventListener('click', () => {
         equipmentCheckboxes.forEach(cb => cb.checked = false);
-        [projectNameInput, projectZipInput, poolVolumeInput, turnoverValueInput, circulationRateInput].forEach(i => i.value = '');
+        [projectNameInput, projectZipInput, systemNameInput, poolVolumeInput, turnoverValueInput, circulationRateInput].forEach(i => i.value = '');
         turnoverUnitSelect.value = 'minutes';
         resultsSection.classList.add('hidden');
         Object.values(tables).forEach(t => {
             t.body.innerHTML = '';
             t.section.classList.add('hidden');
         });
+        quoteSystems.length = 0; // Clear accumulated systems
         toggleSecondaryOptions();
     });
 
@@ -322,35 +327,59 @@ document.addEventListener('DOMContentLoaded', () => {
             const row = cb.closest('tr');
             const isInPumpTable = row && row.closest('#pumpTableSection');
             if (isInPumpTable && driveTypeSelect.value === 'Green Drive VFD') {
-                return line + '\n- Drive: Green Drive VFD';
+                return line + '\n  - Drive: Green Drive VFD';
             }
             return line;
         });
 
         if (checkedItems.length === 0) return alert('Select items first.');
 
-        const details = [];
-        if (projectNameInput.value) details.push(`- Project Name: ${projectNameInput.value}`);
-        if (projectZipInput.value) details.push(`- Project Zip Code: ${projectZipInput.value}`);
-        details.push(`- Volume: ${poolVolumeInput.value} Gal`);
-        details.push(`- Turnover: ${turnoverValueInput.value} ${turnoverUnitSelect.options[turnoverUnitSelect.selectedIndex].text}`);
-        details.push(`- Flow: ${circulationRateInput.value} GPM`);
+        // Build system details
+        const systemDetails = [];
+        systemDetails.push(`- Volume: ${poolVolumeInput.value} Gal`);
+        systemDetails.push(`- Turnover: ${turnoverValueInput.value} ${turnoverUnitSelect.options[turnoverUnitSelect.selectedIndex].text}`);
+        systemDetails.push(`- Flow: ${circulationRateInput.value} GPM`);
         if (filterCheckbox.checked) {
-            details.push(`- Filter Technology: ${filterTypeSelect.value}`);
+            systemDetails.push(`- Filter Technology: ${filterTypeSelect.value}`);
             if (filterTypeSelect.value === 'RMF') {
                 const ceilingSelect = document.getElementById('ceilingHeight');
-                details.push(`- Ceiling Height: ${ceilingSelect.options[ceilingSelect.selectedIndex].text}`);
+                systemDetails.push(`- Ceiling Height: ${ceilingSelect.options[ceilingSelect.selectedIndex].text}`);
             }
         }
         if (pumpCheckbox.checked) {
-            details.push(`- Pump Voltage: ${document.getElementById('pumpVoltage').value}`);
-            details.push(`- Drive: ${driveTypeSelect.value}`);
+            systemDetails.push(`- Pump Voltage: ${document.getElementById('pumpVoltage').value}`);
+            systemDetails.push(`- Drive: ${driveTypeSelect.value}`);
         }
         if (uvCheckbox.checked) {
-            details.push(`- Enclosure Rating: ${document.getElementById('nemaRating').options[document.getElementById('nemaRating').selectedIndex].text}`);
+            systemDetails.push(`- Enclosure Rating: ${document.getElementById('nemaRating').options[document.getElementById('nemaRating').selectedIndex].text}`);
         }
 
-        let emailBody = `Quote Request Details:\n${details.join('\n')}\n\nProducts:\n${checkedItems.join('\n')}`;
+        // Add current system to accumulated systems
+        const systemName = systemNameInput.value || `System ${quoteSystems.length + 1}`;
+        quoteSystems.push({
+            name: systemName,
+            details: systemDetails,
+            products: checkedItems
+        });
+
+        // Build email body from all accumulated systems
+        const projectDetails = [];
+        if (projectNameInput.value) projectDetails.push(`Project Name: ${projectNameInput.value}`);
+        if (projectZipInput.value) projectDetails.push(`Project Zip Code: ${projectZipInput.value}`);
+
+        let emailBody = '';
+        if (projectDetails.length > 0) {
+            emailBody += `${projectDetails.join('\n')}\n\n`;
+        }
+
+        quoteSystems.forEach((system, index) => {
+            emailBody += `=== ${system.name} ===\n`;
+            emailBody += `Details:\n${system.details.join('\n')}\n\n`;
+            emailBody += `Products:\n${system.products.join('\n')}`;
+            if (index < quoteSystems.length - 1) {
+                emailBody += '\n\n';
+            }
+        });
 
         if (projectZipInput.value) {
             emailBody += `\n\nPlease include a freight quote to zip code ${projectZipInput.value}.`;
@@ -360,6 +389,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const mailLink = document.createElement('a');
         mailLink.href = mailtoUrl;
         mailLink.click();
+
+        // Clear system name for next entry
+        systemNameInput.value = '';
     });
 
     loadDatabase();
