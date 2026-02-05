@@ -1992,5 +1992,12 @@
       "Additional Info/Pump Curve": "40HP 6BD 575V - 1003-8666.pdf",
       "Written Specification": "Specifications__NB-530__2024.12.20.pdf"
     }
+  ],
+  "sales-reps": [
+    {
+      "name": "James Huser",
+      "email": "James.Huser@Xylem.com",
+      "states": ["AZ", "NM", "NV", "CO", "UT", "WY", "MT"]
+    }
   ]
 }
