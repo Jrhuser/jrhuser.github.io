@@ -2003,6 +2003,11 @@
       "name": "Neal Hershey",
       "email": "Nealy.Hershey@Xylem.com",
       "states": ["AK", "YT", "NT", "BC", "AB", "WA", "OR", "ID", "CA"]
+    },
+    {
+      "name": "Will Klietz",
+      "email": "William.Klietz@Xylem.com",
+      "states": ["ND", "SD", "MN", "WI", "MI", "IL", "IN", "OH", "KY"]
     }
   ]
 }
