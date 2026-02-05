@@ -52,8 +52,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let lastEdited = null;
 
-    // Zip code to state mapping (US zip code ranges)
+    // Zip/postal code to state/province mapping
     function getStateFromZip(zip) {
+        if (!zip) return null;
+        const cleanZip = zip.toString().trim().toUpperCase();
+
+        // Canadian postal codes (start with letter)
+        const firstChar = cleanZip.charAt(0);
+        if (/[A-Za-z]/.test(firstChar)) {
+            if (firstChar === 'V') return 'BC';  // British Columbia
+            if (firstChar === 'T') return 'AB';  // Alberta
+            if (firstChar === 'Y') return 'YT';  // Yukon
+            if (firstChar === 'X') return 'NT';  // Northwest Territories
+            return null; // Other Canadian provinces not mapped
+        }
+
+        // US zip codes
         const zipNum = parseInt(zip, 10);
         if (isNaN(zipNum)) return null;
 

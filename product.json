@@ -1998,6 +1998,11 @@
       "name": "James Huser",
       "email": "James.Huser@Xylem.com",
       "states": ["AZ", "NM", "NV", "CO", "UT", "WY", "MT"]
+    },
+    {
+      "name": "Neal Hershey",
+      "email": "Nealy.Hershey@Xylem.com",
+      "states": ["AK", "YT", "NT", "BC", "AB", "WA", "OR", "ID", "CA"]
     }
   ]
 }
