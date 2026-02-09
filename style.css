@@ -311,6 +311,21 @@ h3 {
     background-color: #005a75;
 }
 
+.support-link {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.support-link a {
+    font-size: 0.85em;
+    color: #007DA3;
+    text-decoration: none;
+}
+
+.support-link a:hover {
+    text-decoration: underline;
+}
+
 /* Utilities */
 .hidden { 
     display: none !important; 
