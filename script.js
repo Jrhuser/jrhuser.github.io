@@ -351,10 +351,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                 }
             } else {
+                // UV equipment
                 tr.innerHTML = `
                     <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}"></td>
                     <td data-label="Model">${model.Model || 'N/A'}</td>
-                    <td data-label="Flow Range">${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
+                    <td data-label="Recommended Flow">${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
+                    <td data-label="Max Flow (60 mj/cm²)">${model["Max Flow (60 mj/cm^2)"] || 'N/A'}</td>
                     <td data-label="Docs">${linksHtml || 'N/A'}</td>
                 `;
             }
