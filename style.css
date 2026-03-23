@@ -57,6 +57,27 @@ main {
     margin: 0 auto;
 }
 
+/* Tool Navigation */
+.tool-nav {
+    margin-bottom: 20px;
+}
+
+.tool-link {
+    display: inline-block;
+    background-color: #007DA3;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.95em;
+    transition: 0.2s;
+}
+
+.tool-link:hover {
+    background-color: #005a75;
+}
+
 h2 { 
     color: #007DA3; 
     border-bottom: 2px solid #e0e0e0; 
