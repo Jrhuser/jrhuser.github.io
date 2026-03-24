@@ -19,6 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const projectZipInput = document.getElementById('projectZip');
     const systemNameInput = document.getElementById('systemName');
     const promotionalUpgradeSelect = document.getElementById('promotionalUpgrade');
+    const upgradeTypeRow = document.getElementById('upgradeTypeRow');
+    const upgradeTypeSelect = document.getElementById('upgradeType');
+    const serialNumberField = document.getElementById('serialNumberField');
+    const otherEquipmentFields = document.getElementById('otherEquipmentFields');
 
     // Array to accumulate multiple systems for quote
     const quoteSystems = [];
@@ -538,6 +542,43 @@ document.addEventListener('DOMContentLoaded', () => {
     equipmentCheckboxes.forEach(checkbox => checkbox.addEventListener('change', handleEquipmentToggle));
     filterTypeSelect.addEventListener('change', toggleSecondaryOptions);
 
+    // Promotional Upgrade event listeners
+    if (promotionalUpgradeSelect) {
+        promotionalUpgradeSelect.addEventListener('change', () => {
+            if (promotionalUpgradeSelect.value === 'Yes') {
+                upgradeTypeRow.classList.remove('hidden');
+            } else {
+                upgradeTypeRow.classList.add('hidden');
+                upgradeTypeSelect.value = '';
+                serialNumberField.classList.add('hidden');
+                serialNumberField.style.display = 'none';
+                otherEquipmentFields.classList.add('hidden');
+                otherEquipmentFields.style.display = 'none';
+            }
+        });
+    }
+
+    if (upgradeTypeSelect) {
+        upgradeTypeSelect.addEventListener('change', () => {
+            if (upgradeTypeSelect.value === 'Neptune Benson Equipment') {
+                serialNumberField.classList.remove('hidden');
+                serialNumberField.style.display = '';
+                otherEquipmentFields.classList.add('hidden');
+                otherEquipmentFields.style.display = 'none';
+            } else if (upgradeTypeSelect.value === 'Other Equipment') {
+                serialNumberField.classList.add('hidden');
+                serialNumberField.style.display = 'none';
+                otherEquipmentFields.classList.remove('hidden');
+                otherEquipmentFields.style.display = '';
+            } else {
+                serialNumberField.classList.add('hidden');
+                serialNumberField.style.display = 'none';
+                otherEquipmentFields.classList.add('hidden');
+                otherEquipmentFields.style.display = 'none';
+            }
+        });
+    }
+
     // Handle URL parameters for pre-selection
     const urlParams = new URLSearchParams(window.location.search);
     const selectParam = urlParams.get('select');
@@ -568,5 +609,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const promoParam = urlParams.get('promo');
     if (promoParam === 'Yes' && promotionalUpgradeSelect) {
         promotionalUpgradeSelect.value = 'Yes';
+        promotionalUpgradeSelect.dispatchEvent(new Event('change'));
     }
 });
