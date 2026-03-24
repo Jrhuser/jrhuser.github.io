@@ -556,4 +556,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Handle filter type parameter
+    const filterTypeParam = urlParams.get('filterType');
+    if (filterTypeParam && filterTypeSelect) {
+        filterTypeSelect.value = filterTypeParam;
+        filterTypeSelect.dispatchEvent(new Event('change'));
+    }
 });
