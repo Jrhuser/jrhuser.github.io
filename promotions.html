@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promotions | Neptune Benson</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .promo-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .back-link { display: inline-block; margin-bottom: 20px; color: #007DA3; text-decoration: none; font-weight: 600; }
+        .back-link:hover { text-decoration: underline; }
+        .promo-header { text-align: center; margin-bottom: 40px; }
+        .promo-header h1 { color: #007DA3; margin-bottom: 10px; }
+        .promo-header p { color: #666; font-size: 1.1em; }
+        .promo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .promo-card { background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; transition: transform 0.3s, box-shadow 0.3s; }
+        .promo-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+        .promo-card-header { background: linear-gradient(135deg, #007DA3, #005a75); color: white; padding: 20px; }
+        .promo-card-header h3 { margin: 0 0 5px 0; font-size: 1.3em; }
+        .promo-card-header .tag { display: inline-block; background: #61D604; color: #333; padding: 4px 12px; border-radius: 20px; font-size: 0.75em; font-weight: 700; margin-top: 8px; }
+        .promo-card-body { padding: 20px; }
+        .promo-card-body p { color: #555; line-height: 1.6; margin-bottom: 20px; }
+        .promo-card-body ul { margin: 0 0 20px 0; padding-left: 20px; color: #555; }
+        .promo-card-body li { margin-bottom: 8px; }
+        .promo-btn { display: inline-block; background: #007DA3; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600; transition: background 0.3s; }
+        .promo-btn:hover { background: #005a75; }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="xylem_logo_white.png" alt="Xylem Logo" class="logo">
+        <h1>Current Promotions</h1>
+    </header>
+
+    <div class="container">
+        <main class="promo-container">
+            <a href="index.html" class="back-link">&larr; Back to Equipment Selector</a>
+
+            <div class="promo-header">
+                <h1>Neptune Benson Promotions</h1>
+                <p>Special programs and upgrade options for your aquatic facility</p>
+            </div>
+
+            <div class="promo-grid">
+                <div class="promo-card">
+                    <div class="promo-card-header">
+                        <h3>UV - Panel Upgrade</h3>
+                        <span class="tag">Spectra III</span>
+                    </div>
+                    <div class="promo-card-body">
+                        <p>Upgrade your legacy ETS-UV systems to the latest Spectra III control platform. Modernize without replacing the reactor.</p>
+                        <ul>
+                            <li>Lower power consumption</li>
+                            <li>Enhanced diagnostics</li>
+                            <li>MODBUS communication</li>
+                            <li>5-year warranty option</li>
+                        </ul>
+                        <a href="uv-panel-upgrade.html" class="promo-btn">Configure Upgrade</a>
+                    </div>
+                </div>
+
+                <!-- Placeholder for future promotions -->
+                <div class="promo-card" style="opacity: 0.5;">
+                    <div class="promo-card-header" style="background: linear-gradient(135deg, #888, #666);">
+                        <h3>More Coming Soon</h3>
+                        <span class="tag" style="background: #ccc;">Stay Tuned</span>
+                    </div>
+                    <div class="promo-card-body">
+                        <p>Additional promotions and special programs will be added here. Check back for updates on:</p>
+                        <ul>
+                            <li>Seasonal specials</li>
+                            <li>Trade-in programs</li>
+                            <li>Bundle discounts</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Xylem Inc. All rights reserved.</p>
+    </footer>
+</body>
+</html>
