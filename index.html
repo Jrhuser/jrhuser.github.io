@@ -55,6 +55,32 @@
                             </select>
                         </div>
                     </div>
+                    <div id="upgradeTypeRow" class="input-group dual-row hidden">
+                        <div class="dual-field">
+                            <label for="upgradeType">Upgrade Type:</label>
+                            <select id="upgradeType">
+                                <option value=""></option>
+                                <option value="Neptune Benson Equipment">Neptune Benson Equipment</option>
+                                <option value="Other Equipment">Other Equipment</option>
+                            </select>
+                        </div>
+                        <div id="serialNumberField" class="dual-field hidden">
+                            <label for="upgradeSerialNumber">Serial Number:</label>
+                            <input type="text" id="upgradeSerialNumber" placeholder="Enter serial number">
+                        </div>
+                        <div id="otherEquipmentFields" class="dual-field hidden" style="display: none;">
+                            <div style="display: flex; gap: 10px;">
+                                <div style="flex: 1;">
+                                    <label for="upgradeBrand">Brand:</label>
+                                    <input type="text" id="upgradeBrand" placeholder="Brand">
+                                </div>
+                                <div style="flex: 1;">
+                                    <label for="upgradeModel">Model:</label>
+                                    <input type="text" id="upgradeModel" placeholder="Model">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
