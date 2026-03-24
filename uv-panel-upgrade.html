@@ -415,11 +415,11 @@
 
             // Add part numbers only section for easy copy/paste
             partsList += '\nPART NUMBERS (copy/paste column):\n';
-            partsList += panel.partNumber + '\n';
-            partsList += cable.pn + '\n';
+            partsList += panel.partNumber + ' 1\n';
+            partsList += cable.pn + ' 1\n';
             if (includePM) {
                 pmParts.forEach(part => {
-                    partsList += part.pn + '\n';
+                    partsList += part.pn + ' ' + part.qty + '\n';
                 });
             }
 
