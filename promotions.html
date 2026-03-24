@@ -13,16 +13,16 @@
         .promo-header h1 { color: #007DA3; margin-bottom: 10px; }
         .promo-header p { color: #666; font-size: 1.1em; }
         .promo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-        .promo-card { background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; transition: transform 0.3s, box-shadow 0.3s; }
+        .promo-card { background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; transition: transform 0.3s, box-shadow 0.3s; display: flex; flex-direction: column; }
         .promo-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
         .promo-card-header { background: linear-gradient(135deg, #007DA3, #005a75); color: white; padding: 20px; }
         .promo-card-header h3 { margin: 0 0 5px 0; font-size: 1.3em; }
         .promo-card-header .tag { display: inline-block; background: #61D604; color: #333; padding: 4px 12px; border-radius: 20px; font-size: 0.75em; font-weight: 700; margin-top: 8px; }
-        .promo-card-body { padding: 20px; }
+        .promo-card-body { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
         .promo-card-body p { color: #555; line-height: 1.6; margin-bottom: 20px; }
-        .promo-card-body ul { margin: 0 0 20px 0; padding-left: 20px; color: #555; }
+        .promo-card-body ul { margin: 0 0 20px 0; padding-left: 20px; color: #555; flex-grow: 1; }
         .promo-card-body li { margin-bottom: 8px; }
-        .promo-btn { display: inline-block; background: #007DA3; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600; transition: background 0.3s; }
+        .promo-btn { display: inline-block; background: #007DA3; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600; transition: background 0.3s; align-self: center; margin-top: auto; }
         .promo-btn:hover { background: #005a75; }
     </style>
 </head>
