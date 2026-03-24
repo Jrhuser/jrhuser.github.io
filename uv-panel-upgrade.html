@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spectra III Panel Upgrade | Neptune Benson</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .upgrade-container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+        .back-link { display: inline-block; margin-bottom: 20px; color: #007DA3; text-decoration: none; font-weight: 600; }
+        .back-link:hover { text-decoration: underline; }
+        .upgrade-header { text-align: center; margin-bottom: 30px; border-bottom: 3px solid #61D604; padding-bottom: 20px; }
+        .upgrade-header h1 { color: #007DA3; margin-bottom: 10px; }
+        .upgrade-header p { color: #666; max-width: 800px; margin: 0 auto; }
+        .step-section { background: #f9f9f9; border-radius: 8px; padding: 25px; margin-bottom: 20px; border-left: 5px solid #007DA3; }
+        .step-section h3 { margin-top: 0; color: #007DA3; display: flex; align-items: center; gap: 10px; }
+        .step-number { background: #007DA3; color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9em; }
+        .model-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
+        .model-option { position: relative; }
+        .model-option input { position: absolute; opacity: 0; }
+        .model-option label { display: block; padding: 15px; background: white; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; transition: all 0.2s; text-align: center; }
+        .model-option label:hover { border-color: #007DA3; }
+        .model-option input:checked + label { border-color: #61D604; background: #f0fff0; }
+        .model-option .model-name { font-weight: 700; color: #333; font-size: 1.1em; }
+        .model-option .model-desc { font-size: 0.8em; color: #666; margin-top: 5px; }
+        .sensor-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 15px; max-width: 500px; }
+        .sensor-option { position: relative; }
+        .sensor-option input { position: absolute; opacity: 0; }
+        .sensor-option label { display: flex; flex-direction: column; align-items: center; padding: 20px; background: white; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .sensor-option label:hover { border-color: #007DA3; }
+        .sensor-option input:checked + label { border-color: #61D604; background: #f0fff0; }
+        .sensor-icon { font-size: 2em; margin-bottom: 10px; }
+        .sensor-name { font-weight: 700; color: #333; }
+        .sensor-desc { font-size: 0.75em; color: #666; margin-top: 5px; }
+        .cable-options { display: flex; gap: 15px; margin-top: 15px; }
+        .cable-option { position: relative; }
+        .cable-option input { position: absolute; opacity: 0; }
+        .cable-option label { display: inline-block; padding: 12px 30px; background: white; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-weight: 600; }
+        .cable-option label:hover { border-color: #007DA3; }
+        .cable-option input:checked + label { border-color: #61D604; background: #f0fff0; }
+        .pm-checkbox { margin-top: 15px; }
+        .pm-checkbox label { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; }
+        .pm-checkbox input { margin-top: 4px; }
+        .pm-info { background: #fff3cd; border: 1px solid #ffc107; border-radius: 6px; padding: 15px; margin-top: 15px; }
+        .pm-info strong { color: #856404; }
+        .quote-section { background: linear-gradient(135deg, #007DA3, #005a75); color: white; border-radius: 8px; padding: 30px; margin-top: 30px; }
+        .quote-section h3 { margin-top: 0; color: white; }
+        .quote-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .quote-table th, .quote-table td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.2); }
+        .quote-table th { opacity: 0.8; font-weight: 600; }
+        .quote-table .price { text-align: right; font-weight: 700; }
+        .quote-total { font-size: 1.5em; font-weight: 700; text-align: right; margin-top: 15px; padding-top: 15px; border-top: 2px solid rgba(255,255,255,0.3); }
+        .btn-quote { background: #61D604; color: #333; border: none; padding: 15px 40px; font-size: 1.1em; font-weight: 700; border-radius: 6px; cursor: pointer; margin-top: 20px; }
+        .btn-quote:hover { background: #52b603; }
+        .hidden { display: none !important; }
+        .benefits-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; margin-top: 20px; }
+        .benefit-item { display: flex; align-items: center; gap: 8px; font-size: 0.9em; color: #555; }
+        .benefit-item::before { content: "✓"; color: #61D604; font-weight: 700; }
+        .help-text { font-size: 0.85em; color: #666; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="xylem_logo_white.png" alt="Xylem Logo" class="logo">
+        <h1>Spectra III Control Panel Upgrade</h1>
+    </header>
+
+    <div class="container">
+        <main class="upgrade-container">
+            <a href="promotions.html" class="back-link">&larr; Back to Promotions</a>
+
+            <div class="upgrade-header">
+                <h1>Spectra III Panel Upgrade Program</h1>
+                <p>Re-power your legacy ETS-UV disinfection systems with the latest electronic ballast and control technologies. Upgrade without replacing the reactor.</p>
+                <div class="benefits-list">
+                    <div class="benefit-item">Lower power consumption</div>
+                    <div class="benefit-item">Softer lamp strike for improved lamp life</div>
+                    <div class="benefit-item">Enhanced diagnostics</div>
+                    <div class="benefit-item">MODBUS communication</div>
+                    <div class="benefit-item">Adjustable output (30-100%)</div>
+                    <div class="benefit-item">Full customer care support</div>
+                </div>
+            </div>
+
+            <div class="step-section">
+                <h3><span class="step-number">1</span> Select Your UV Model</h3>
+                <p class="help-text">Locate your UV model number on the control panel label (lower right corner of door or inside the door).</p>
+                <div class="model-grid">
+                    <div class="model-option">
+                        <input type="radio" name="uvModel" id="model-sp25" value="SP-25">
+                        <label for="model-sp25">
+                            <div class="model-name">SP-25-*</div>
+                            <div class="model-desc">480V-3 Phase</div>
+                        </label>
+                    </div>
+                    <div class="model-option">
+                        <input type="radio" name="uvModel" id="model-ecf210" value="ECF-210">
+                        <label for="model-ecf210">
+                            <div class="model-name">ECF-210-*</div>
+                            <div class="model-desc">208-220V</div>
+                        </label>
+                    </div>
+                    <div class="model-option">
+                        <input type="radio" name="uvModel" id="model-ecf215-220" value="ECF-215-220v">
+                        <label for="model-ecf215-220">
+                            <div class="model-name">ECF-215-* (220V)</div>
+                            <div class="model-desc">208-220V</div>
+                        </label>
+                    </div>
+                    <div class="model-option">
+                        <input type="radio" name="uvModel" id="model-ecf215" value="ECF-215">
+                        <label for="model-ecf215">
+                            <div class="model-name">ECF-215-*</div>
+                            <div class="model-desc">480V-3 Phase</div>
+                        </label>
+                    </div>
+                    <div class="model-option">
+                        <input type="radio" name="uvModel" id="model-ecf220" value="ECF-220">
+                        <label for="model-ecf220">
+                            <div class="model-name">ECF-220-*</div>
+                            <div class="model-desc">480V-3 Phase</div>
+                        </label>
+                    </div>
+                    <div class="model-option">
+                        <input type="radio" name="uvModel" id="model-ecf225" value="ECF-225">
+                        <label for="model-ecf225">
+                            <div class="model-name">ECF-225-*</div>
+                            <div class="model-desc">480V-3 Phase</div>
+                        </label>
+                    </div>
+                    <div class="model-option">
+                        <input type="radio" name="uvModel" id="model-ecf230" value="ECF-230">
+                        <label for="model-ecf230">
+                            <div class="model-name">ECF-230-*</div>
+                            <div class="model-desc">480V-3 Phase</div>
+                        </label>
+                    </div>
+                    <div class="model-option">
+                        <input type="radio" name="uvModel" id="model-ecf430" value="ECF-430">
+                        <label for="model-ecf430">
+                            <div class="model-name">ECF-430-*</div>
+                            <div class="model-desc">480V-3 Phase</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-section">
+                <h3><span class="step-number">2</span> Select Your UV Intensity Sensor</h3>
+                <p class="help-text">Identify your sensor type by its appearance. AT-900 has a yellow tip; AT-463 is black.</p>
+                <div class="sensor-grid">
+                    <div class="sensor-option">
+                        <input type="radio" name="sensorType" id="sensor-at900" value="AT-900">
+                        <label for="sensor-at900">
+                            <div class="sensor-icon">🔶</div>
+                            <div class="sensor-name">AT-900</div>
+                            <div class="sensor-desc">Yellow tip sensor</div>
+                        </label>
+                    </div>
+                    <div class="sensor-option">
+                        <input type="radio" name="sensorType" id="sensor-at463" value="AT-463">
+                        <label for="sensor-at463">
+                            <div class="sensor-icon">⚫</div>
+                            <div class="sensor-name">AT-463</div>
+                            <div class="sensor-desc">Black sensor</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-section">
+                <h3><span class="step-number">3</span> Select Cable Length</h3>
+                <p class="help-text">Choose the cable set length based on distance between control panel and reactor.</p>
+                <div class="cable-options">
+                    <div class="cable-option">
+                        <input type="radio" name="cableLength" id="cable-30" value="30">
+                        <label for="cable-30">30 ft</label>
+                    </div>
+                    <div class="cable-option">
+                        <input type="radio" name="cableLength" id="cable-100" value="100">
+                        <label for="cable-100">100 ft</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-section">
+                <h3><span class="step-number">4</span> Add PM Parts for Extended Warranty</h3>
+                <div class="pm-checkbox">
+                    <label>
+                        <input type="checkbox" id="includePM">
+                        <span><strong>Include Preventative Maintenance Parts</strong><br>
+                        <span style="font-size: 0.9em; color: #666;">Add PM parts to qualify for an additional 5-year warranty on the equipment.</span></span>
+                    </label>
+                </div>
+                <div class="pm-info">
+                    <strong>Note:</strong> The listed PM components are the minimum purchase requirement. Your system may require additional components. Please confirm maintenance requirements before purchasing.
+                </div>
+            </div>
+
+            <div id="quoteSection" class="quote-section hidden">
+                <h3>Your Configuration</h3>
+                <table class="quote-table">
+                    <thead>
+                        <tr>
+                            <th>Part Number</th>
+                            <th>Description</th>
+                            <th>Qty</th>
+                            <th class="price">Price</th>
+                        </tr>
+                    </thead>
+                    <tbody id="quoteBody">
+                    </tbody>
+                </table>
+                <div class="quote-total">
+                    Total: <span id="quoteTotal">$0.00</span>
+                </div>
+                <div style="margin-top: 20px; font-size: 0.85em; opacity: 0.9;">
+                    <p><strong>Note:</strong> Control panels are only supplied at the listed voltages. If your original equipment was supplied with a step-up transformer, please verify the proper supply voltage is available on site prior to ordering.</p>
+                    <p>For commissioning and warranty extension, contact: <a href="mailto:ets-uv.service@xylem.com" style="color: #61D604;">ets-uv.service@xylem.com</a> | (877) 885-4628</p>
+                </div>
+                <button class="btn-quote" onclick="requestQuote()">Request Quote</button>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Xylem Inc. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Product data from PDF
+        const panelData = {
+            "SP-25": { partNumber: "1003-3844", description: "UV, R/Panel, SP 25, Mem, N12, 480-3, 508", price: 21174.28, lampCount: 1 },
+            "ECF-210": { partNumber: "1003-3352", description: "UV, R/Panel, ECF. 210, Mem, N12, 208-220, 508", price: 23116.16, lampCount: 2 },
+            "ECF-215-220v": { partNumber: "1003-3351", description: "UV, R/Panel, ECF. 215, Mem, N12, 208-220, 508", price: 23116.16, lampCount: 2 },
+            "ECF-215": { partNumber: "1003-3350", description: "UV, R/Panel, ECF 215, Mem, N12, 480-3, 508", price: 24040.81, lampCount: 2 },
+            "ECF-220": { partNumber: "1003-3349", description: "UV, R/Panel, ECF 220, Mem, N12, 480-3, 508", price: 26419.69, lampCount: 2 },
+            "ECF-225": { partNumber: "1003-3348", description: "UV, R/Panel, ECF 225, Mem, N12, 480-3, 508", price: 28380.47, lampCount: 2 },
+            "ECF-230": { partNumber: "1003-3347", description: "UV, R/Panel, ECF 230, Mem, N12, 480-3, 508", price: 31725.87, lampCount: 2 },
+            "ECF-430": { partNumber: "1003-3346", description: "UV, R/Panel, ECF 430, Mem, N12, 480-3, 508", price: 40136.12, lampCount: 4 }
+        };
+
+        const cableData = {
+            "SP-25": {
+                "AT-463": { "30": { pn: "1004-4142", price: 1221.18 }, "100": { pn: "1004-4145", price: 2258.58 } },
+                "AT-900": { "30": { pn: "1004-4204", price: 1221.18 }, "100": { pn: "1004-4205", price: 2258.58 } }
+            },
+            "ECF-210": {
+                "AT-463": { "30": { pn: "1004-4206", price: 1432.68 }, "100": { pn: "1004-4146", price: 2963.58 } },
+                "AT-900": { "30": { pn: "1004-4149", price: 1432.68 }, "100": { pn: "1004-4207", price: 2963.58 } }
+            },
+            "ECF-215-220v": {
+                "AT-463": { "30": { pn: "1004-4206", price: 1432.68 }, "100": { pn: "1004-4146", price: 2963.58 } },
+                "AT-900": { "30": { pn: "1004-4149", price: 1432.68 }, "100": { pn: "1004-4207", price: 2963.58 } }
+            },
+            "ECF-215": {
+                "AT-463": { "30": { pn: "1004-4206", price: 1432.68 }, "100": { pn: "1004-4146", price: 2963.58 } },
+                "AT-900": { "30": { pn: "1004-4149", price: 1432.68 }, "100": { pn: "1004-4207", price: 2963.58 } }
+            },
+            "ECF-220": {
+                "AT-463": { "30": { pn: "1004-4206", price: 1432.68 }, "100": { pn: "1004-4146", price: 2963.58 } },
+                "AT-900": { "30": { pn: "1004-4149", price: 1432.68 }, "100": { pn: "1004-4207", price: 2963.58 } }
+            },
+            "ECF-225": {
+                "AT-463": { "30": { pn: "1004-4206", price: 1432.68 }, "100": { pn: "1004-4146", price: 2963.58 } },
+                "AT-900": { "30": { pn: "1004-4149", price: 1432.68 }, "100": { pn: "1004-4207", price: 2963.58 } }
+            },
+            "ECF-230": {
+                "AT-463": { "30": { pn: "1004-4206", price: 1432.68 }, "100": { pn: "1004-4146", price: 2963.58 } },
+                "AT-900": { "30": { pn: "1004-4149", price: 1432.68 }, "100": { pn: "1004-4207", price: 2963.58 } }
+            },
+            "ECF-430": {
+                "AT-463": { "30": { pn: "1004-4143", price: 2022.09 }, "100": { pn: "1004-4144", price: 4581.12 } },
+                "AT-900": { "30": { pn: "1004-4148", price: 2022.09 }, "100": { pn: "1004-4147", price: 4581.12 } }
+            }
+        };
+
+        const pmPartsData = {
+            "SP-25": [
+                { pn: "1000-2921", desc: "Lamp - MP 2.5S49", qty: 1, price: 970.40 },
+                { pn: "1000-2963", desc: "Quartz - QTH 49x500", qty: 1, price: 959.98 },
+                { pn: "1000-3004", desc: "SP-SK4 QUAD RING SEAL KIT", qty: 1, price: 431.13 },
+                { pn: "1001-9424", desc: "SP Wiper Carriage Lead Screw Nut Assembly", qty: 1, price: 265.79 }
+            ],
+            "ECF-210": [
+                { pn: "1000-2913", desc: "Lamp - MP 0.95D", qty: 2, price: 486.65 },
+                { pn: "1000-2943", desc: "Quartz - QSL 36x270", qty: 2, price: 178.19 },
+                { pn: "1000-3010", desc: "ECF-SK2 QUAD RING SEAL KIT", qty: 1, price: 342.85 },
+                { pn: "1000-3463", desc: "ECF Lead Screw", qty: 1, price: 138.66 }
+            ],
+            "ECF-215-220v": [
+                { pn: "1000-2918", desc: "Lamp - MP 1.5D 220V", qty: 2, price: 814.07 },
+                { pn: "1000-2945", desc: "Quartz - QSL 36X320", qty: 2, price: 200.57 },
+                { pn: "1000-3010", desc: "ECF-SK2 QUAD RING SEAL KIT", qty: 1, price: 342.85 },
+                { pn: "1000-3463", desc: "ECF Lead Screw", qty: 1, price: 138.66 }
+            ],
+            "ECF-215": [
+                { pn: "1000-2917", desc: "Lamp - MP 1.5D", qty: 2, price: 814.07 },
+                { pn: "1000-2945", desc: "Quartz - QSL 36X320", qty: 2, price: 200.57 },
+                { pn: "1000-3010", desc: "ECF-SK2 QUAD RING SEAL KIT", qty: 1, price: 342.85 },
+                { pn: "1000-3463", desc: "ECF Lead Screw", qty: 1, price: 138.66 }
+            ],
+            "ECF-220": [
+                { pn: "1000-2919", desc: "Lamp - MP 2.0D", qty: 2, price: 870.14 },
+                { pn: "1000-2946", desc: "Quartz - QSL 36X370", qty: 2, price: 203.26 },
+                { pn: "1000-3010", desc: "ECF-SK2 QUAD RING SEAL KIT", qty: 1, price: 342.85 },
+                { pn: "1000-3463", desc: "ECF Lead Screw", qty: 1, price: 138.66 }
+            ],
+            "ECF-225": [
+                { pn: "1000-2920", desc: "Lamp - MP 2.5D", qty: 2, price: 939.65 },
+                { pn: "1000-2949", desc: "Quartz - QSL 36X420", qty: 2, price: 242.44 },
+                { pn: "1000-3010", desc: "ECF-SK2 QUAD RING SEAL KIT", qty: 1, price: 342.85 },
+                { pn: "1000-3463", desc: "ECF Lead Screw", qty: 1, price: 138.66 }
+            ],
+            "ECF-230": [
+                { pn: "1000-2925", desc: "Lamp - MP 3.0D", qty: 2, price: 1015.90 },
+                { pn: "1000-2952", desc: "Quartz - QSL 36X470", qty: 2, price: 269.38 },
+                { pn: "1000-3010", desc: "ECF-SK2 QUAD RING SEAL KIT", qty: 1, price: 342.85 },
+                { pn: "1000-3463", desc: "ECF Lead Screw", qty: 1, price: 138.66 }
+            ],
+            "ECF-430": [
+                { pn: "1000-2925", desc: "Lamp - MP 3.0D", qty: 4, price: 1015.90 },
+                { pn: "1000-2952", desc: "Quartz - QSL 36X470", qty: 4, price: 269.38 },
+                { pn: "1000-3011", desc: "ECF-SK4 QUAD RING SEAL KIT", qty: 1, price: 668.51 },
+                { pn: "1000-3463", desc: "ECF Lead Screw", qty: 1, price: 138.66 }
+            ]
+        };
+
+        function updateQuote() {
+            const model = document.querySelector('input[name="uvModel"]:checked')?.value;
+            const sensor = document.querySelector('input[name="sensorType"]:checked')?.value;
+            const cableLen = document.querySelector('input[name="cableLength"]:checked')?.value;
+            const includePM = document.getElementById('includePM').checked;
+
+            if (!model || !sensor || !cableLen) {
+                document.getElementById('quoteSection').classList.add('hidden');
+                return;
+            }
+
+            const panel = panelData[model];
+            const cable = cableData[model][sensor][cableLen];
+            const pmParts = pmPartsData[model];
+
+            let html = '';
+            let total = 0;
+
+            // Panel
+            html += `<tr>
+                <td>${panel.partNumber}</td>
+                <td>${panel.description}</td>
+                <td>1</td>
+                <td class="price">$${panel.price.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+            </tr>`;
+            total += panel.price;
+
+            // Cable
+            const lampCount = panel.lampCount;
+            const cableDesc = `KIT, CABLE, EB REP PNL, ${lampCount}L, ${sensor}, ${cableLen}'`;
+            html += `<tr>
+                <td>${cable.pn}</td>
+                <td>${cableDesc}</td>
+                <td>1</td>
+                <td class="price">$${cable.price.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+            </tr>`;
+            total += cable.price;
+
+            // PM Parts
+            if (includePM) {
+                html += `<tr><td colspan="4" style="background: rgba(97,214,4,0.2); font-weight: 600;">PM Parts (5-Year Warranty Extension)</td></tr>`;
+                pmParts.forEach(part => {
+                    const lineTotal = part.qty * part.price;
+                    html += `<tr>
+                        <td>${part.pn}</td>
+                        <td>${part.desc}</td>
+                        <td>${part.qty}</td>
+                        <td class="price">$${lineTotal.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                    </tr>`;
+                    total += lineTotal;
+                });
+            }
+
+            document.getElementById('quoteBody').innerHTML = html;
+            document.getElementById('quoteTotal').textContent = '$' + total.toLocaleString('en-US', {minimumFractionDigits: 2});
+            document.getElementById('quoteSection').classList.remove('hidden');
+        }
+
+        function requestQuote() {
+            const model = document.querySelector('input[name="uvModel"]:checked')?.value;
+            const sensor = document.querySelector('input[name="sensorType"]:checked')?.value;
+            const cableLen = document.querySelector('input[name="cableLength"]:checked')?.value;
+            const includePM = document.getElementById('includePM').checked;
+            const total = document.getElementById('quoteTotal').textContent;
+
+            const subject = encodeURIComponent(`Spectra III Panel Upgrade Quote Request - ${model}`);
+            const body = encodeURIComponent(`I would like to request a quote for a Spectra III Panel Upgrade:\n\nUV Model: ${model}\nSensor Type: ${sensor}\nCable Length: ${cableLen}'\nInclude PM Parts: ${includePM ? 'Yes' : 'No'}\n\nEstimated Total: ${total}\n\nPlease contact me to finalize this order.`);
+
+            window.location.href = `mailto:ets-uv.service@xylem.com?subject=${subject}&body=${body}`;
+        }
+
+        // Event listeners
+        document.querySelectorAll('input[name="uvModel"], input[name="sensorType"], input[name="cableLength"]').forEach(input => {
+            input.addEventListener('change', updateQuote);
+        });
+        document.getElementById('includePM').addEventListener('change', updateQuote);
+    </script>
+</body>
+</html>
