@@ -391,10 +391,34 @@
             const includePM = document.getElementById('includePM').checked;
             const total = document.getElementById('quoteTotal').textContent;
 
-            const subject = encodeURIComponent(`Spectra III Panel Upgrade Quote Request - ${model}`);
-            const body = encodeURIComponent(`I would like to request a quote for a Spectra III Panel Upgrade:\n\nUV Model: ${model}\nSensor Type: ${sensor}\nCable Length: ${cableLen}'\nInclude PM Parts: ${includePM ? 'Yes' : 'No'}\n\nEstimated Total: ${total}\n\nPlease contact me to finalize this order.`);
+            const panel = panelData[model];
+            const cable = cableData[model][sensor][cableLen];
+            const pmParts = pmPartsData[model];
+            const lampCount = panel.lampCount;
+            const cableDesc = `KIT, CABLE, EB REP PNL, ${lampCount}L, ${sensor}, ${cableLen}'`;
 
-            window.location.href = `mailto:ets-uv.service@xylem.com?subject=${subject}&body=${body}`;
+            // Build parts list
+            let partsList = 'PARTS LIST:\n';
+            partsList += '─'.repeat(60) + '\n';
+            partsList += `${panel.partNumber}  |  ${panel.description}  |  Qty: 1  |  $${panel.price.toLocaleString('en-US', {minimumFractionDigits: 2})}\n`;
+            partsList += `${cable.pn}  |  ${cableDesc}  |  Qty: 1  |  $${cable.price.toLocaleString('en-US', {minimumFractionDigits: 2})}\n`;
+
+            if (includePM) {
+                partsList += '\nPM PARTS (5-Year Warranty Extension):\n';
+                pmParts.forEach(part => {
+                    const lineTotal = part.qty * part.price;
+                    partsList += `${part.pn}  |  ${part.desc}  |  Qty: ${part.qty}  |  $${lineTotal.toLocaleString('en-US', {minimumFractionDigits: 2})}\n`;
+                });
+            }
+            partsList += '─'.repeat(60) + '\n';
+            partsList += `TOTAL: ${total}\n`;
+
+            const subject = encodeURIComponent(`Spectra III Panel Upgrade Quote Request - ${model}`);
+            const body = encodeURIComponent(`I would like to request a quote for a Spectra III Panel Upgrade:\n\nUV Model: ${model}\nSensor Type: ${sensor}\nCable Length: ${cableLen}'\nInclude PM Parts: ${includePM ? 'Yes' : 'No'}\n\n${partsList}\n\nPlease contact me to finalize this order.`);
+
+            const to = 'Christian.Balents@Xylem.com,Jamie.Wood@Xylem.com';
+            const cc = 'ets-uv.service@xylem.com';
+            window.location.href = `mailto:${to}?cc=${cc}&subject=${subject}&body=${body}`;
         }
 
         // Event listeners
