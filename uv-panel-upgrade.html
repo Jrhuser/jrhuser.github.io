@@ -197,6 +197,12 @@
                 </div>
             </div>
 
+            <div class="step-section">
+                <h3><span class="step-number">5</span> Serial Number</h3>
+                <p style="font-size: 0.9em; color: #666; margin-bottom: 15px;">Enter serial number for warranty extension and order review.</p>
+                <input type="text" id="serialNumber" placeholder="Enter serial number" style="width: 100%; max-width: 300px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 1em;">
+            </div>
+
             <div id="quoteSection" class="quote-section hidden">
                 <h3>Your Configuration</h3>
                 <table class="quote-table">
@@ -389,6 +395,7 @@
             const sensor = document.querySelector('input[name="sensorType"]:checked')?.value;
             const cableLen = document.querySelector('input[name="cableLength"]:checked')?.value;
             const includePM = document.getElementById('includePM').checked;
+            const serialNumber = document.getElementById('serialNumber').value.trim();
             const total = document.getElementById('quoteTotal').textContent;
 
             const panel = panelData[model];
@@ -424,7 +431,7 @@
             }
 
             const subject = encodeURIComponent(`Spectra III Panel Upgrade Quote Request - ${model}`);
-            const body = encodeURIComponent(`I would like to request a quote for a Spectra III Panel Upgrade:\n\nUV Model: ${model}\nSensor Type: ${sensor}\nCable Length: ${cableLen}'\nInclude PM Parts: ${includePM ? 'Yes' : 'No'}\n\n${partsList}\n\nPlease contact me to finalize this order.`);
+            const body = encodeURIComponent(`I would like to request a quote for a Spectra III Panel Upgrade:\n\nUV Model: ${model}\nSensor Type: ${sensor}\nCable Length: ${cableLen}'\nSerial Number: ${serialNumber || 'Not provided'}\nInclude PM Parts: ${includePM ? 'Yes' : 'No'}\n\n${partsList}\n\nPlease contact me to finalize this order.`);
 
             const to = 'Christian.Balents@Xylem.com,Jamie.Wood@Xylem.com';
             const cc = 'ets-uv.service@xylem.com';
