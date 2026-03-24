@@ -29,7 +29,7 @@
         .sensor-option label { display: flex; flex-direction: column; align-items: center; padding: 20px; background: white; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
         .sensor-option label:hover { border-color: #007DA3; }
         .sensor-option input:checked + label { border-color: #61D604; background: #f0fff0; }
-        .sensor-icon { font-size: 2em; margin-bottom: 10px; }
+        .sensor-img { width: 120px; height: 100px; object-fit: contain; margin-bottom: 10px; }
         .sensor-name { font-weight: 700; color: #333; }
         .sensor-desc { font-size: 0.75em; color: #666; margin-top: 5px; }
         .cable-options { display: flex; gap: 15px; margin-top: 15px; }
@@ -152,7 +152,7 @@
                     <div class="sensor-option">
                         <input type="radio" name="sensorType" id="sensor-at900" value="AT-900">
                         <label for="sensor-at900">
-                            <div class="sensor-icon">🔶</div>
+                            <img src="at-900.jpeg" alt="AT-900 Sensor" class="sensor-img">
                             <div class="sensor-name">AT-900</div>
                             <div class="sensor-desc">Yellow tip sensor</div>
                         </label>
@@ -160,7 +160,7 @@
                     <div class="sensor-option">
                         <input type="radio" name="sensorType" id="sensor-at463" value="AT-463">
                         <label for="sensor-at463">
-                            <div class="sensor-icon">⚫</div>
+                            <img src="at-463.jpeg" alt="AT-463 Sensor" class="sensor-img">
                             <div class="sensor-name">AT-463</div>
                             <div class="sensor-desc">Black sensor</div>
                         </label>
@@ -391,10 +391,34 @@
             const includePM = document.getElementById('includePM').checked;
             const total = document.getElementById('quoteTotal').textContent;
 
-            const subject = encodeURIComponent(`Spectra III Panel Upgrade Quote Request - ${model}`);
-            const body = encodeURIComponent(`I would like to request a quote for a Spectra III Panel Upgrade:\n\nUV Model: ${model}\nSensor Type: ${sensor}\nCable Length: ${cableLen}'\nInclude PM Parts: ${includePM ? 'Yes' : 'No'}\n\nEstimated Total: ${total}\n\nPlease contact me to finalize this order.`);
+            const panel = panelData[model];
+            const cable = cableData[model][sensor][cableLen];
+            const pmParts = pmPartsData[model];
+            const lampCount = panel.lampCount;
+            const cableDesc = `KIT, CABLE, EB REP PNL, ${lampCount}L, ${sensor}, ${cableLen}'`;
 
-            window.location.href = `mailto:ets-uv.service@xylem.com?subject=${subject}&body=${body}`;
+            // Build parts list
+            let partsList = 'PARTS LIST:\n';
+            partsList += '─'.repeat(60) + '\n';
+            partsList += `${panel.partNumber}  |  ${panel.description}  |  Qty: 1  |  $${panel.price.toLocaleString('en-US', {minimumFractionDigits: 2})}\n`;
+            partsList += `${cable.pn}  |  ${cableDesc}  |  Qty: 1  |  $${cable.price.toLocaleString('en-US', {minimumFractionDigits: 2})}\n`;
+
+            if (includePM) {
+                partsList += '\nPM PARTS (5-Year Warranty Extension):\n';
+                pmParts.forEach(part => {
+                    const lineTotal = part.qty * part.price;
+                    partsList += `${part.pn}  |  ${part.desc}  |  Qty: ${part.qty}  |  $${lineTotal.toLocaleString('en-US', {minimumFractionDigits: 2})}\n`;
+                });
+            }
+            partsList += '─'.repeat(60) + '\n';
+            partsList += `TOTAL: ${total}\n`;
+
+            const subject = encodeURIComponent(`Spectra III Panel Upgrade Quote Request - ${model}`);
+            const body = encodeURIComponent(`I would like to request a quote for a Spectra III Panel Upgrade:\n\nUV Model: ${model}\nSensor Type: ${sensor}\nCable Length: ${cableLen}'\nInclude PM Parts: ${includePM ? 'Yes' : 'No'}\n\n${partsList}\n\nPlease contact me to finalize this order.`);
+
+            const to = 'Christian.Balents@Xylem.com,Jamie.Wood@Xylem.com';
+            const cc = 'ets-uv.service@xylem.com';
+            window.location.href = `mailto:${to}?cc=${cc}&subject=${subject}&body=${body}`;
         }
 
         // Event listeners
