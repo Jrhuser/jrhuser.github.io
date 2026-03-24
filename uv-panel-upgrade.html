@@ -413,6 +413,16 @@
             partsList += '─'.repeat(60) + '\n';
             partsList += `TOTAL: ${total}\n`;
 
+            // Add part numbers only section for easy copy/paste
+            partsList += '\nPART NUMBERS (copy/paste column):\n';
+            partsList += panel.partNumber + '\n';
+            partsList += cable.pn + '\n';
+            if (includePM) {
+                pmParts.forEach(part => {
+                    partsList += part.pn + '\n';
+                });
+            }
+
             const subject = encodeURIComponent(`Spectra III Panel Upgrade Quote Request - ${model}`);
             const body = encodeURIComponent(`I would like to request a quote for a Spectra III Panel Upgrade:\n\nUV Model: ${model}\nSensor Type: ${sensor}\nCable Length: ${cableLen}'\nInclude PM Parts: ${includePM ? 'Yes' : 'No'}\n\n${partsList}\n\nPlease contact me to finalize this order.`);
 
