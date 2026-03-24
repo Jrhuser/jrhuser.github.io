@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Literature | Neptune Benson</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .lit-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .back-link { display: inline-block; margin-bottom: 20px; color: #007DA3; text-decoration: none; font-weight: 600; }
+        .back-link:hover { text-decoration: underline; }
+        .lit-header { text-align: center; margin-bottom: 40px; }
+        .lit-header h1 { color: #007DA3; margin-bottom: 10px; }
+        .lit-header p { color: #666; font-size: 1.1em; }
+        .lit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        .lit-card { background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 25px; transition: transform 0.3s, box-shadow 0.3s; }
+        .lit-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+        .lit-card h3 { color: #007DA3; margin: 0 0 10px 0; font-size: 1.2em; }
+        .lit-card p { color: #555; line-height: 1.6; margin-bottom: 15px; font-size: 0.95em; }
+        .lit-card .tag { display: inline-block; background: #e8f4f8; color: #007DA3; padding: 4px 10px; border-radius: 15px; font-size: 0.75em; font-weight: 600; margin-bottom: 10px; }
+        .lit-btn { display: inline-block; background: #007DA3; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.9em; transition: background 0.3s; }
+        .lit-btn:hover { background: #005a75; }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="xylem_logo_white.png" alt="Xylem Logo" class="logo">
+        <h1>Sales Literature</h1>
+    </header>
+
+    <div class="container">
+        <main class="lit-container">
+            <a href="index.html" class="back-link">&larr; Back to Equipment Selector</a>
+
+            <div class="lit-header">
+                <h1>Neptune Benson Sales Literature</h1>
+                <p>Product brochures, specifications, and technical resources</p>
+            </div>
+
+            <div class="lit-grid">
+                <div class="lit-card">
+                    <span class="tag">Filtration</span>
+                    <h3>Defender Regenerative Media Filter</h3>
+                    <p>Complete product overview including specifications, features, and benefits of the Defender filter system.</p>
+                    <a href="#" class="lit-btn">Download PDF</a>
+                </div>
+
+                <div class="lit-card">
+                    <span class="tag">Filtration</span>
+                    <h3>ETS-UV Disinfection Systems</h3>
+                    <p>UV disinfection system specifications and application guide for aquatic facilities.</p>
+                    <a href="#" class="lit-btn">Download PDF</a>
+                </div>
+
+                <div class="lit-card">
+                    <span class="tag">Filtration</span>
+                    <h3>Guardian High-Rate Sand Filters</h3>
+                    <p>Technical specifications and sizing information for Guardian sand filter systems.</p>
+                    <a href="#" class="lit-btn">Download PDF</a>
+                </div>
+
+                <div class="lit-card">
+                    <span class="tag">Controllers</span>
+                    <h3>Spectra III Control Panel</h3>
+                    <p>Advanced control platform features and integration capabilities.</p>
+                    <a href="#" class="lit-btn">Download PDF</a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Xylem Inc. All rights reserved.</p>
+    </footer>
+</body>
+</html>
