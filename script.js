@@ -20,10 +20,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const projectZipInput = document.getElementById('projectZip');
     const systemNameInput = document.getElementById('systemName');
     const promotionalUpgradeSelect = document.getElementById('promotionalUpgrade');
-    const upgradeTypeRow = document.getElementById('upgradeTypeRow');
+    const upgradeTypeField = document.getElementById('upgradeTypeField');
     const upgradeTypeSelect = document.getElementById('upgradeType');
     const serialNumberField = document.getElementById('serialNumberField');
     const otherEquipmentFields = document.getElementById('otherEquipmentFields');
+    const modelField = document.getElementById('modelField');
 
     // Array to accumulate multiple systems for quote
     const quoteSystems = [];
@@ -547,14 +548,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (promotionalUpgradeSelect) {
         promotionalUpgradeSelect.addEventListener('change', () => {
             if (promotionalUpgradeSelect.value === 'Yes') {
-                upgradeTypeRow.classList.remove('hidden');
+                upgradeTypeField.classList.remove('hidden');
             } else {
-                upgradeTypeRow.classList.add('hidden');
+                upgradeTypeField.classList.add('hidden');
                 upgradeTypeSelect.value = '';
                 serialNumberField.classList.add('hidden');
-                serialNumberField.style.display = 'none';
                 otherEquipmentFields.classList.add('hidden');
-                otherEquipmentFields.style.display = 'none';
+                modelField.classList.add('hidden');
             }
         });
     }
@@ -563,19 +563,16 @@ document.addEventListener('DOMContentLoaded', () => {
         upgradeTypeSelect.addEventListener('change', () => {
             if (upgradeTypeSelect.value === 'Neptune Benson Equipment') {
                 serialNumberField.classList.remove('hidden');
-                serialNumberField.style.display = '';
                 otherEquipmentFields.classList.add('hidden');
-                otherEquipmentFields.style.display = 'none';
+                modelField.classList.add('hidden');
             } else if (upgradeTypeSelect.value === 'Other Equipment') {
                 serialNumberField.classList.add('hidden');
-                serialNumberField.style.display = 'none';
                 otherEquipmentFields.classList.remove('hidden');
-                otherEquipmentFields.style.display = '';
+                modelField.classList.remove('hidden');
             } else {
                 serialNumberField.classList.add('hidden');
-                serialNumberField.style.display = 'none';
                 otherEquipmentFields.classList.add('hidden');
-                otherEquipmentFields.style.display = 'none';
+                modelField.classList.add('hidden');
             }
         });
     }
