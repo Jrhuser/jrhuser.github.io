@@ -161,6 +161,11 @@
                     <h3>Sand Filter Costs</h3>
                     <div class="roi-grid">
                         <div class="roi-input-group">
+                            <label>Sand Filter Capital Cost ($):</label>
+                            <input type="number" id="sandCapitalCost" value="0" min="0" step="100">
+                            <span class="help-text">Equipment purchase price</span>
+                        </div>
+                        <div class="roi-input-group">
                             <label>Mechanical Space Value ($/ft²):</label>
                             <input type="number" id="mechSpaceValue" value="120" min="0">
                         </div>
@@ -183,6 +188,11 @@
                 <section class="roi-section">
                     <h3>Defender Filter Costs</h3>
                     <div class="roi-grid">
+                        <div class="roi-input-group">
+                            <label>Defender Capital Cost ($):</label>
+                            <input type="number" id="defenderCapitalCost" value="0" min="0" step="100">
+                            <span class="help-text">Equipment purchase price</span>
+                        </div>
                         <div class="roi-input-group">
                             <label>Perlite Media Cost ($/lb):</label>
                             <input type="number" id="perliteMediaCost" value="0.94" min="0" step="0.01">
@@ -352,10 +362,12 @@
             const heatCost = parseFloat(document.getElementById('heatCost').value) || 0.9;
             const chemicalCost = parseFloat(document.getElementById('chemicalCost').value) || 3;
 
+            const sandCapitalCost = parseFloat(document.getElementById('sandCapitalCost').value) || 0;
             const mechSpaceValue = parseFloat(document.getElementById('mechSpaceValue').value) || 120;
             const laborVariance = (parseFloat(document.getElementById('laborVariance').value) || 15) / 100;
             const sandMediaCost = parseFloat(document.getElementById('sandMediaCost').value) || 17.8;
             const mediaLoadingLabor = parseFloat(document.getElementById('mediaLoadingLabor').value) || 3;
+            const defenderCapitalCost = parseFloat(document.getElementById('defenderCapitalCost').value) || 0;
             const perliteMediaCost = parseFloat(document.getElementById('perliteMediaCost').value) || 0.94;
             const numCompressors = parseFloat(document.getElementById('numCompressors').value) || 1;
             const numToolKits = parseFloat(document.getElementById('numToolKits').value) || 1;
@@ -379,8 +391,8 @@
             }
 
             // Capital Costs
-            const sandFilterCost = totalSandPrice;
-            const defFilterCost = totalDefPrice + (numCompressors * COMPRESSOR_COST) + (numToolKits * TOOLKIT_COST);
+            const sandFilterCost = sandCapitalCost;
+            const defFilterCost = defenderCapitalCost + (numCompressors * COMPRESSOR_COST) + (numToolKits * TOOLKIT_COST);
 
             const sandMechSpace = totalSandSqFt * mechSpaceValue;
             const defMechSpace = totalDefArea * mechSpaceValue * 0.3; // Defender takes ~30% of sand filter space
