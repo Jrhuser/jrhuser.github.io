@@ -267,6 +267,9 @@
                     <div class="payback-box">
                         <span style="font-weight: 600;">Payback Period:</span> <span id="paybackPeriod">-- months</span>
                     </div>
+                    <div class="payback-box" style="margin-top: 10px;">
+                        <span style="font-weight: 600;">Water Saved Per Year:</span> <span id="waterSaved">-- gallons</span>
+                    </div>
                     <button class="btn-publish" onclick="publishResults()">Publish Results</button>
                 </div>
             </div>
@@ -484,6 +487,10 @@
             }
             document.getElementById('paybackPeriod').textContent = paybackMonths + ' months';
 
+            // Water savings
+            const waterSaved = sandBWVolume - defBWVolume;
+            document.getElementById('waterSaved').textContent = waterSaved.toLocaleString() + ' gallons';
+
             // Show results
             document.getElementById('resultsSection').style.display = 'block';
             document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
@@ -693,6 +700,16 @@
                 doc.setFontSize(10);
                 doc.setFont('helvetica', 'bold');
                 doc.text('Payback Period: ' + paybackPeriod, pageWidth / 2, yPos + 8, { align: 'center' });
+                yPos += 16;
+
+                // Water Savings
+                const waterSaved = document.getElementById('waterSaved').textContent;
+                doc.setFillColor(0, 100, 150);
+                doc.roundedRect(pageWidth / 2 - 45, yPos, 90, 12, 2, 2, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Water Saved Per Year: ' + waterSaved, pageWidth / 2, yPos + 8, { align: 'center' });
 
                 // Footer
                 doc.setFontSize(8);
