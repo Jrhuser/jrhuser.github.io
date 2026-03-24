@@ -87,10 +87,6 @@
                     </thead>
                     <tbody>
                         <tr><td>1</td><td><input type="text" id="poolDesc1" placeholder="e.g., Main Pool"></td><td><input type="number" id="poolGPM1" min="0" max="5000" placeholder="GPM"></td></tr>
-                        <tr><td>2</td><td><input type="text" id="poolDesc2"></td><td><input type="number" id="poolGPM2" min="0" max="5000"></td></tr>
-                        <tr><td>3</td><td><input type="text" id="poolDesc3"></td><td><input type="number" id="poolGPM3" min="0" max="5000"></td></tr>
-                        <tr><td>4</td><td><input type="text" id="poolDesc4"></td><td><input type="number" id="poolGPM4" min="0" max="5000"></td></tr>
-                        <tr><td>5</td><td><input type="text" id="poolDesc5"></td><td><input type="number" id="poolGPM5" min="0" max="5000"></td></tr>
                     </tbody>
                 </table>
             </section>
@@ -336,12 +332,10 @@
         }
 
         function calculateROI() {
-            // Get pool GPMs
+            // Get pool GPM
             const poolGPMs = [];
-            for (let i = 1; i <= 5; i++) {
-                const gpm = parseFloat(document.getElementById('poolGPM' + i).value) || 0;
-                if (gpm > 0) poolGPMs.push(gpm);
-            }
+            const gpm = parseFloat(document.getElementById('poolGPM1').value) || 0;
+            if (gpm > 0) poolGPMs.push(gpm);
 
             if (poolGPMs.length === 0) {
                 alert('Please enter at least one pool flow rate (GPM).');
