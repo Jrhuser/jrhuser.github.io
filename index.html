@@ -38,15 +38,7 @@
                         <label for="projectName">Project Name:</label>
                         <input type="text" id="projectName" placeholder="Optional">
                     </div>
-                    <div class="input-group">
-                        <label for="systemName">System Name:</label>
-                        <input type="text" id="systemName" placeholder="Optional">
-                    </div>
-                    <div class="input-group dual-row">
-                        <div class="dual-field">
-                            <label for="projectZip">Project Zip Code:</label>
-                            <input type="text" id="projectZip" placeholder="Freight Estimate/Rep Locator">
-                        </div>
+                    <div id="promoUpgradeRow" class="input-group dual-row">
                         <div class="dual-field">
                             <label for="promotionalUpgrade">Promotional Upgrade:</label>
                             <select id="promotionalUpgrade">
@@ -54,9 +46,7 @@
                                 <option value="Yes">Yes</option>
                             </select>
                         </div>
-                    </div>
-                    <div id="upgradeTypeRow" class="input-group dual-row hidden">
-                        <div class="dual-field">
+                        <div id="upgradeTypeField" class="dual-field hidden">
                             <label for="upgradeType">Upgrade Type:</label>
                             <select id="upgradeType">
                                 <option value=""></option>
@@ -68,18 +58,22 @@
                             <label for="upgradeSerialNumber">Serial Number:</label>
                             <input type="text" id="upgradeSerialNumber" placeholder="Enter serial number">
                         </div>
-                        <div id="otherEquipmentFields" class="dual-field hidden" style="display: none;">
-                            <div style="display: flex; gap: 10px;">
-                                <div style="flex: 1;">
-                                    <label for="upgradeBrand">Brand:</label>
-                                    <input type="text" id="upgradeBrand" placeholder="Brand">
-                                </div>
-                                <div style="flex: 1;">
-                                    <label for="upgradeModel">Model:</label>
-                                    <input type="text" id="upgradeModel" placeholder="Model">
-                                </div>
-                            </div>
+                        <div id="otherEquipmentFields" class="dual-field hidden">
+                            <label for="upgradeBrand">Brand:</label>
+                            <input type="text" id="upgradeBrand" placeholder="Brand">
                         </div>
+                        <div id="modelField" class="dual-field hidden">
+                            <label for="upgradeModel">Model:</label>
+                            <input type="text" id="upgradeModel" placeholder="Model">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="systemName">System Name:</label>
+                        <input type="text" id="systemName" placeholder="Optional">
+                    </div>
+                    <div class="input-group">
+                        <label for="projectZip">Project Zip Code:</label>
+                        <input type="text" id="projectZip" placeholder="Freight Estimate/Rep Locator">
                     </div>
                 </div>
             </section>
