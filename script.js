@@ -513,5 +513,24 @@ document.addEventListener('DOMContentLoaded', () => {
     loadDatabase();
     equipmentCheckboxes.forEach(checkbox => checkbox.addEventListener('change', handleEquipmentToggle));
     filterTypeSelect.addEventListener('change', toggleSecondaryOptions);
+
+    // Handle URL parameters for pre-selection
+    const urlParams = new URLSearchParams(window.location.search);
+    const selectParam = urlParams.get('select');
+    if (selectParam) {
+        const selections = selectParam.split(',');
+        selections.forEach(sel => {
+            if (sel === 'UV' && uvCheckbox) {
+                uvCheckbox.checked = true;
+                uvCheckbox.dispatchEvent(new Event('change'));
+            } else if (sel === 'Filter' && filterCheckbox) {
+                filterCheckbox.checked = true;
+                filterCheckbox.dispatchEvent(new Event('change'));
+            } else if (sel === 'Pump' && pumpCheckbox) {
+                pumpCheckbox.checked = true;
+                pumpCheckbox.dispatchEvent(new Event('change'));
+            }
+        });
+    }
 });
 
