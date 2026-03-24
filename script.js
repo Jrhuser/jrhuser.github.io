@@ -277,12 +277,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (flowMatched.length > 0) {
                 resultsSection.classList.remove('hidden');
-                displayResults(flowMatched, selectedGroup, circRate);
+                displayResults(flowMatched, selectedGroup, circRate, 1);
+            } else if (groupModels.length > 0) {
+                // Flow exceeds max of all products - find largest and calculate quantity needed
+                const largestProduct = groupModels.reduce((max, item) => {
+                    const itemMax = parseFloat(item["Max Flow"]) || 0;
+                    const maxMax = parseFloat(max["Max Flow"]) || 0;
+                    return itemMax > maxMax ? item : max;
+                }, groupModels[0]);
+
+                const maxFlow = parseFloat(largestProduct["Max Flow"]);
+                if (maxFlow > 0 && circRate > maxFlow) {
+                    const unitsNeeded = Math.ceil(circRate / maxFlow);
+                    resultsSection.classList.remove('hidden');
+                    displayResults([largestProduct], selectedGroup, circRate, unitsNeeded);
+                }
             }
         });
     });
 
-    function displayResults(models, group, circRate) {
+    function displayResults(models, group, circRate, quantity = 1) {
         tables[group].section.classList.remove('hidden');
 
         if (group === 'Filter') {
@@ -291,6 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tables.Filter.head.innerHTML = `
                     <th style="width: 40px;">Select</th>
                     <th>Model Name</th>
+                    <th>Qty</th>
                     <th>Flow Range (GPM)</th>
                     <th>NSF 2.0 Filtration Rate (gpm/sqft)</th>
                     <th>NSF 3.0 Filtration Rate (gpm/sqft)</th>
@@ -300,6 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tables.Filter.head.innerHTML = `
                     <th style="width: 40px;">Select</th>
                     <th>Model Name</th>
+                    <th>Qty</th>
                     <th>Flow Range (GPM)</th>
                     <th>Footprint</th>
                     <th>Technical Docs</th>`;
@@ -323,8 +339,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const vfdLink = buildLink('VFD-GreenDrive.pdf', 'VFD');
                 const pumpLinksHtml = [linksHtml, vfdLink].filter(l => l).join(' ');
                 tr.innerHTML = `
-                    <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}"></td>
+                    <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}" data-qty="${quantity}"></td>
                     <td data-label="Model">${model.Model || 'N/A'}</td>
+                    <td data-label="Qty">${quantity}</td>
                     <td data-label="Drive">${driveValue}</td>
                     <td data-label="Flow Range">${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
                     <td data-label="Best Efficiency">${model["Best Efficiency Flow (gpm)"] || 'N/A'}</td>
@@ -336,11 +353,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (isRMF) {
                     const nsf2Area = parseFloat(model["NSF 2.0 Filter Area (sq ft)"]);
                     const nsf3Area = parseFloat(model["NSF 3.0 Filter Area (sq ft)"]);
-                    const nsf2Flux = (nsf2Area > 0 && circRate > 0) ? (circRate / nsf2Area).toFixed(2) : 'N/A';
-                    const nsf3Flux = (nsf3Area > 0 && circRate > 0) ? (circRate / nsf3Area).toFixed(2) : 'N/A';
+                    // Calculate flux based on flow per unit when multiple units
+                    const flowPerUnit = circRate / quantity;
+                    const nsf2Flux = (nsf2Area > 0 && flowPerUnit > 0) ? (flowPerUnit / nsf2Area).toFixed(2) : 'N/A';
+                    const nsf3Flux = (nsf3Area > 0 && flowPerUnit > 0) ? (flowPerUnit / nsf3Area).toFixed(2) : 'N/A';
                     tr.innerHTML = `
-                        <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}"></td>
+                        <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}" data-qty="${quantity}"></td>
                         <td data-label="Model">${model.Model || 'N/A'}</td>
+                        <td data-label="Qty">${quantity}</td>
                         <td data-label="Flow Range">${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
                         <td data-label="NSF 2.0 Rate">${nsf2Flux}</td>
                         <td data-label="NSF 3.0 Rate">${nsf3Flux}</td>
@@ -349,8 +369,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                 } else {
                     tr.innerHTML = `
-                        <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}"></td>
+                        <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}" data-qty="${quantity}"></td>
                         <td data-label="Model">${model.Model || 'N/A'}</td>
+                        <td data-label="Qty">${quantity}</td>
                         <td data-label="Flow Range">${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
                         <td data-label="Footprint">${model["Footprint LxWxH (Inches)"] || 'N/A'}</td>
                         <td data-label="Docs">${linksHtml || 'N/A'}</td>
@@ -359,8 +380,9 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 // UV equipment
                 tr.innerHTML = `
-                    <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}"></td>
+                    <td><input type="checkbox" class="bom-checkbox" value="${partNum}" data-model="${model.Model}" data-qty="${quantity}"></td>
                     <td data-label="Model">${model.Model || 'N/A'}</td>
+                    <td data-label="Qty">${quantity}</td>
                     <td data-label="Recommended Flow">${model["Min Flow (gpm)"]} - ${model["Max Flow"] || '+'}</td>
                     <td data-label="Max Flow (60 mj/cm²)">${model["Max Flow (60 mj/cm^2)"] || 'N/A'}</td>
                     <td data-label="Docs">${linksHtml || 'N/A'}</td>
