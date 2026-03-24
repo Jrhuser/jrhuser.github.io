@@ -29,7 +29,7 @@
         .sensor-option label { display: flex; flex-direction: column; align-items: center; padding: 20px; background: white; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
         .sensor-option label:hover { border-color: #007DA3; }
         .sensor-option input:checked + label { border-color: #61D604; background: #f0fff0; }
-        .sensor-icon { font-size: 2em; margin-bottom: 10px; }
+        .sensor-img { width: 120px; height: 100px; object-fit: contain; margin-bottom: 10px; }
         .sensor-name { font-weight: 700; color: #333; }
         .sensor-desc { font-size: 0.75em; color: #666; margin-top: 5px; }
         .cable-options { display: flex; gap: 15px; margin-top: 15px; }
@@ -152,7 +152,7 @@
                     <div class="sensor-option">
                         <input type="radio" name="sensorType" id="sensor-at900" value="AT-900">
                         <label for="sensor-at900">
-                            <div class="sensor-icon">🔶</div>
+                            <img src="at-900.jpeg" alt="AT-900 Sensor" class="sensor-img">
                             <div class="sensor-name">AT-900</div>
                             <div class="sensor-desc">Yellow tip sensor</div>
                         </label>
@@ -160,7 +160,7 @@
                     <div class="sensor-option">
                         <input type="radio" name="sensorType" id="sensor-at463" value="AT-463">
                         <label for="sensor-at463">
-                            <div class="sensor-icon">⚫</div>
+                            <img src="at-463.jpeg" alt="AT-463 Sensor" class="sensor-img">
                             <div class="sensor-name">AT-463</div>
                             <div class="sensor-desc">Black sensor</div>
                         </label>
