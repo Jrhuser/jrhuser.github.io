@@ -190,6 +190,7 @@ h3 {
 .input-group.dual-row {
     display: flex;
     gap: 20px;
+    grid-column: 1 / -1;
 }
 
 .dual-field {
