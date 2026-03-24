@@ -187,6 +187,34 @@ h3 {
     box-shadow: 0 0 5px rgba(0, 125, 163, 0.2);
 }
 
+.input-group.dual-row {
+    display: flex;
+    gap: 20px;
+}
+
+.dual-field {
+    flex: 1;
+}
+
+.dual-field input,
+.dual-field select {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #ced4da;
+    border-radius: 12px;
+    font-size: 1em;
+    box-sizing: border-box;
+    transition: 0.3s;
+    background: white;
+}
+
+.dual-field select:focus,
+.dual-field input:focus {
+    border-color: #007DA3;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 125, 163, 0.2);
+}
+
 .turnover-row {
     display: flex;
     gap: 8px;
