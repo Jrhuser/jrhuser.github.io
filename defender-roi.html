@@ -496,61 +496,73 @@
         function publishResults() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const margin = 15;
+            let yPos = 15;
 
-            // Add title
-            doc.setFontSize(20);
-            doc.setTextColor(0, 125, 163);
-            doc.text('Defender Cost Savings Analysis', 105, 20, { align: 'center' });
+            // Colors matching webpage
+            const primaryColor = [0, 125, 163];    // #007DA3
+            const accentColor = [97, 214, 4];      // #61D604
+            const darkText = [51, 51, 51];
+            const lightGray = [249, 249, 249];
 
-            // Add date
-            doc.setFontSize(10);
-            doc.setTextColor(100);
-            const date = document.getElementById('roiDate').value;
-            doc.text('Date: ' + date, 20, 35);
+            // Helper to add section header
+            function addSectionHeader(title) {
+                doc.setFillColor(...lightGray);
+                doc.roundedRect(margin, yPos, pageWidth - 2*margin, 8, 1, 1, 'F');
+                doc.setDrawColor(...accentColor);
+                doc.setLineWidth(1.5);
+                doc.line(margin, yPos, margin, yPos + 8);
+                doc.setFontSize(11);
+                doc.setTextColor(...primaryColor);
+                doc.setFont('helvetica', 'bold');
+                doc.text(title, margin + 5, yPos + 5.5);
+                yPos += 12;
+            }
 
-            // Get summary data
-            const totalSavings = document.getElementById('totalSavings').textContent;
-            const paybackPeriod = document.getElementById('paybackPeriod').textContent;
+            // Helper to add table
+            function addTable(headers, rows, colWidths) {
+                const startX = margin;
+                let x = startX;
 
-            // Add summary box
-            doc.setFillColor(0, 125, 163);
-            doc.roundedRect(20, 45, 170, 40, 3, 3, 'F');
-            doc.setTextColor(255);
-            doc.setFontSize(14);
-            doc.text('10-Year Total Savings', 105, 58, { align: 'center' });
-            doc.setFontSize(22);
-            doc.text(totalSavings, 105, 72, { align: 'center' });
+                // Header row
+                doc.setFillColor(...primaryColor);
+                doc.rect(startX, yPos, pageWidth - 2*margin, 7, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(8);
+                doc.setFont('helvetica', 'bold');
+                headers.forEach((h, i) => {
+                    doc.text(h, x + 2, yPos + 5);
+                    x += colWidths[i];
+                });
+                yPos += 7;
 
-            // Payback period
-            doc.setFillColor(97, 214, 4);
-            doc.roundedRect(60, 90, 90, 15, 3, 3, 'F');
-            doc.setTextColor(51);
-            doc.setFontSize(11);
-            doc.text('Payback Period: ' + paybackPeriod, 105, 100, { align: 'center' });
+                // Data rows
+                doc.setTextColor(...darkText);
+                doc.setFont('helvetica', 'normal');
+                rows.forEach((row, rowIdx) => {
+                    x = startX;
+                    if (rowIdx % 2 === 0) {
+                        doc.setFillColor(245, 245, 245);
+                        doc.rect(startX, yPos, pageWidth - 2*margin, 6, 'F');
+                    }
+                    row.forEach((cell, i) => {
+                        doc.text(String(cell), x + 2, yPos + 4);
+                        x += colWidths[i];
+                    });
+                    yPos += 6;
+                });
+                yPos += 4;
+            }
 
-            // Add filter comparison data
-            doc.setTextColor(0);
-            doc.setFontSize(12);
-            doc.text('Filter Comparison Summary', 20, 120);
+            // Title
+            doc.setFontSize(18);
+            doc.setTextColor(...primaryColor);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Defender Cost Savings Analysis', pageWidth / 2, yPos, { align: 'center' });
+            yPos += 8;
 
-            // Get table data
-            const resultsRows = document.querySelectorAll('#resultsBody tr');
-            let yPos = 130;
-            doc.setFontSize(10);
-            resultsRows.forEach(row => {
-                const cells = row.querySelectorAll('td');
-                if (cells.length >= 3) {
-                    const label = cells[0].textContent;
-                    const sand = cells[1].textContent;
-                    const defender = cells[2].textContent;
-                    doc.text(label + ':', 20, yPos);
-                    doc.text('Sand: ' + sand, 90, yPos);
-                    doc.text('Defender: ' + defender, 140, yPos);
-                    yPos += 7;
-                }
-            });
-
-            // Add defender filter image
+            // Load and add defender image at top (smaller)
             const img = new Image();
             img.crossOrigin = 'anonymous';
             img.onload = function() {
@@ -560,14 +572,136 @@
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0);
                 const imgData = canvas.toDataURL('image/png');
-                doc.addImage(imgData, 'PNG', 55, yPos + 10, 100, 60);
-                doc.save('Defender_ROI_Analysis.pdf');
+                doc.addImage(imgData, 'PNG', pageWidth / 2 - 25, yPos, 50, 30);
+                yPos += 35;
+                buildPDFContent();
             };
             img.onerror = function() {
-                // Save without image if it fails to load
-                doc.save('Defender_ROI_Analysis.pdf');
+                buildPDFContent();
             };
             img.src = 'Images/defender_filter.png';
+
+            function buildPDFContent() {
+                // Project Information
+                addSectionHeader('Project Information');
+                doc.setFontSize(9);
+                doc.setTextColor(...darkText);
+                doc.setFont('helvetica', 'normal');
+                const projectName = document.getElementById('roiProjectName').value || '-';
+                const location = document.getElementById('roiLocation').value || '-';
+                const date = document.getElementById('roiDate').value || '-';
+                const preparedBy = document.getElementById('roiPreparedBy').value || '-';
+                const preparedFor = document.getElementById('roiPreparedFor').value || '-';
+                doc.text(`Project: ${projectName}    Location: ${location}    Date: ${date}`, margin, yPos);
+                yPos += 5;
+                doc.text(`Prepared By: ${preparedBy}    Prepared For: ${preparedFor}`, margin, yPos);
+                yPos += 8;
+
+                // Pool Data
+                addSectionHeader('Pool Data');
+                const poolDesc = document.getElementById('poolDesc1').value || '-';
+                const poolGPM = document.getElementById('poolGPM1').value || '-';
+                doc.setFontSize(9);
+                doc.text(`Pool: ${poolDesc}    Flow Rate: ${poolGPM} GPM`, margin, yPos);
+                yPos += 8;
+
+                // Operating Variables & Utility Rates (side by side in compact form)
+                addSectionHeader('Operating Variables & Utility Rates');
+                doc.setFontSize(8);
+                const opDays = document.getElementById('operatingDays').value;
+                const bwDur = document.getElementById('backwashDuration').value;
+                const sandBW = document.getElementById('sandBackwashFreq').value;
+                const defBW = document.getElementById('defenderBackwashFreq').value;
+                const tempDelta = document.getElementById('tempDelta').value;
+                const escalation = document.getElementById('annualEscalation').value;
+                const elecCost = document.getElementById('electricalCost').value;
+                const waterCost = document.getElementById('waterCost').value;
+                const sewerCost = document.getElementById('sewerCost').value;
+                const heatCost = document.getElementById('heatCost').value;
+                const chemCost = document.getElementById('chemicalCost').value;
+
+                doc.text(`Operating Days: ${opDays}  |  Backwash Duration: ${bwDur} min  |  Sand BW Freq: ${sandBW}/season  |  Defender BW Freq: ${defBW}/season`, margin, yPos);
+                yPos += 4;
+                doc.text(`Temp Delta: ${tempDelta}°F  |  Annual Escalation: ${escalation}%  |  Electrical: $${elecCost}/kWh  |  Water: $${waterCost}/1000gal`, margin, yPos);
+                yPos += 4;
+                doc.text(`Sewer: $${sewerCost}/1000gal  |  Heat: $${heatCost}/therm  |  Chemical: $${chemCost}/1000gal`, margin, yPos);
+                yPos += 8;
+
+                // Capital Cost Comparison
+                addSectionHeader('Capital Cost Comparison');
+                const capitalHeaders = ['Item', 'Sand Filter', 'Defender Filter', 'Variance'];
+                const capitalRows = [];
+                document.querySelectorAll('#capitalCostsBody tr').forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length >= 4) {
+                        capitalRows.push([cells[0].textContent, cells[1].textContent, cells[2].textContent, cells[3].textContent]);
+                    }
+                });
+                addTable(capitalHeaders, capitalRows, [55, 40, 45, 40]);
+
+                // Annual Operating Cost Comparison
+                addSectionHeader('Annual Operating Cost Comparison');
+                const operatingHeaders = ['Item', 'Sand Filter', 'Defender Filter', 'Annual Savings'];
+                const operatingRows = [];
+                document.querySelectorAll('#operatingCostsBody tr').forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length >= 4) {
+                        operatingRows.push([cells[0].textContent, cells[1].textContent, cells[2].textContent, cells[3].textContent]);
+                    }
+                });
+                addTable(operatingHeaders, operatingRows, [55, 40, 45, 40]);
+
+                // Check if we need a new page
+                if (yPos > 220) {
+                    doc.addPage();
+                    yPos = 15;
+                }
+
+                // 10-Year Savings Forecast
+                addSectionHeader('10-Year Savings Forecast');
+                const forecastHeaders = ['Year', 'Sand Cumulative', 'Defender Cumulative', 'Cumulative Savings'];
+                const forecastRows = [];
+                document.querySelectorAll('#forecastBody tr').forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length >= 4) {
+                        forecastRows.push([cells[0].textContent, cells[1].textContent, cells[2].textContent, cells[3].textContent]);
+                    }
+                });
+                addTable(forecastHeaders, forecastRows, [25, 50, 55, 50]);
+
+                // Summary Box
+                const totalSavings = document.getElementById('totalSavings').textContent;
+                const paybackPeriod = document.getElementById('paybackPeriod').textContent;
+
+                doc.setFillColor(...primaryColor);
+                doc.roundedRect(margin, yPos, pageWidth - 2*margin, 30, 3, 3, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'bold');
+                doc.text('10-Year Total Savings', pageWidth / 2, yPos + 8, { align: 'center' });
+                doc.setFontSize(20);
+                doc.text(totalSavings, pageWidth / 2, yPos + 18, { align: 'center' });
+                doc.setFontSize(9);
+                doc.setFont('helvetica', 'normal');
+                doc.text('Defender Filter vs Sand Filter', pageWidth / 2, yPos + 25, { align: 'center' });
+                yPos += 35;
+
+                // Payback Period
+                doc.setFillColor(...accentColor);
+                doc.roundedRect(pageWidth / 2 - 35, yPos, 70, 12, 2, 2, 'F');
+                doc.setTextColor(...darkText);
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Payback Period: ' + paybackPeriod, pageWidth / 2, yPos + 8, { align: 'center' });
+
+                // Footer
+                doc.setFontSize(8);
+                doc.setTextColor(150);
+                doc.setFont('helvetica', 'normal');
+                doc.text('© 2026 Xylem Inc. All rights reserved.', pageWidth / 2, 290, { align: 'center' });
+
+                doc.save('Defender_ROI_Analysis.pdf');
+            }
         }
     </script>
 </body>
