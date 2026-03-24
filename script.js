@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const projectNameInput = document.getElementById('projectName');
     const projectZipInput = document.getElementById('projectZip');
     const systemNameInput = document.getElementById('systemName');
+    const systemUpgradeCheckbox = document.getElementById('systemUpgrade');
 
     // Array to accumulate multiple systems for quote
     const quoteSystems = [];
@@ -477,6 +478,30 @@ document.addEventListener('DOMContentLoaded', () => {
             emailBody += `\n\nPlease include a freight quote to zip code ${projectZipInput.value}.`;
         }
 
+        // Add promotions if System Upgrade is checked
+        if (systemUpgradeCheckbox && systemUpgradeCheckbox.checked) {
+            const applicablePromos = [];
+
+            if (uvCheckbox.checked) {
+                applicablePromos.push(`UV - System Upgrade (Wafer):
+  - Upgrade UV system to ETS Wafer
+  - Additional 10% off when replacing existing ETS
+  - Additional 10% off when replacing competitive units`);
+            }
+
+            if (filterCheckbox.checked) {
+                applicablePromos.push(`Filtration - System Upgrade (Defender):
+  - Upgrade any sand filtration system to Defender
+  - Pumping - Included without additional cost
+  - VFD - Included without additional cost
+  - Precoat Components - Included without additional cost`);
+            }
+
+            if (applicablePromos.length > 0) {
+                emailBody += `\n\n=== Applicable Promotions ===\n${applicablePromos.join('\n\n')}`;
+            }
+        }
+
         // Build mailto URL with optional CC for sales rep
         let mailtoUrl = `mailto:kenneth.roche@xylem.com`;
         const ccEmails = [];
@@ -531,6 +556,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 pumpCheckbox.dispatchEvent(new Event('change'));
             }
         });
+    }
+
+    // Handle filter type parameter
+    const filterTypeParam = urlParams.get('filterType');
+    if (filterTypeParam && filterTypeSelect) {
+        filterTypeSelect.value = filterTypeParam;
+        filterTypeSelect.dispatchEvent(new Event('change'));
     }
 });
 
