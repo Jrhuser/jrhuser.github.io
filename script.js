@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const projectNameInput = document.getElementById('projectName');
     const projectZipInput = document.getElementById('projectZip');
     const systemNameInput = document.getElementById('systemName');
-    const systemUpgradeCheckbox = document.getElementById('systemUpgrade');
+    const promotionalUpgradeSelect = document.getElementById('promotionalUpgrade');
 
     // Array to accumulate multiple systems for quote
     const quoteSystems = [];
@@ -477,8 +477,8 @@ document.addEventListener('DOMContentLoaded', () => {
             emailBody += `\n\nPlease include a freight quote to zip code ${projectZipInput.value}.`;
         }
 
-        // Add promotions if System Upgrade is checked
-        if (systemUpgradeCheckbox && systemUpgradeCheckbox.checked) {
+        // Add promotions if Promotional Upgrade is Yes
+        if (promotionalUpgradeSelect && promotionalUpgradeSelect.value === 'Yes') {
             const applicablePromos = [];
 
             if (uvCheckbox.checked) {
@@ -562,5 +562,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (filterTypeParam && filterTypeSelect) {
         filterTypeSelect.value = filterTypeParam;
         filterTypeSelect.dispatchEvent(new Event('change'));
+    }
+
+    // Handle promotional upgrade parameter
+    const promoParam = urlParams.get('promo');
+    if (promoParam === 'Yes' && promotionalUpgradeSelect) {
+        promotionalUpgradeSelect.value = 'Yes';
     }
 });
