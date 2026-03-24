@@ -26,18 +26,21 @@
         .results-table .savings-positive { color: #2e7d32; }
         .results-table .savings-negative { color: #c62828; }
         .summary-box { background: linear-gradient(135deg, #007DA3, #005a75); color: white; padding: 25px; border-radius: 8px; text-align: center; margin-top: 20px; }
-        .summary-box h2 { margin: 0 0 15px 0; font-size: 1.5em; }
+        .summary-box h2 { margin: 0 0 15px 0; font-size: 1.5em; color: white; }
         .summary-value { font-size: 2.5em; font-weight: 700; }
         .summary-label { font-size: 0.9em; opacity: 0.9; margin-top: 5px; }
         .payback-box { display: inline-block; background: #61D604; color: #333; padding: 15px 30px; border-radius: 8px; margin-top: 15px; }
         .btn-calculate { background: #61D604; color: #333; border: none; padding: 15px 40px; font-size: 1.1em; font-weight: 700; border-radius: 6px; cursor: pointer; margin-top: 20px; }
         .btn-calculate:hover { background: #52b603; }
+        .btn-publish { background: white; color: #007DA3; border: none; padding: 12px 30px; font-size: 1em; font-weight: 700; border-radius: 6px; cursor: pointer; margin-top: 15px; }
+        .btn-publish:hover { background: #f0f0f0; }
         .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         @media (max-width: 900px) { .two-column { grid-template-columns: 1fr; } }
         .help-text { font-size: 0.75em; color: #666; margin-top: 2px; }
         .back-link { display: inline-block; margin-bottom: 20px; color: #007DA3; text-decoration: none; font-weight: 600; }
         .back-link:hover { text-decoration: underline; }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <header>
@@ -264,6 +267,7 @@
                     <div class="payback-box">
                         <span style="font-weight: 600;">Payback Period:</span> <span id="paybackPeriod">-- months</span>
                     </div>
+                    <button class="btn-publish" onclick="publishResults()">Publish Results</button>
                 </div>
             </div>
         </main>
@@ -487,6 +491,84 @@
 
         // Set today's date
         document.getElementById('roiDate').valueAsDate = new Date();
+
+        // Publish Results as PDF
+        function publishResults() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Add title
+            doc.setFontSize(20);
+            doc.setTextColor(0, 125, 163);
+            doc.text('Defender Cost Savings Analysis', 105, 20, { align: 'center' });
+
+            // Add date
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            const date = document.getElementById('roiDate').value;
+            doc.text('Date: ' + date, 20, 35);
+
+            // Get summary data
+            const totalSavings = document.getElementById('totalSavings').textContent;
+            const paybackPeriod = document.getElementById('paybackPeriod').textContent;
+
+            // Add summary box
+            doc.setFillColor(0, 125, 163);
+            doc.roundedRect(20, 45, 170, 40, 3, 3, 'F');
+            doc.setTextColor(255);
+            doc.setFontSize(14);
+            doc.text('10-Year Total Savings', 105, 58, { align: 'center' });
+            doc.setFontSize(22);
+            doc.text(totalSavings, 105, 72, { align: 'center' });
+
+            // Payback period
+            doc.setFillColor(97, 214, 4);
+            doc.roundedRect(60, 90, 90, 15, 3, 3, 'F');
+            doc.setTextColor(51);
+            doc.setFontSize(11);
+            doc.text('Payback Period: ' + paybackPeriod, 105, 100, { align: 'center' });
+
+            // Add filter comparison data
+            doc.setTextColor(0);
+            doc.setFontSize(12);
+            doc.text('Filter Comparison Summary', 20, 120);
+
+            // Get table data
+            const resultsRows = document.querySelectorAll('#resultsBody tr');
+            let yPos = 130;
+            doc.setFontSize(10);
+            resultsRows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                if (cells.length >= 3) {
+                    const label = cells[0].textContent;
+                    const sand = cells[1].textContent;
+                    const defender = cells[2].textContent;
+                    doc.text(label + ':', 20, yPos);
+                    doc.text('Sand: ' + sand, 90, yPos);
+                    doc.text('Defender: ' + defender, 140, yPos);
+                    yPos += 7;
+                }
+            });
+
+            // Add defender filter image
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+                const imgData = canvas.toDataURL('image/png');
+                doc.addImage(imgData, 'PNG', 55, yPos + 10, 100, 60);
+                doc.save('Defender_ROI_Analysis.pdf');
+            };
+            img.onerror = function() {
+                // Save without image if it fails to load
+                doc.save('Defender_ROI_Analysis.pdf');
+            };
+            img.src = 'Images/defender_filter.png';
+        }
     </script>
 </body>
 </html>
