@@ -29,6 +29,9 @@
         .summary-box h2 { margin: 0 0 15px 0; font-size: 1.5em; color: white; }
         .summary-value { font-size: 2.5em; font-weight: 700; }
         .summary-label { font-size: 0.9em; opacity: 0.9; margin-top: 5px; }
+        .water-saved-box { background: white; color: #007DA3; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .water-saved-value { font-size: 3em; font-weight: 700; }
+        .water-saved-label { font-size: 1em; font-weight: 600; margin-top: 5px; }
         .payback-box { display: inline-block; background: #61D604; color: #333; padding: 15px 30px; border-radius: 8px; margin-top: 15px; }
         .btn-calculate { background: #61D604; color: #333; border: none; padding: 15px 40px; font-size: 1.1em; font-weight: 700; border-radius: 6px; cursor: pointer; margin-top: 20px; }
         .btn-calculate:hover { background: #52b603; }
@@ -261,14 +264,15 @@
                 </section>
 
                 <div class="summary-box">
+                    <div class="water-saved-box">
+                        <div class="water-saved-value" id="waterSaved">-- gallons</div>
+                        <div class="water-saved-label">Water Saved Per Year</div>
+                    </div>
                     <h2>10-Year Total Savings</h2>
                     <div class="summary-value" id="totalSavings">$0</div>
                     <div class="summary-label">Defender Filter vs Sand Filter</div>
                     <div class="payback-box">
                         <span style="font-weight: 600;">Payback Period:</span> <span id="paybackPeriod">-- months</span>
-                    </div>
-                    <div class="payback-box" style="margin-top: 10px;">
-                        <span style="font-weight: 600;">Water Saved Per Year:</span> <span id="waterSaved">-- gallons</span>
                     </div>
                     <button class="btn-publish" onclick="publishResults()">Publish Results</button>
                 </div>
@@ -579,8 +583,12 @@
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0);
                 const imgData = canvas.toDataURL('image/png');
-                doc.addImage(imgData, 'PNG', pageWidth / 2 - 25, yPos, 50, 30);
-                yPos += 35;
+                // Calculate dimensions preserving aspect ratio
+                const maxWidth = 50;
+                const aspectRatio = img.height / img.width;
+                const imgHeight = maxWidth * aspectRatio;
+                doc.addImage(imgData, 'PNG', pageWidth / 2 - maxWidth / 2, yPos, maxWidth, imgHeight);
+                yPos += imgHeight + 5;
                 buildPDFContent();
             };
             img.onerror = function() {
@@ -679,14 +687,27 @@
                 // Summary Box
                 const totalSavings = document.getElementById('totalSavings').textContent;
                 const paybackPeriod = document.getElementById('paybackPeriod').textContent;
+                const waterSaved = document.getElementById('waterSaved').textContent;
 
+                // Water Savings - White box with blue text, larger font (above dollar amount)
+                doc.setFillColor(255, 255, 255);
+                doc.roundedRect(margin, yPos, pageWidth - 2*margin, 22, 3, 3, 'F');
+                doc.setTextColor(...primaryColor);
+                doc.setFontSize(16);
+                doc.setFont('helvetica', 'bold');
+                doc.text(waterSaved, pageWidth / 2, yPos + 10, { align: 'center' });
+                doc.setFontSize(10);
+                doc.text('Water Saved Per Year', pageWidth / 2, yPos + 18, { align: 'center' });
+                yPos += 26;
+
+                // 10-Year Total Savings - Blue box
                 doc.setFillColor(...primaryColor);
                 doc.roundedRect(margin, yPos, pageWidth - 2*margin, 30, 3, 3, 'F');
                 doc.setTextColor(255, 255, 255);
                 doc.setFontSize(12);
                 doc.setFont('helvetica', 'bold');
                 doc.text('10-Year Total Savings', pageWidth / 2, yPos + 8, { align: 'center' });
-                doc.setFontSize(20);
+                doc.setFontSize(18);
                 doc.text(totalSavings, pageWidth / 2, yPos + 18, { align: 'center' });
                 doc.setFontSize(9);
                 doc.setFont('helvetica', 'normal');
@@ -700,16 +721,6 @@
                 doc.setFontSize(10);
                 doc.setFont('helvetica', 'bold');
                 doc.text('Payback Period: ' + paybackPeriod, pageWidth / 2, yPos + 8, { align: 'center' });
-                yPos += 16;
-
-                // Water Savings
-                const waterSaved = document.getElementById('waterSaved').textContent;
-                doc.setFillColor(0, 100, 150);
-                doc.roundedRect(pageWidth / 2 - 45, yPos, 90, 12, 2, 2, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(10);
-                doc.setFont('helvetica', 'bold');
-                doc.text('Water Saved Per Year: ' + waterSaved, pageWidth / 2, yPos + 8, { align: 'center' });
 
                 // Footer
                 doc.setFontSize(8);

@@ -270,11 +270,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 groupModels = groupModels.filter(item => item["Nema Rating"] === nema);
             }
 
-            const flowMatched = groupModels.filter(item => {
+            let flowMatched = groupModels.filter(item => {
                 const min = parseFloat(item["Min Flow (gpm)"]) || 0;
                 const max = parseFloat(item["Max Flow"]);
                 return circRate >= min && (isNaN(max) || max === null || circRate <= max);
             });
+
+            // Sort RMF filters by list price (lowest first)
+            if (selectedGroup === 'Filter' && document.getElementById('filterType').value === 'RMF') {
+                flowMatched.sort((a, b) => (parseFloat(a["List Price"]) || 0) - (parseFloat(b["List Price"]) || 0));
+            }
 
             if (flowMatched.length > 0) {
                 resultsSection.classList.remove('hidden');
@@ -443,7 +448,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     addToCartButton.addEventListener('click', () => {
         const checkedItems = Array.from(document.querySelectorAll('.bom-checkbox:checked')).map(cb => {
-            const line = `- ${cb.getAttribute('data-model')} (Part #: ${cb.value})`;
+            const qty = cb.getAttribute('data-qty') || '1';
+            const line = `- (${qty}) ${cb.getAttribute('data-model')} (Part #: ${cb.value})`;
             const row = cb.closest('tr');
             const isInPumpTable = row && row.closest('#pumpTableSection');
             if (isInPumpTable && driveTypeSelect.value === 'Green Drive VFD') {
