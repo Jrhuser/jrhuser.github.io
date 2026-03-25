@@ -442,7 +442,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     addToCartButton.addEventListener('click', () => {
         const checkedItems = Array.from(document.querySelectorAll('.bom-checkbox:checked')).map(cb => {
-            const line = `- ${cb.getAttribute('data-model')} (Part #: ${cb.value})`;
+            const qty = cb.getAttribute('data-qty') || '1';
+            const line = `- (${qty}) ${cb.getAttribute('data-model')} (Part #: ${cb.value})`;
             const row = cb.closest('tr');
             const isInPumpTable = row && row.closest('#pumpTableSection');
             if (isInPumpTable && driveTypeSelect.value === 'Green Drive VFD') {
