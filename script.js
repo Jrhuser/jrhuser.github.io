@@ -527,6 +527,23 @@ document.addEventListener('DOMContentLoaded', () => {
             if (applicablePromos.length > 0) {
                 emailBody += `\n\n=== Applicable Promotions ===\n${applicablePromos.join('\n\n')}`;
             }
+
+            // Add upgrade details
+            const upgradeType = upgradeTypeSelect ? upgradeTypeSelect.value : '';
+            if (upgradeType) {
+                emailBody += `\n\nUpgrade Type: ${upgradeType}`;
+                if (upgradeType === 'Neptune Benson Equipment') {
+                    const serialNumber = document.getElementById('upgradeSerialNumber').value;
+                    if (serialNumber) {
+                        emailBody += `\nSerial Number: ${serialNumber}`;
+                    }
+                } else if (upgradeType === 'Other Equipment') {
+                    const brand = document.getElementById('upgradeBrand').value;
+                    const model = document.getElementById('upgradeModel').value;
+                    if (brand) emailBody += `\nBrand: ${brand}`;
+                    if (model) emailBody += `\nModel: ${model}`;
+                }
+            }
         }
 
         // Build mailto URL with optional CC for sales rep
