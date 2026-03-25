@@ -269,11 +269,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 groupModels = groupModels.filter(item => item["Nema Rating"] === nema);
             }
 
-            const flowMatched = groupModels.filter(item => {
+            let flowMatched = groupModels.filter(item => {
                 const min = parseFloat(item["Min Flow (gpm)"]) || 0;
                 const max = parseFloat(item["Max Flow"]);
                 return circRate >= min && (isNaN(max) || max === null || circRate <= max);
             });
+
+            // Sort RMF filters by list price (lowest first)
+            if (selectedGroup === 'Filter' && document.getElementById('filterType').value === 'RMF') {
+                flowMatched.sort((a, b) => (parseFloat(a["List Price"]) || 0) - (parseFloat(b["List Price"]) || 0));
+            }
 
             if (flowMatched.length > 0) {
                 resultsSection.classList.remove('hidden');
