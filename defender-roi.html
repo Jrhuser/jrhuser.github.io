@@ -3,117 +3,119 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Defender Filter ROI Calculator</title>
+<title>Defender ROI Calculator | Neptune Benson</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: Arial, sans-serif; font-size: 13px; background: #f0f2f5; color: #222; }
-
-  header {
-    background: linear-gradient(135deg, #003d7a 0%, #0062c3 100%);
-    color: #fff; padding: 18px 32px; display: flex; align-items: center; gap: 20px;
-  }
-  header h1 { font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
-  header p { font-size: 12px; opacity: 0.85; margin-top: 2px; }
-
-  .container { max-width: 1280px; margin: 0 auto; padding: 24px 20px; }
-
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
 
-  .card {
-    background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-    padding: 18px 20px; margin-bottom: 16px;
-  }
-  .card h2 {
-    font-size: 13px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.6px; color: #003d7a; border-bottom: 2px solid #003d7a;
-    padding-bottom: 8px; margin-bottom: 14px;
-  }
+  .card { margin-bottom: 30px; }
 
-  label { display: block; font-size: 11px; font-weight: 600; color: #555; margin-bottom: 3px; }
-  input, select {
-    width: 100%; padding: 6px 8px; border: 1px solid #ccc; border-radius: 4px;
-    font-size: 12px; font-family: Arial, sans-serif;
+  .field { margin-bottom: 12px; }
+  .field label { font-size: 0.85em; font-weight: 500; color: #555; display: block; margin-bottom: 4px; }
+  .field input, .field select {
+    width: 100%; padding: 10px 12px; border: 1px solid #ced4da;
+    border-radius: 8px; font-size: 0.95em; font-family: 'Roboto', sans-serif;
+    background: #fff; box-sizing: border-box; transition: 0.2s;
   }
-  input:focus, select:focus { outline: none; border-color: #0062c3; box-shadow: 0 0 0 2px rgba(0,98,195,0.15); }
-  .field { margin-bottom: 10px; }
+  .field input:focus, .field select:focus {
+    border-color: #007DA3; outline: none;
+    box-shadow: 0 0 5px rgba(0,125,163,0.2);
+  }
 
   .pool-table { width: 100%; border-collapse: collapse; }
   .pool-table th {
-    background: #003d7a; color: #fff; padding: 6px 10px;
-    font-size: 11px; text-align: left; font-weight: 600;
+    background: #007DA3; color: #fff; padding: 10px 12px;
+    font-size: 0.8em; text-align: left; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.5px;
   }
-  .pool-table td { padding: 5px 8px; border-bottom: 1px solid #eee; }
-  .pool-table tr:hover td { background: #f7f9ff; }
-  .pool-table input, .pool-table select { padding: 4px 6px; }
+  .pool-table td { padding: 6px 10px; border-bottom: 1px solid #dee2e6; }
+  .pool-table tr:hover td { background: #f4f7f6; }
+  .pool-table input, .pool-table select {
+    padding: 8px 10px; border: 1px solid #ced4da; border-radius: 6px;
+    font-size: 0.9em; font-family: 'Roboto', sans-serif; background: #fff;
+  }
+  .pool-table input:focus, .pool-table select:focus {
+    border-color: #007DA3; outline: none;
+  }
 
   /* KPI boxes */
-  .kpi-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  .kpi-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 30px; }
   .kpi {
-    flex: 1; min-width: 160px; background: #003d7a; color: #fff;
-    border-radius: 8px; padding: 14px 16px; text-align: center;
+    flex: 1; min-width: 150px; background: #007DA3; color: #fff;
+    border-radius: 10px; padding: 16px; text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   }
-  .kpi.green { background: #0a7a3e; }
-  .kpi.orange { background: #c25f00; }
+  .kpi.green { background: #61D604; color: #333; }
+  .kpi.highlight { background: #005a75; }
   .kpi .val { font-size: 26px; font-weight: 700; line-height: 1.1; }
-  .kpi .lbl { font-size: 11px; opacity: 0.85; margin-top: 4px; }
+  .kpi .lbl { font-size: 11px; opacity: 0.9; margin-top: 5px; font-weight: 600; }
 
   /* Results table */
   .res-table { width: 100%; border-collapse: collapse; }
   .res-table th {
-    background: #003d7a; color: #fff; padding: 7px 10px;
-    font-size: 11px; text-align: right; font-weight: 600;
+    background: #007DA3; color: #fff; padding: 10px 14px;
+    font-size: 0.8em; text-align: right; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.5px;
   }
   .res-table th:first-child { text-align: left; }
-  .res-table td { padding: 6px 10px; border-bottom: 1px solid #eee; text-align: right; }
-  .res-table td:first-child { text-align: left; font-weight: 500; }
-  .res-table tr.total-row td { font-weight: 700; background: #f0f4ff; }
+  .res-table td { padding: 9px 14px; border-bottom: 1px solid #dee2e6; text-align: right; }
+  .res-table td:first-child { text-align: left; }
+  .res-table tr.total-row td { font-weight: 700; background: #f4f7f6; }
   .res-table tr.section-header td {
-    background: #e8eef8; font-weight: 700; color: #003d7a;
-    font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px;
+    background: #e8f4f8; font-weight: 700; color: #007DA3;
+    font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.5px;
   }
-  .pos { color: #0a7a3e; }
-  .neg { color: #c00; }
+  .pos { color: #4fb003; font-weight: 700; }
+  .neg { color: #c00; font-weight: 700; }
 
-  .btn {
-    display: inline-block; padding: 10px 28px; border: none; border-radius: 5px;
-    font-size: 13px; font-weight: 700; cursor: pointer; letter-spacing: 0.3px;
-    transition: background 0.15s;
+  .btn-calc {
+    padding: 16px 36px; background: #61D604; color: #fff; border: none;
+    border-radius: 6px; font-size: 1.05em; font-weight: 700; cursor: pointer;
+    font-family: 'Roboto', sans-serif; transition: 0.2s;
   }
-  .btn-primary { background: #0062c3; color: #fff; }
-  .btn-primary:hover { background: #004fa0; }
-  .btn-print { background: #555; color: #fff; margin-left: 10px; }
-  .btn-print:hover { background: #333; }
+  .btn-calc:hover { background: #4fb003; }
+  .btn-print {
+    padding: 16px 24px; background: #f1f3f5; color: #495057; border: 1px solid #ced4da;
+    border-radius: 6px; font-size: 1.05em; font-weight: 700; cursor: pointer;
+    font-family: 'Roboto', sans-serif; margin-left: 12px; transition: 0.2s;
+  }
+  .btn-print:hover { background: #e2e6ea; }
 
-  .actions { padding: 8px 0 20px; }
+  .actions { display: flex; gap: 0; margin: 10px 0 30px; }
 
   canvas { max-height: 320px; }
-
-  .note { font-size: 11px; color: #777; margin-top: 6px; }
+  .note { font-size: 0.85em; color: #6c757d; margin-top: 10px; }
 
   @media print {
-    body { background: #fff; }
-    .actions, header button { display: none; }
-    .card { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
+    .actions, nav { display: none; }
+    .card { break-inside: avoid; }
+  }
+
+  @media (max-width: 768px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .kpi-row { gap: 8px; }
+    .kpi { min-width: 120px; }
   }
 </style>
 </head>
 <body>
 
-<header>
-  <div>
-    <h1>Defender Filter &mdash; ROI Cost Savings Calculator</h1>
-    <p>10-Year Life-Cycle Cost Analysis: Defender Perlite Filter vs. Sand Filter</p>
-  </div>
-</header>
-
 <div class="container">
+  <main class="promo-container">
 
-  <!-- PROJECT INFO -->
-  <div class="card">
-    <h2>Project Information</h2>
-    <div class="grid-2">
+    <a href="index.html" class="back-link">&larr; Back to Equipment Selector</a>
+
+    <div class="promo-header">
+      <h1>Defender Filter ROI Calculator</h1>
+      <p>10-Year Life-Cycle Cost Analysis: Defender Perlite Filter vs. Sand Filter</p>
+    </div>
+
+    <!-- PROJECT INFO -->
+    <h3>Project Information</h3>
+    <div class="grid-2 card" style="padding:20px;">
       <div>
         <div class="field"><label>Project Name</label><input id="projName" type="text" value="Pro Club"></div>
         <div class="field"><label>Location</label><input id="projLocation" type="text" value="Bellevue, WA"></div>
@@ -124,107 +126,111 @@
         <div class="field"><label>Date</label><input id="projDate" type="date"></div>
       </div>
     </div>
-  </div>
 
-  <!-- POOL INPUTS -->
-  <div class="card">
-    <h2>Pool System Data (up to 10 pools)</h2>
-    <table class="pool-table">
-      <thead>
-        <tr>
-          <th>Pool</th>
-          <th>Description</th>
-          <th>Indoor / Outdoor</th>
-          <th>Flow Rate (GPM)</th>
-        </tr>
-      </thead>
-      <tbody id="poolRows"></tbody>
-    </table>
-  </div>
-
-  <!-- ASSUMPTIONS -->
-  <div class="card">
-    <h2>Operating Cost Assumptions</h2>
-    <div class="grid-3">
-      <div>
-        <div class="field"><label>Mechanical Space Value ($/ft²)</label><input id="mechSpace" type="number" value="255" step="1"></div>
-        <div class="field"><label>Install Labor Variance (Sand %)</label><input id="installVar" type="number" value="15" step="1"></div>
-        <div class="field"><label>Sand Media Loading ($/lb)</label><input id="sandLoadCost" type="number" value="3.00" step="0.01"></div>
-        <div class="field"><label>Sand Media Cost ($/lb)</label><input id="sandMediaCost" type="number" value="19.99" step="0.01"></div>
-        <div class="field"><label>Perlite Media Cost ($/lb)</label><input id="perliteCost" type="number" value="0.94" step="0.01"></div>
-      </div>
-      <div>
-        <div class="field"><label>Sand Backwash Rate (gpm/sf)</label><input id="sandBwRate" type="number" value="20" step="1"></div>
-        <div class="field"><label>Sand Backwash Duration (min)</label><input id="sandBwDur" type="number" value="5" step="1"></div>
-        <div class="field"><label>Sand Backwash Frequency (times/yr)</label><input id="sandBwFreq" type="number" value="104" step="1"></div>
-        <div class="field"><label>Defender Media Replace Frequency (times/yr)</label><input id="defBwFreq" type="number" value="12" step="1"></div>
-        <div class="field"><label>Operating Days / Season</label><input id="opDays" type="number" value="365" step="1"></div>
-      </div>
-      <div>
-        <div class="field"><label>Potable Water ($/1,000 gal)</label><input id="waterRate" type="number" value="10.04" step="0.01"></div>
-        <div class="field"><label>Sanitary Sewer ($/1,000 gal)</label><input id="sewerRate" type="number" value="18.69" step="0.01"></div>
-        <div class="field"><label>Chemicals ($/1,000 gal makeup)</label><input id="chemRate" type="number" value="3.00" step="0.01"></div>
-        <div class="field"><label>Heat Temp Delta (°F)</label><input id="heatDelta" type="number" value="30" step="1"></div>
-        <div class="field"><label>Natural Gas ($/therm)</label><input id="gasRate" type="number" value="0.90" step="0.01"></div>
-        <div class="field"><label>Electricity ($/kWh)</label><input id="elecRate" type="number" value="0.12" step="0.01"></div>
-        <div class="field"><label>Annual Cost Escalation (%)</label><input id="escalation" type="number" value="7" step="0.1"></div>
-      </div>
+    <!-- POOL INPUTS -->
+    <h3>Pool System Data <span style="font-size:0.8em;font-weight:400;color:#666;">(up to 10 pools)</span></h3>
+    <div class="card" style="padding:20px;">
+      <table class="pool-table">
+        <thead>
+          <tr>
+            <th>Pool</th>
+            <th>Description</th>
+            <th>Indoor / Outdoor</th>
+            <th>Flow Rate (GPM)</th>
+          </tr>
+        </thead>
+        <tbody id="poolRows"></tbody>
+      </table>
     </div>
-    <div class="grid-2" style="margin-top:4px;">
-      <div class="field"><label>Compressors (qty)</label><input id="compressors" type="number" value="1" step="1" min="0"></div>
-      <div class="field"><label>Defender Tool Kits (qty)</label><input id="toolKits" type="number" value="1" step="1" min="0"></div>
-    </div>
-  </div>
 
-  <div class="actions">
-    <button class="btn btn-primary" onclick="calculate()">Calculate ROI</button>
-    <button class="btn btn-print" onclick="window.print()">Print / Save PDF</button>
-  </div>
-
-  <!-- KPI SUMMARY -->
-  <div id="kpiSection" style="display:none;">
-    <div class="kpi-row">
-      <div class="kpi green">
-        <div class="val" id="kpiWaterSavePct">—</div>
-        <div class="lbl">Annual Water Savings</div>
+    <!-- ASSUMPTIONS -->
+    <h3>Operating Cost Assumptions</h3>
+    <div class="card" style="padding:20px;">
+      <div class="grid-3">
+        <div>
+          <div class="field"><label>Mechanical Space Value ($/ft²)</label><input id="mechSpace" type="number" value="255" step="1"></div>
+          <div class="field"><label>Install Labor Variance (Sand %)</label><input id="installVar" type="number" value="15" step="1"></div>
+          <div class="field"><label>Sand Media Loading ($/lb)</label><input id="sandLoadCost" type="number" value="3.00" step="0.01"></div>
+          <div class="field"><label>Sand Media Cost ($/lb)</label><input id="sandMediaCost" type="number" value="19.99" step="0.01"></div>
+          <div class="field"><label>Perlite Media Cost ($/lb)</label><input id="perliteCost" type="number" value="0.94" step="0.01"></div>
+        </div>
+        <div>
+          <div class="field"><label>Sand Backwash Rate (gpm/sf)</label><input id="sandBwRate" type="number" value="20" step="1"></div>
+          <div class="field"><label>Sand Backwash Duration (min)</label><input id="sandBwDur" type="number" value="5" step="1"></div>
+          <div class="field"><label>Sand Backwash Frequency (times/yr)</label><input id="sandBwFreq" type="number" value="104" step="1"></div>
+          <div class="field"><label>Defender Media Replace Frequency (times/yr)</label><input id="defBwFreq" type="number" value="12" step="1"></div>
+          <div class="field"><label>Operating Days / Season</label><input id="opDays" type="number" value="365" step="1"></div>
+        </div>
+        <div>
+          <div class="field"><label>Potable Water ($/1,000 gal)</label><input id="waterRate" type="number" value="10.04" step="0.01"></div>
+          <div class="field"><label>Sanitary Sewer ($/1,000 gal)</label><input id="sewerRate" type="number" value="18.69" step="0.01"></div>
+          <div class="field"><label>Chemicals ($/1,000 gal makeup)</label><input id="chemRate" type="number" value="3.00" step="0.01"></div>
+          <div class="field"><label>Heat Temp Delta (°F)</label><input id="heatDelta" type="number" value="30" step="1"></div>
+          <div class="field"><label>Natural Gas ($/therm)</label><input id="gasRate" type="number" value="0.90" step="0.01"></div>
+          <div class="field"><label>Electricity ($/kWh)</label><input id="elecRate" type="number" value="0.12" step="0.01"></div>
+          <div class="field"><label>Annual Cost Escalation (%)</label><input id="escalation" type="number" value="7" step="0.1"></div>
+        </div>
       </div>
-      <div class="kpi green">
-        <div class="val" id="kpiWaterGal">—</div>
-        <div class="lbl">10-Year Gallons Saved</div>
-      </div>
-      <div class="kpi orange">
-        <div class="val" id="kpiPayback">—</div>
-        <div class="lbl">Adj. ROI Payback</div>
-      </div>
-      <div class="kpi">
-        <div class="val" id="kpiElecSavePct">—</div>
-        <div class="lbl">Annual Electrical Savings</div>
-      </div>
-      <div class="kpi">
-        <div class="val" id="kpiElecKwh">—</div>
-        <div class="lbl">10-Year kWh Saved</div>
-      </div>
-      <div class="kpi green">
-        <div class="val" id="kpi10yr">—</div>
-        <div class="lbl">10-Year Total Savings</div>
+      <div class="grid-2" style="margin-top:12px;">
+        <div class="field"><label>Compressors (qty)</label><input id="compressors" type="number" value="1" step="1" min="0"></div>
+        <div class="field"><label>Defender Tool Kits (qty)</label><input id="toolKits" type="number" value="1" step="1" min="0"></div>
       </div>
     </div>
 
-    <!-- SUMMARY TABLE -->
-    <div class="card">
-      <h2>Cost Comparison Summary</h2>
-      <table class="res-table" id="summaryTable"></table>
+    <div class="actions">
+      <button class="btn-calc" onclick="calculate()">Calculate ROI</button>
+      <button class="btn-print" onclick="window.print()">Print / Save PDF</button>
     </div>
 
-    <!-- 10-YEAR CHART -->
-    <div class="card">
-      <h2>10-Year Life-Cycle Cost Forecast</h2>
-      <canvas id="roiChart"></canvas>
-      <p class="note">Costs escalated at <span id="noteEscalation">7</span>% per year compounded. Defender capital is higher but lower annual operating costs generate savings over the analysis period.</p>
-    </div>
-  </div>
+    <!-- KPI SUMMARY -->
+    <div id="kpiSection" style="display:none;">
+      <div class="kpi-row">
+        <div class="kpi green">
+          <div class="val" id="kpiWaterSavePct">—</div>
+          <div class="lbl">Annual Water Savings</div>
+        </div>
+        <div class="kpi green">
+          <div class="val" id="kpiWaterGal">—</div>
+          <div class="lbl">10-Year Gallons Saved</div>
+        </div>
+        <div class="kpi highlight">
+          <div class="val" id="kpiPayback">—</div>
+          <div class="lbl">Adj. ROI Payback</div>
+        </div>
+        <div class="kpi">
+          <div class="val" id="kpiElecSavePct">—</div>
+          <div class="lbl">Annual Electrical Savings</div>
+        </div>
+        <div class="kpi">
+          <div class="val" id="kpiElecKwh">—</div>
+          <div class="lbl">10-Year kWh Saved</div>
+        </div>
+        <div class="kpi green">
+          <div class="val" id="kpi10yr">—</div>
+          <div class="lbl">10-Year Total Savings</div>
+        </div>
+      </div>
 
+      <!-- SUMMARY TABLE -->
+      <h3>Cost Comparison Summary</h3>
+      <div class="card" style="padding:20px;">
+        <table class="res-table" id="summaryTable"></table>
+      </div>
+
+      <!-- 10-YEAR CHART -->
+      <h3>10-Year Life-Cycle Cost Forecast</h3>
+      <div class="card" style="padding:20px;">
+        <canvas id="roiChart"></canvas>
+        <p class="note">Costs escalated at <span id="noteEscalation">7</span>% per year compounded. Defender capital is higher but lower annual operating costs generate savings over the analysis period.</p>
+      </div>
+    </div>
+
+  </main>
 </div>
+
+<footer>
+  <p>&copy; 2026 Xylem Inc. All rights reserved.</p>
+</footer>
 
 <script>
 // ─── LOOKUP TABLE ────────────────────────────────────────────────────────────
@@ -271,7 +277,7 @@ function buildPoolRows() {
   for (let i = 1; i <= 10; i++) {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td style="font-weight:600;color:#003d7a;">Pool ${i}</td>
+      <td style="font-weight:600;color:#007DA3;">Pool ${i}</td>
       <td><input type="text" id="pDesc${i}" placeholder="e.g. Lap Pool" style="width:140px;"></td>
       <td>
         <select id="pIO${i}" style="width:120px;">
