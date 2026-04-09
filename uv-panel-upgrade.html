@@ -63,16 +63,33 @@
         .quote-discount { color: #61D604; font-weight: 700; }
         .btn-publish { background: #007DA3; color: white; border: none; padding: 15px 40px; font-size: 1.1em; font-weight: 700; border-radius: 6px; cursor: pointer; margin-top: 20px; margin-left: 12px; }
         .btn-publish:hover { background: #005a75; }
+        @page { size: letter; margin: 0.45in; }
         @media print {
             header, .back-link, .step-section, .btn-quote, .btn-publish, footer { display: none !important; }
-            .quote-section { background: white !important; color: #333 !important; border: 2px solid #007DA3; border-radius: 8px; }
-            .quote-section h3 { color: #007DA3 !important; }
-            .quote-table th, .quote-table td { border-bottom: 1px solid #ddd !important; color: #333 !important; }
-            .quote-table th { color: #555 !important; }
+            html, body { height: auto !important; }
+            body, .container, main, .upgrade-container { background: white !important; margin: 0 !important; padding: 0 !important; }
+            main.upgrade-container { max-width: 100% !important; padding: 0 !important; }
+
+            /* Compact header */
+            .upgrade-header { text-align: left; margin-bottom: 10px !important; padding-bottom: 8px !important; border-bottom: 2px solid #007DA3 !important; }
+            .upgrade-header h1 { color: #007DA3 !important; font-size: 16px !important; margin-bottom: 4px !important; }
+            .upgrade-header p { font-size: 11px !important; margin: 0 !important; }
+            .benefits-list { display: none !important; }
+
+            /* Config summary line */
+            .print-config-summary { display: block !important; font-size: 11px !important; color: #555 !important; margin: 6px 0 10px !important; padding: 6px 10px !important; background: #f4f7f6 !important; border-left: 3px solid #007DA3; }
+
+            /* Quote section */
+            .quote-section { background: white !important; color: #333 !important; border: 1.5px solid #007DA3; border-radius: 6px; padding: 14px !important; margin-top: 0 !important; }
+            .quote-section h3 { color: #007DA3 !important; font-size: 14px !important; margin-bottom: 8px !important; }
+            .quote-table { margin: 0 0 8px !important; }
+            .quote-table th, .quote-table td { padding: 6px 8px !important; font-size: 11px !important; border-bottom: 1px solid #ddd !important; color: #333 !important; }
+            .quote-table th { background: #007DA3 !important; color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .quote-discount { color: #007DA3 !important; }
-            .print-config-summary { display: block !important; }
-            body, .container, main { background: white !important; }
-            .upgrade-header { display: block !important; }
+            .quote-total { font-size: 13px !important; padding-top: 8px !important; margin-top: 8px !important; }
+            #quoteTotalWrap div { font-size: 11px !important; }
+            .quote-section > div[style*="margin-top: 20px"] { font-size: 10px !important; margin-top: 8px !important; }
+            .quote-section > div[style*="margin-top: 20px"] p { margin: 2px 0 !important; }
         }
         .print-config-summary { display: none; font-size: 0.9em; color: #555; margin-bottom: 15px; line-height: 1.8; }
     </style>
