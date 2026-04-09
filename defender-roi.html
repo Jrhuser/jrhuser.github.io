@@ -1,731 +1,579 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Defender Cost Savings Analysis</title>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        .roi-container { max-width: 1400px; margin: 0 auto; }
-        .roi-section { background: #f9f9f9; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
-        .roi-section h3 { margin-top: 0; border-left: 5px solid #61D604; padding-left: 15px; color: #007DA3; }
-        .roi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
-        .roi-input-group { display: flex; flex-direction: column; }
-        .roi-input-group label { font-weight: 600; font-size: 0.85em; color: #333; margin-bottom: 4px; }
-        .roi-input-group input, .roi-input-group select { padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.95em; }
-        .roi-input-group input:focus, .roi-input-group select:focus { border-color: #007DA3; outline: none; }
-        .pool-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        .pool-table th, .pool-table td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
-        .pool-table th { background: #007DA3; color: white; font-weight: 600; }
-        .pool-table input { width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        .results-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        .results-table th, .results-table td { padding: 12px; text-align: right; border: 1px solid #ddd; }
-        .results-table th { background: #007DA3; color: white; }
-        .results-table td:first-child { text-align: left; font-weight: 600; }
-        .results-table .total-row { background: #e8f4f8; font-weight: 700; }
-        .results-table .savings-positive { color: #2e7d32; }
-        .results-table .savings-negative { color: #c62828; }
-        .summary-box { background: linear-gradient(135deg, #007DA3, #005a75); color: white; padding: 25px; border-radius: 8px; text-align: center; margin-top: 20px; }
-        .summary-box h2 { margin: 0 0 15px 0; font-size: 1.5em; color: white; }
-        .summary-value { font-size: 2.5em; font-weight: 700; }
-        .summary-label { font-size: 0.9em; opacity: 0.9; margin-top: 5px; }
-        .water-saved-box { background: white; color: #007DA3; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-        .water-saved-value { font-size: 3em; font-weight: 700; }
-        .water-saved-label { font-size: 1em; font-weight: 600; margin-top: 5px; }
-        .payback-box { display: inline-block; background: #61D604; color: #333; padding: 15px 30px; border-radius: 8px; margin-top: 15px; }
-        .btn-calculate { background: #61D604; color: #333; border: none; padding: 15px 40px; font-size: 1.1em; font-weight: 700; border-radius: 6px; cursor: pointer; margin-top: 20px; }
-        .btn-calculate:hover { background: #52b603; }
-        .btn-publish { background: white; color: #007DA3; border: none; padding: 12px 30px; font-size: 1em; font-weight: 700; border-radius: 6px; cursor: pointer; margin-top: 15px; }
-        .btn-publish:hover { background: #f0f0f0; }
-        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        @media (max-width: 900px) { .two-column { grid-template-columns: 1fr; } }
-        .help-text { font-size: 0.75em; color: #666; margin-top: 2px; }
-        .back-link { display: inline-block; margin-bottom: 20px; color: #007DA3; text-decoration: none; font-weight: 600; }
-        .back-link:hover { text-decoration: underline; }
-    </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Defender Filter ROI Calculator</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; font-size: 13px; background: #f0f2f5; color: #222; }
+
+  header {
+    background: linear-gradient(135deg, #003d7a 0%, #0062c3 100%);
+    color: #fff; padding: 18px 32px; display: flex; align-items: center; gap: 20px;
+  }
+  header h1 { font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
+  header p { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+
+  .container { max-width: 1280px; margin: 0 auto; padding: 24px 20px; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  .card {
+    background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    padding: 18px 20px; margin-bottom: 16px;
+  }
+  .card h2 {
+    font-size: 13px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.6px; color: #003d7a; border-bottom: 2px solid #003d7a;
+    padding-bottom: 8px; margin-bottom: 14px;
+  }
+
+  label { display: block; font-size: 11px; font-weight: 600; color: #555; margin-bottom: 3px; }
+  input, select {
+    width: 100%; padding: 6px 8px; border: 1px solid #ccc; border-radius: 4px;
+    font-size: 12px; font-family: Arial, sans-serif;
+  }
+  input:focus, select:focus { outline: none; border-color: #0062c3; box-shadow: 0 0 0 2px rgba(0,98,195,0.15); }
+  .field { margin-bottom: 10px; }
+
+  .pool-table { width: 100%; border-collapse: collapse; }
+  .pool-table th {
+    background: #003d7a; color: #fff; padding: 6px 10px;
+    font-size: 11px; text-align: left; font-weight: 600;
+  }
+  .pool-table td { padding: 5px 8px; border-bottom: 1px solid #eee; }
+  .pool-table tr:hover td { background: #f7f9ff; }
+  .pool-table input, .pool-table select { padding: 4px 6px; }
+
+  /* KPI boxes */
+  .kpi-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  .kpi {
+    flex: 1; min-width: 160px; background: #003d7a; color: #fff;
+    border-radius: 8px; padding: 14px 16px; text-align: center;
+  }
+  .kpi.green { background: #0a7a3e; }
+  .kpi.orange { background: #c25f00; }
+  .kpi .val { font-size: 26px; font-weight: 700; line-height: 1.1; }
+  .kpi .lbl { font-size: 11px; opacity: 0.85; margin-top: 4px; }
+
+  /* Results table */
+  .res-table { width: 100%; border-collapse: collapse; }
+  .res-table th {
+    background: #003d7a; color: #fff; padding: 7px 10px;
+    font-size: 11px; text-align: right; font-weight: 600;
+  }
+  .res-table th:first-child { text-align: left; }
+  .res-table td { padding: 6px 10px; border-bottom: 1px solid #eee; text-align: right; }
+  .res-table td:first-child { text-align: left; font-weight: 500; }
+  .res-table tr.total-row td { font-weight: 700; background: #f0f4ff; }
+  .res-table tr.section-header td {
+    background: #e8eef8; font-weight: 700; color: #003d7a;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px;
+  }
+  .pos { color: #0a7a3e; }
+  .neg { color: #c00; }
+
+  .btn {
+    display: inline-block; padding: 10px 28px; border: none; border-radius: 5px;
+    font-size: 13px; font-weight: 700; cursor: pointer; letter-spacing: 0.3px;
+    transition: background 0.15s;
+  }
+  .btn-primary { background: #0062c3; color: #fff; }
+  .btn-primary:hover { background: #004fa0; }
+  .btn-print { background: #555; color: #fff; margin-left: 10px; }
+  .btn-print:hover { background: #333; }
+
+  .actions { padding: 8px 0 20px; }
+
+  canvas { max-height: 320px; }
+
+  .note { font-size: 11px; color: #777; margin-top: 6px; }
+
+  @media print {
+    body { background: #fff; }
+    .actions, header button { display: none; }
+    .card { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <main class="roi-container">
-            <a href="index.html" class="back-link">&larr; Back to Equipment Selector</a>
 
-            <section class="roi-section">
-                <h3>Project Information</h3>
-                <div class="roi-grid">
-                    <div class="roi-input-group">
-                        <label>Project Name:</label>
-                        <input type="text" id="roiProjectName" placeholder="Enter project name">
-                    </div>
-                    <div class="roi-input-group">
-                        <label>Location:</label>
-                        <input type="text" id="roiLocation" placeholder="City, State">
-                    </div>
-                    <div class="roi-input-group">
-                        <label>Date:</label>
-                        <input type="date" id="roiDate">
-                    </div>
-                    <div class="roi-input-group">
-                        <label>Prepared By:</label>
-                        <input type="text" id="roiPreparedBy">
-                    </div>
-                    <div class="roi-input-group">
-                        <label>Prepared For:</label>
-                        <input type="text" id="roiPreparedFor">
-                    </div>
-                </div>
-            </section>
+<header>
+  <div>
+    <h1>Defender Filter &mdash; ROI Cost Savings Calculator</h1>
+    <p>10-Year Life-Cycle Cost Analysis: Defender Perlite Filter vs. Sand Filter</p>
+  </div>
+</header>
 
-            <section class="roi-section">
-                <h3>Pool Data - Enter Flow Rates (GPM)</h3>
-                <table class="pool-table">
-                    <thead>
-                        <tr>
-                            <th>Pool Description</th>
-                            <th>Flow Rate (GPM)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td><input type="text" id="poolDesc1" placeholder="e.g., Main Pool"></td><td><input type="number" id="poolGPM1" min="0" max="5000" placeholder="GPM"></td></tr>
-                    </tbody>
-                </table>
-            </section>
+<div class="container">
 
-            <div class="two-column">
-                <section class="roi-section">
-                    <h3>Operating Cost Variables</h3>
-                    <div class="roi-grid">
-                        <div class="roi-input-group">
-                            <label>Operating Days per Season:</label>
-                            <input type="number" id="operatingDays" value="365" min="1" max="365">
-                        </div>
-                        <div class="roi-input-group">
-                            <label>Backwash Duration (minutes):</label>
-                            <input type="number" id="backwashDuration" value="5" min="1" max="30">
-                        </div>
-                        <div class="roi-input-group">
-                            <label>Sand Backwash Frequency (#/season):</label>
-                            <input type="number" id="sandBackwashFreq" value="104" min="1">
-                            <span class="help-text">Typically 2x per week</span>
-                        </div>
-                        <div class="roi-input-group">
-                            <label>Defender Backwash Frequency (#/season):</label>
-                            <input type="number" id="defenderBackwashFreq" value="12" min="1">
-                            <span class="help-text">Typically 1x per month</span>
-                        </div>
-                        <div class="roi-input-group">
-                            <label>Temperature Delta (°F):</label>
-                            <input type="number" id="tempDelta" value="30" min="0" max="100">
-                            <span class="help-text">Pool temp minus incoming water temp</span>
-                        </div>
-                        <div class="roi-input-group">
-                            <label>Annual Cost Escalation (%):</label>
-                            <input type="number" id="annualEscalation" value="7" min="0" max="20" step="0.1">
-                        </div>
-                    </div>
-                </section>
+  <!-- PROJECT INFO -->
+  <div class="card">
+    <h2>Project Information</h2>
+    <div class="grid-2">
+      <div>
+        <div class="field"><label>Project Name</label><input id="projName" type="text" value="Pro Club"></div>
+        <div class="field"><label>Location</label><input id="projLocation" type="text" value="Bellevue, WA"></div>
+      </div>
+      <div>
+        <div class="field"><label>Prepared For</label><input id="prepFor" type="text"></div>
+        <div class="field"><label>Prepared By</label><input id="prepBy" type="text" value="Brian Randisi"></div>
+        <div class="field"><label>Date</label><input id="projDate" type="date"></div>
+      </div>
+    </div>
+  </div>
 
-                <section class="roi-section">
-                    <h3>Utility Rates</h3>
-                    <div class="roi-grid">
-                        <div class="roi-input-group">
-                            <label>Electrical Cost ($/kWh):</label>
-                            <input type="number" id="electricalCost" value="0.12" min="0" step="0.01">
-                        </div>
-                        <div class="roi-input-group">
-                            <label>Potable Water Fee ($/1000 gal):</label>
-                            <input type="number" id="waterCost" value="3.5" min="0" step="0.1">
-                        </div>
-                        <div class="roi-input-group">
-                            <label>Sanitary Sewer Fee ($/1000 gal):</label>
-                            <input type="number" id="sewerCost" value="3.5" min="0" step="0.1">
-                        </div>
-                        <div class="roi-input-group">
-                            <label>Heat Cost ($/therm):</label>
-                            <input type="number" id="heatCost" value="0.9" min="0" step="0.01">
-                        </div>
-                        <div class="roi-input-group">
-                            <label>Chemical Cost ($/1000 gal make-up):</label>
-                            <input type="number" id="chemicalCost" value="3" min="0" step="0.1">
-                        </div>
-                    </div>
-                </section>
-            </div>
+  <!-- POOL INPUTS -->
+  <div class="card">
+    <h2>Pool System Data (up to 10 pools)</h2>
+    <table class="pool-table">
+      <thead>
+        <tr>
+          <th>Pool</th>
+          <th>Description</th>
+          <th>Indoor / Outdoor</th>
+          <th>Flow Rate (GPM)</th>
+        </tr>
+      </thead>
+      <tbody id="poolRows"></tbody>
+    </table>
+  </div>
 
-            <div class="two-column">
-                <section class="roi-section">
-                    <h3>Sand Filter Costs</h3>
-                    <div class="roi-grid">
-                        <div class="roi-input-group">
-                            <label>Sand Filter Capital Cost ($):</label>
-                            <input type="number" id="sandCapitalCost" value="0" min="0" step="100">
-                            <span class="help-text">Equipment purchase price</span>
-                        </div>
-                        <div class="roi-input-group">
-                            <label>Mechanical Space Value ($/ft²):</label>
-                            <input type="number" id="mechSpaceValue" value="120" min="0">
-                        </div>
-                        <div class="roi-input-group">
-                            <label>Installation Labor Variance (%):</label>
-                            <input type="number" id="laborVariance" value="15" min="0" max="100">
-                            <span class="help-text">Additional labor for sand filter install</span>
-                        </div>
-                        <div class="roi-input-group">
-                            <label>Sand Media Cost ($/100 lb):</label>
-                            <input type="number" id="sandMediaCost" value="17.8" min="0" step="0.1">
-                        </div>
-                        <div class="roi-input-group">
-                            <label>Media Loading Labor ($/bag):</label>
-                            <input type="number" id="mediaLoadingLabor" value="3" min="0" step="0.1">
-                        </div>
-                    </div>
-                </section>
+  <!-- ASSUMPTIONS -->
+  <div class="card">
+    <h2>Operating Cost Assumptions</h2>
+    <div class="grid-3">
+      <div>
+        <div class="field"><label>Mechanical Space Value ($/ft²)</label><input id="mechSpace" type="number" value="255" step="1"></div>
+        <div class="field"><label>Install Labor Variance (Sand %)</label><input id="installVar" type="number" value="15" step="1"></div>
+        <div class="field"><label>Sand Media Loading ($/lb)</label><input id="sandLoadCost" type="number" value="3.00" step="0.01"></div>
+        <div class="field"><label>Sand Media Cost ($/lb)</label><input id="sandMediaCost" type="number" value="19.99" step="0.01"></div>
+        <div class="field"><label>Perlite Media Cost ($/lb)</label><input id="perliteCost" type="number" value="0.94" step="0.01"></div>
+      </div>
+      <div>
+        <div class="field"><label>Sand Backwash Rate (gpm/sf)</label><input id="sandBwRate" type="number" value="20" step="1"></div>
+        <div class="field"><label>Sand Backwash Duration (min)</label><input id="sandBwDur" type="number" value="5" step="1"></div>
+        <div class="field"><label>Sand Backwash Frequency (times/yr)</label><input id="sandBwFreq" type="number" value="104" step="1"></div>
+        <div class="field"><label>Defender Media Replace Frequency (times/yr)</label><input id="defBwFreq" type="number" value="12" step="1"></div>
+        <div class="field"><label>Operating Days / Season</label><input id="opDays" type="number" value="365" step="1"></div>
+      </div>
+      <div>
+        <div class="field"><label>Potable Water ($/1,000 gal)</label><input id="waterRate" type="number" value="10.04" step="0.01"></div>
+        <div class="field"><label>Sanitary Sewer ($/1,000 gal)</label><input id="sewerRate" type="number" value="18.69" step="0.01"></div>
+        <div class="field"><label>Chemicals ($/1,000 gal makeup)</label><input id="chemRate" type="number" value="3.00" step="0.01"></div>
+        <div class="field"><label>Heat Temp Delta (°F)</label><input id="heatDelta" type="number" value="30" step="1"></div>
+        <div class="field"><label>Natural Gas ($/therm)</label><input id="gasRate" type="number" value="0.90" step="0.01"></div>
+        <div class="field"><label>Electricity ($/kWh)</label><input id="elecRate" type="number" value="0.12" step="0.01"></div>
+        <div class="field"><label>Annual Cost Escalation (%)</label><input id="escalation" type="number" value="7" step="0.1"></div>
+      </div>
+    </div>
+    <div class="grid-2" style="margin-top:4px;">
+      <div class="field"><label>Compressors (qty)</label><input id="compressors" type="number" value="1" step="1" min="0"></div>
+      <div class="field"><label>Defender Tool Kits (qty)</label><input id="toolKits" type="number" value="1" step="1" min="0"></div>
+    </div>
+  </div>
 
-                <section class="roi-section">
-                    <h3>Defender Filter Costs</h3>
-                    <div class="roi-grid">
-                        <div class="roi-input-group">
-                            <label>Defender Capital Cost ($):</label>
-                            <input type="number" id="defenderCapitalCost" value="0" min="0" step="100">
-                            <span class="help-text">Equipment purchase price</span>
-                        </div>
-                        <div class="roi-input-group">
-                            <label>Perlite Media Cost ($/lb):</label>
-                            <input type="number" id="perliteMediaCost" value="0.94" min="0" step="0.01">
-                        </div>
-                        <div class="roi-input-group">
-                            <label>Number of Compressors:</label>
-                            <input type="number" id="numCompressors" value="1" min="0">
-                        </div>
-                        <div class="roi-input-group">
-                            <label>Number of Tool Kits:</label>
-                            <input type="number" id="numToolKits" value="1" min="0">
-                        </div>
-                    </div>
-                </section>
-            </div>
+  <div class="actions">
+    <button class="btn btn-primary" onclick="calculate()">Calculate ROI</button>
+    <button class="btn btn-print" onclick="window.print()">Print / Save PDF</button>
+  </div>
 
-            <div style="text-align: center;">
-                <button class="btn-calculate" onclick="calculateROI()">Calculate Savings</button>
-            </div>
-
-            <div id="resultsSection" style="display: none;">
-                <section class="roi-section">
-                    <h3>Capital Cost Comparison</h3>
-                    <table class="results-table">
-                        <thead>
-                            <tr>
-                                <th>Item</th>
-                                <th>Sand Filter</th>
-                                <th>Defender Filter</th>
-                                <th>Variance</th>
-                            </tr>
-                        </thead>
-                        <tbody id="capitalCostsBody">
-                        </tbody>
-                    </table>
-                </section>
-
-                <section class="roi-section">
-                    <h3>Annual Operating Cost Comparison</h3>
-                    <table class="results-table">
-                        <thead>
-                            <tr>
-                                <th>Item</th>
-                                <th>Sand Filter</th>
-                                <th>Defender Filter</th>
-                                <th>Annual Savings</th>
-                            </tr>
-                        </thead>
-                        <tbody id="operatingCostsBody">
-                        </tbody>
-                    </table>
-                </section>
-
-                <section class="roi-section">
-                    <h3>10-Year Savings Forecast</h3>
-                    <table class="results-table">
-                        <thead>
-                            <tr>
-                                <th>Year</th>
-                                <th>Sand Filter Cumulative</th>
-                                <th>Defender Cumulative</th>
-                                <th>Cumulative Savings</th>
-                            </tr>
-                        </thead>
-                        <tbody id="forecastBody">
-                        </tbody>
-                    </table>
-                </section>
-
-                <div class="summary-box">
-                    <div class="water-saved-box">
-                        <div class="water-saved-value" id="waterSaved">-- gallons</div>
-                        <div class="water-saved-label">Water Saved Per Year</div>
-                    </div>
-                    <h2>10-Year Total Savings</h2>
-                    <div class="summary-value" id="totalSavings">$0</div>
-                    <div class="summary-label">Defender Filter vs Sand Filter</div>
-                    <div class="payback-box">
-                        <span style="font-weight: 600;">Payback Period:</span> <span id="paybackPeriod">-- months</span>
-                    </div>
-                    <button class="btn-publish" onclick="publishResults()">Publish Results</button>
-                </div>
-            </div>
-        </main>
+  <!-- KPI SUMMARY -->
+  <div id="kpiSection" style="display:none;">
+    <div class="kpi-row">
+      <div class="kpi green">
+        <div class="val" id="kpiWaterSavePct">—</div>
+        <div class="lbl">Annual Water Savings</div>
+      </div>
+      <div class="kpi green">
+        <div class="val" id="kpiWaterGal">—</div>
+        <div class="lbl">10-Year Gallons Saved</div>
+      </div>
+      <div class="kpi orange">
+        <div class="val" id="kpiPayback">—</div>
+        <div class="lbl">Adj. ROI Payback</div>
+      </div>
+      <div class="kpi">
+        <div class="val" id="kpiElecSavePct">—</div>
+        <div class="lbl">Annual Electrical Savings</div>
+      </div>
+      <div class="kpi">
+        <div class="val" id="kpiElecKwh">—</div>
+        <div class="lbl">10-Year kWh Saved</div>
+      </div>
+      <div class="kpi green">
+        <div class="val" id="kpi10yr">—</div>
+        <div class="lbl">10-Year Total Savings</div>
+      </div>
     </div>
 
-    <footer>
-        <p>&copy; 2026 Xylem Inc. All rights reserved.</p>
-    </footer>
+    <!-- SUMMARY TABLE -->
+    <div class="card">
+      <h2>Cost Comparison Summary</h2>
+      <table class="res-table" id="summaryTable"></table>
+    </div>
 
-    <script>
-        // Filter lookup table based on GPM
-        const filterTable = [
-            { gpm: 70, sandQty: 1, sandModel: "36CCFG", sandSqFt: 6.5, sandVol: 800, sandMedia: 34, sandPrice: 2744.22, defQty: 1, defModel: "Pool-3", defVol: 117, defArea: 181, defBWRate: 29, defPrice: 20738, defMedia: 1940.05 },
-            { gpm: 86, sandQty: 1, sandModel: "42CCFG", sandSqFt: 9, sandVol: 1200, sandMedia: 44, sandPrice: 3365.29, defQty: 1, defModel: "Pool-3", defVol: 117, defArea: 181, defBWRate: 29, defPrice: 20738, defMedia: 1940.05 },
-            { gpm: 116, sandQty: 1, sandModel: "48CCFG", sandSqFt: 11.8, sandVol: 1900, sandMedia: 47, sandPrice: 4419.59, defQty: 1, defModel: "Pool-3", defVol: 117, defArea: 181, defBWRate: 29, defPrice: 20738, defMedia: 1940.05 },
-            { gpm: 146, sandQty: 1, sandModel: "34x48", sandSqFt: 12.6, sandVol: 1500, sandMedia: 40, sandPrice: 7811.49, defQty: 1, defModel: "Pool-4", defVol: 146, defArea: 181, defBWRate: 29, defPrice: 24320, defMedia: 2090.06 },
-            { gpm: 161, sandQty: 1, sandModel: "34x54", sandSqFt: 14, sandVol: 1600, sandMedia: 41, sandPrice: 8206.96, defQty: 1, defModel: "Pool-4", defVol: 146, defArea: 181, defBWRate: 29, defPrice: 24320, defMedia: 2090.06 },
-            { gpm: 176, sandQty: 1, sandModel: "34x60", sandSqFt: 15.4, sandVol: 1800, sandMedia: 42, sandPrice: 7926.73, defQty: 1, defModel: "Pool-5", defVol: 176, defArea: 181, defBWRate: 29, defPrice: 27864, defMedia: 2090.06 },
-            { gpm: 193, sandQty: 1, sandModel: "42x48", sandSqFt: 17.1, sandVol: 2300, sandMedia: 45, sandPrice: 8190.14, defQty: 1, defModel: "Pool-5", defVol: 176, defArea: 181, defBWRate: 29, defPrice: 27864, defMedia: 2090.06 },
-            { gpm: 221, sandQty: 1, sandModel: "42x60", sandSqFt: 20.4, sandVol: 2700, sandMedia: 63, sandPrice: 9029.20, defQty: 1, defModel: "Pool-6", defVol: 205, defArea: 181, defBWRate: 29, defPrice: 32569, defMedia: 2090.06 },
-            { gpm: 251, sandQty: 1, sandModel: "42x72", sandSqFt: 23.9, sandVol: 3200, sandMedia: 69, sandPrice: 10769.50, defQty: 1, defModel: "Pool-7", defVol: 234, defArea: 181, defBWRate: 29, defPrice: 39203, defMedia: 2258.72 },
-            { gpm: 313, sandQty: 1, sandModel: "48x72", sandSqFt: 27.7, sandVol: 4300, sandMedia: 70, sandPrice: 11260.29, defQty: 1, defModel: "Pool-8", defVol: 294, defArea: 181, defBWRate: 29, defPrice: 41509, defMedia: 2258.72 },
-            { gpm: 376, sandQty: 1, sandModel: "48x84", sandSqFt: 31.7, sandVol: 4900, sandMedia: 75, sandPrice: 12689.32, defQty: 1, defModel: "SP-27-48-487", defVol: 381, defArea: 159, defBWRate: 27, defPrice: 53395, defMedia: 2476.07 },
-            { gpm: 431, sandQty: 1, sandModel: "48x96", sandSqFt: 35.7, sandVol: 5500, sandMedia: 82, sandPrice: 12960.65, defQty: 1, defModel: "SP-27-48-487", defVol: 381, defArea: 159, defBWRate: 27, defPrice: 53395, defMedia: 2476.07 },
-            { gpm: 476, sandQty: 2, sandModel: "42x60", sandSqFt: 40.8, sandVol: 5400, sandMedia: 105, sandPrice: 18058.40, defQty: 1, defModel: "SP-27-48-487", defVol: 381, defArea: 159, defBWRate: 27, defPrice: 53395, defMedia: 2476.07 },
-            { gpm: 516, sandQty: 2, sandModel: "48x60", sandSqFt: 47.4, sandVol: 7200, sandMedia: 110, sandPrice: 20636.10, defQty: 1, defModel: "SP-33-48-732", defVol: 572, defArea: 250, defBWRate: 33, defPrice: 72869, defMedia: 3411.61 },
-            { gpm: 533, sandQty: 2, sandModel: "42x72", sandSqFt: 47.8, sandVol: 6400, sandMedia: 116, sandPrice: 21539.00, defQty: 1, defModel: "SP-33-48-732", defVol: 572, defArea: 250, defBWRate: 33, defPrice: 72869, defMedia: 3411.61 },
-            { gpm: 590, sandQty: 2, sandModel: "42x84", sandSqFt: 54.8, sandVol: 7400, sandMedia: 125, sandPrice: 23629.90, defQty: 1, defModel: "SP-33-48-732", defVol: 572, defArea: 250, defBWRate: 33, defPrice: 72869, defMedia: 3411.61 },
-            { gpm: 685, sandQty: 2, sandModel: "48x72", sandSqFt: 55.4, sandVol: 8600, sandMedia: 128, sandPrice: 22520.58, defQty: 1, defModel: "SP-33-48-732", defVol: 572, defArea: 250, defBWRate: 33, defPrice: 72869, defMedia: 3411.61 },
-            { gpm: 693, sandQty: 2, sandModel: "48x84", sandSqFt: 63.4, sandVol: 9800, sandMedia: 138, sandPrice: 25378.64, defQty: 1, defModel: "SP-33-48-732", defVol: 572, defArea: 250, defBWRate: 33, defPrice: 72869, defMedia: 3411.61 },
-            { gpm: 802, sandQty: 4, sandModel: "42x48", sandSqFt: 68.4, sandVol: 9200, sandMedia: 102, sandPrice: 32760.56, defQty: 1, defModel: "SP-41-48-1038", defVol: 812, defArea: 441, defBWRate: 44, defPrice: 99057, defMedia: 3411.61 },
-            { gpm: 856, sandQty: 4, sandModel: "42x60", sandSqFt: 81.6, sandVol: 10800, sandMedia: 112, sandPrice: 36116.80, defQty: 1, defModel: "SP-41-48-1038", defVol: 812, defArea: 441, defBWRate: 44, defPrice: 99057, defMedia: 3411.61 },
-            { gpm: 1019, sandQty: 4, sandModel: "42x72", sandSqFt: 95.6, sandVol: 12800, sandMedia: 122, sandPrice: 43078.00, defQty: 1, defModel: "SP-41-48-1038", defVol: 812, defArea: 441, defBWRate: 44, defPrice: 99057, defMedia: 3411.61 },
-            { gpm: 1138, sandQty: 4, sandModel: "48x72", sandSqFt: 110.8, sandVol: 17200, sandMedia: 135, sandPrice: 45041.16, defQty: 1, defModel: "SP-49-48-1548", defVol: 1211, defArea: 615, defBWRate: 58, defPrice: 123957, defMedia: 5338.01 },
-            { gpm: 1383, sandQty: 4, sandModel: "48x84", sandSqFt: 126.8, sandVol: 19600, sandMedia: 145, sandPrice: 50757.28, defQty: 1, defModel: "SP-49-48-1548", defVol: 1211, defArea: 615, defBWRate: 58, defPrice: 123957, defMedia: 5338.01 },
-            { gpm: 1576, sandQty: 4, sandModel: "48x96", sandSqFt: 142.8, sandVol: 22000, sandMedia: 175, sandPrice: 51842.60, defQty: 1, defModel: "SP-49-48-1548", defVol: 1211, defArea: 615, defBWRate: 58, defPrice: 123957, defMedia: 5338.01 },
-            { gpm: 1697, sandQty: 4, sandModel: "48x108", sandSqFt: 158.8, sandVol: 24400, sandMedia: 186, sandPrice: 52928.00, defQty: 1, defModel: "SP-55-48-2076", defVol: 1625, defArea: 841, defBWRate: 72, defPrice: 144645, defMedia: 7603.40 },
-            { gpm: 1951, sandQty: 4, sandModel: "48x120", sandSqFt: 174.8, sandVol: 26800, sandMedia: 201, sandPrice: 54013.20, defQty: 1, defModel: "SP-55-48-2076", defVol: 1625, defArea: 841, defBWRate: 72, defPrice: 144645, defMedia: 7603.40 },
-            { gpm: 2276, sandQty: 4, sandModel: "48x120x2", sandSqFt: 174.8, sandVol: 26800, sandMedia: 201, sandPrice: 54013.20, defQty: 2, defModel: "SP-49-48-1548", defVol: 2422, defArea: 1230, defBWRate: 116, defPrice: 247914, defMedia: 10676.02 },
-            { gpm: 2378, sandQty: 4, sandModel: "Multi", sandSqFt: 203.2, sandVol: 40000, sandMedia: 204, sandPrice: 79809.16, defQty: 2, defModel: "SP-49-48-1548", defVol: 2422, defArea: 1230, defBWRate: 116, defPrice: 247914, defMedia: 10676.02 },
-            { gpm: 2686, sandQty: 4, sandModel: "Multi", sandSqFt: 233.2, sandVol: 43600, sandMedia: 218, sandPrice: 81019.96, defQty: 2, defModel: "SP-49-48-1548", defVol: 2422, defArea: 1230, defBWRate: 116, defPrice: 247914, defMedia: 10676.02 },
-            { gpm: 2907, sandQty: 4, sandModel: "Multi", sandSqFt: 243.2, sandVol: 48000, sandMedia: 233, sandPrice: 85242.64, defQty: 2, defModel: "SP-55-48-2076", defVol: 3250, defArea: 1682, defBWRate: 144, defPrice: 289290, defMedia: 15206.80 },
-            { gpm: 3576, sandQty: 6, sandModel: "Multi", sandSqFt: 304.8, sandVol: 60000, sandMedia: 323, sandPrice: 119712.00, defQty: 2, defModel: "SP-55-48-2076", defVol: 3250, defArea: 1682, defBWRate: 144, defPrice: 289290, defMedia: 15206.80 },
-            { gpm: 4079, sandQty: 6, sandModel: "Multi", sandSqFt: 334.8, sandVol: 65400, sandMedia: 345, sandPrice: 121529.94, defQty: 2, defModel: "SP-55-48-2076", defVol: 3250, defArea: 1682, defBWRate: 144, defPrice: 289290, defMedia: 15206.80 }
-        ];
+    <!-- 10-YEAR CHART -->
+    <div class="card">
+      <h2>10-Year Life-Cycle Cost Forecast</h2>
+      <canvas id="roiChart"></canvas>
+      <p class="note">Costs escalated at <span id="noteEscalation">7</span>% per year compounded. Defender capital is higher but lower annual operating costs generate savings over the analysis period.</p>
+    </div>
+  </div>
 
-        // Compressor and tool kit costs
-        const COMPRESSOR_COST = 1379.95;
-        const TOOLKIT_COST = 330.05;
+</div>
 
-        function findFilterMatch(gpm) {
-            if (!gpm || gpm <= 0) return null;
-            // Find closest match that can handle the GPM
-            for (let i = 0; i < filterTable.length; i++) {
-                if (filterTable[i].gpm >= gpm) {
-                    return filterTable[i];
-                }
-            }
-            // Return largest if GPM exceeds all
-            return filterTable[filterTable.length - 1];
+<script>
+// ─── LOOKUP TABLE ────────────────────────────────────────────────────────────
+const lookupTable = [
+  { minFlow:70,   sand:{qty:1,model:'42CCFG',    sf:9,    media:1200, footprint:44,  price:7666   }, def:{qty:1,model:'SP-29-36-200-A',  sf:117,  tank:181, footprint:9.5, price:30038  }},
+  { minFlow:86,   sand:{qty:1,model:'42CCFG',    sf:9,    media:1200, footprint:44,  price:7666   }, def:{qty:1,model:'SP-29-36-200-A',  sf:117,  tank:181, footprint:9.5, price:30038  }},
+  { minFlow:116,  sand:{qty:1,model:'48CCFG',    sf:11.8, media:1900, footprint:47,  price:9792   }, def:{qty:1,model:'SP-29-36-200-A',  sf:117,  tank:181, footprint:9.5, price:30038  }},
+  { minFlow:146,  sand:{qty:1,model:'34x48',     sf:12.6, media:1500, footprint:40,  price:16866  }, def:{qty:1,model:'SP-29-36-200-A',  sf:117,  tank:181, footprint:9.5, price:30038  }},
+  { minFlow:161,  sand:{qty:1,model:'34x54',     sf:14,   media:1600, footprint:41,  price:17383  }, def:{qty:1,model:'SP-29-36-250-A',  sf:146,  tank:181, footprint:9.5, price:33292  }},
+  { minFlow:176,  sand:{qty:1,model:'34x60',     sf:15.4, media:1800, footprint:42,  price:18264  }, def:{qty:1,model:'SP-29-36-250-A',  sf:146,  tank:181, footprint:9.5, price:33292  }},
+  { minFlow:193,  sand:{qty:1,model:'42x48',     sf:17.1, media:2300, footprint:45,  price:21267  }, def:{qty:1,model:'SP-29-36-300-A',  sf:175,  tank:181, footprint:9.5, price:36898  }},
+  { minFlow:221,  sand:{qty:1,model:'42x60',     sf:20.4, media:2700, footprint:63,  price:23164  }, def:{qty:1,model:'SP-29-36-300-A',  sf:175,  tank:181, footprint:9.5, price:36898  }},
+  { minFlow:251,  sand:{qty:1,model:'42x72',     sf:23.9, media:3200, footprint:69,  price:23954  }, def:{qty:1,model:'SP-29-36-400-A',  sf:234,  tank:181, footprint:9.5, price:41842  }},
+  { minFlow:313,  sand:{qty:1,model:'48x72',     sf:27.7, media:4300, footprint:70,  price:25608  }, def:{qty:1,model:'SP-29-36-500-A',  sf:294,  tank:181, footprint:9.5, price:46294  }},
+  { minFlow:376,  sand:{qty:1,model:'48x84',     sf:31.7, media:4900, footprint:75,  price:28380  }, def:{qty:1,model:'SP-29-36-500-A',  sf:294,  tank:181, footprint:9.5, price:46294  }},
+  { minFlow:431,  sand:{qty:1,model:'48x96',     sf:35.7, media:5500, footprint:82,  price:28615  }, def:{qty:1,model:'SP-27-48-487',    sf:381,  tank:159, footprint:27,  price:69455  }},
+  { minFlow:476,  sand:{qty:2,model:'42x60',     sf:40.8, media:5400, footprint:105, price:49202  }, def:{qty:1,model:'SP-27-48-487',    sf:381,  tank:159, footprint:27,  price:69455  }},
+  { minFlow:516,  sand:{qty:2,model:'48x60',     sf:47.4, media:7200, footprint:110, price:54270  }, def:{qty:1,model:'SP-27-48-487',    sf:381,  tank:159, footprint:27,  price:69455  }},
+  { minFlow:533,  sand:{qty:2,model:'42x72',     sf:47.8, media:6400, footprint:116, price:51148  }, def:{qty:1,model:'SP-33-48-732',    sf:572,  tank:250, footprint:33,  price:100120 }},
+  { minFlow:590,  sand:{qty:2,model:'42x84',     sf:54.8, media:7400, footprint:125, price:53170  }, def:{qty:1,model:'SP-33-48-732',    sf:572,  tank:250, footprint:33,  price:100120 }},
+  { minFlow:685,  sand:{qty:2,model:'48x72',     sf:55.4, media:8600, footprint:128, price:54740  }, def:{qty:1,model:'SP-33-48-732',    sf:572,  tank:250, footprint:33,  price:100120 }},
+  { minFlow:693,  sand:{qty:2,model:'48x84',     sf:63.4, media:9800, footprint:138, price:60285  }, def:{qty:1,model:'SP-41-48-1038',   sf:812,  tank:441, footprint:44,  price:134258 }},
+  { minFlow:802,  sand:{qty:4,model:'42x48',     sf:68.4, media:9200, footprint:102, price:110700 }, def:{qty:1,model:'SP-41-48-1038',   sf:812,  tank:441, footprint:44,  price:134258 }},
+  { minFlow:856,  sand:{qty:4,model:'42x60',     sf:81.6, media:10800,footprint:112, price:114026 }, def:{qty:1,model:'SP-41-48-1038',   sf:812,  tank:441, footprint:44,  price:134258 }},
+  { minFlow:1019, sand:{qty:4,model:'42x72',     sf:95.6, media:12800,footprint:122, price:118917 }, def:{qty:1,model:'SP-41-48-1038',   sf:812,  tank:441, footprint:44,  price:134258 }},
+  { minFlow:1138, sand:{qty:4,model:'48x72',     sf:110.8,media:17200,footprint:135, price:126103 }, def:{qty:1,model:'SP-49-48-1548',   sf:1211, tank:615, footprint:58,  price:168437 }},
+  { minFlow:1383, sand:{qty:4,model:'48x84',     sf:126.8,media:19600,footprint:145, price:137192 }, def:{qty:1,model:'SP-49-48-1548',   sf:1211, tank:615, footprint:58,  price:168437 }},
+  { minFlow:1576, sand:{qty:4,model:'48x96',     sf:142.8,media:22000,footprint:175, price:138129 }, def:{qty:1,model:'SP-49-48-1548',   sf:1211, tank:615, footprint:58,  price:168437 }},
+  { minFlow:1697, sand:{qty:4,model:'48x108',    sf:158.8,media:24400,footprint:186, price:139071 }, def:{qty:1,model:'SP-55-48-2076',   sf:1625, tank:841, footprint:72,  price:197713 }},
+  { minFlow:1951, sand:{qty:4,model:'48x120',    sf:174.8,media:26800,footprint:201, price:140012 }, def:{qty:1,model:'SP-55-48-2076',   sf:1625, tank:841, footprint:72,  price:197713 }},
+  { minFlow:2276, sand:{qty:4,model:'48x120',    sf:174.8,media:26800,footprint:201, price:140012 }, def:{qty:2,model:'SP-49-48-1548',   sf:2422, tank:1230,footprint:116, price:336874 }},
+  { minFlow:2378, sand:{qty:4,model:'60x96',     sf:203.2,media:40000,footprint:204, price:205825 }, def:{qty:2,model:'SP-49-48-1548',   sf:2422, tank:1230,footprint:116, price:336874 }},
+  { minFlow:2686, sand:{qty:4,model:'60x108',    sf:233.2,media:43600,footprint:218, price:213259 }, def:{qty:2,model:'SP-49-48-1548',   sf:2422, tank:1230,footprint:116, price:336874 }},
+  { minFlow:2907, sand:{qty:4,model:'60x120',    sf:243.2,media:48000,footprint:233, price:216325 }, def:{qty:2,model:'SP-55-48-2076',   sf:3250, tank:1682,footprint:144, price:395426 }},
+  { minFlow:3576, sand:{qty:6,model:'60x96',     sf:304.8,media:60000,footprint:323, price:308092 }, def:{qty:2,model:'SP-55-48-2076',   sf:3250, tank:1682,footprint:144, price:395426 }},
+  { minFlow:4079, sand:{qty:6,model:'60x108',    sf:334.8,media:65400,footprint:345, price:319242 }, def:{qty:2,model:'SP-55-48-2076',   sf:3250, tank:1682,footprint:144, price:395426 }},
+];
+const compressorPrice = 1233;
+const toolKitPrice    = 383;
+
+// ─── POOL ROWS SETUP ─────────────────────────────────────────────────────────
+function buildPoolRows() {
+  const tbody = document.getElementById('poolRows');
+  for (let i = 1; i <= 10; i++) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="font-weight:600;color:#003d7a;">Pool ${i}</td>
+      <td><input type="text" id="pDesc${i}" placeholder="e.g. Lap Pool" style="width:140px;"></td>
+      <td>
+        <select id="pIO${i}" style="width:120px;">
+          <option value="O">Outdoor</option>
+          <option value="I">Indoor</option>
+        </select>
+      </td>
+      <td><input type="number" id="pFlow${i}" placeholder="0" min="0" step="1" style="width:100px;"></td>
+    `;
+    tbody.appendChild(tr);
+  }
+}
+
+// ─── LOOKUP HELPER ───────────────────────────────────────────────────────────
+function lookup(flow) {
+  if (!flow || flow <= 0) return null;
+  // find the last row where minFlow <= flow
+  let row = null;
+  for (let i = 0; i < lookupTable.length; i++) {
+    if (lookupTable[i].minFlow <= flow) row = lookupTable[i];
+    else break;
+  }
+  return row;
+}
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+const fmt  = v => v == null ? '—' : '$' + Math.round(v).toLocaleString();
+const fmtN = v => v == null ? '—' : Math.round(v).toLocaleString();
+const pct  = v => (v * 100).toFixed(1) + '%';
+
+function v(id) { return parseFloat(document.getElementById(id).value) || 0; }
+function s(id) { return document.getElementById(id).value; }
+
+// ─── MAIN CALCULATION ────────────────────────────────────────────────────────
+let chartInstance = null;
+
+function calculate() {
+  // Assumptions
+  const mechSpaceRate  = v('mechSpace');
+  const installVarPct  = v('installVar') / 100;
+  const sandLoadRate   = v('sandLoadCost');
+  const sandMediaRate  = v('sandMediaCost');
+  const perliteRate    = v('perliteCost');
+  const sandBwRate     = v('sandBwRate');
+  const sandBwDur      = v('sandBwDur');
+  const sandBwFreq     = v('sandBwFreq');
+  const defBwFreq      = v('defBwFreq');
+  const opDays         = v('opDays');
+  const waterRate      = v('waterRate');
+  const sewerRate      = v('sewerRate');
+  const chemRate       = v('chemRate');
+  const heatDelta      = v('heatDelta');
+  const gasRate        = v('gasRate');
+  const elecRate       = v('elecRate');
+  const escalation     = v('escalation') / 100;
+  const nComp          = v('compressors');
+  const nToolKit       = v('toolKits');
+
+  // Accumulators
+  let sandCap=0, defCap=0;
+  let sandElec=0, defElec=0;
+  let sandWater=0, defWater=0;
+  let sandChem=0, defChem=0;
+  let sandHeat=0, defHeat=0;
+  let sandSewer=0, defSewer=0;
+  let sandPerlite=0, defPerlite=0;
+  let sandMediaCostTotal=0, sandMediaLoadTotal=0;
+  let totalSandBwVol=0, totalDefBwVol=0;
+  let sandElecKwh=0, defElecKwh=0;
+
+  for (let i = 1; i <= 10; i++) {
+    const flow = parseFloat(document.getElementById(`pFlow${i}`).value) || 0;
+    if (!flow) continue;
+    const isIndoor = document.getElementById(`pIO${i}`).value === 'I';
+    const row = lookup(flow);
+    if (!row || !row.sand || !row.def) continue;
+
+    const sd = row.sand;
+    const df = row.def;
+
+    // ── SAND CAPITAL ──
+    const sandMechSpace   = sd.footprint * mechSpaceRate;
+    const sandInstall     = sd.price * installVarPct;
+    const sandMediaLoad   = (sd.media * sandLoadRate);
+    const sandMediaCostPl = (sd.media * sandMediaRate);
+    sandCap += sd.price + sandMechSpace + sandInstall + sandMediaLoad + sandMediaCostPl;
+    sandMediaCostTotal += sandMediaCostPl;
+    sandMediaLoadTotal += sandMediaLoad;
+
+    // ── DEFENDER CAPITAL ──
+    const defMechSpace = df.footprint * mechSpaceRate;
+    const defPerliteInit = 0.075 * df.sf * perliteRate;
+    defCap += df.price + defMechSpace + defPerliteInit;
+
+    // ── SAND BACKWASH VOLUME (gal/yr) ──
+    const sandBwVol = sd.sf * sandBwRate * sandBwDur * sandBwFreq;
+    totalSandBwVol += sandBwVol;
+
+    // ── DEFENDER BACKWASH VOLUME (gal/yr) ──
+    let defBwVol = df.tank * 2 * defBwFreq;
+    if (isIndoor) defBwVol += 0.1 * sandBwVol;
+    totalDefBwVol += defBwVol;
+
+    // ── SAND ANNUAL OPERATING ──
+    const sandHP   = (flow * 70) / (3960 * 0.8);
+    const sandKwh  = sandHP * 0.746 * elecRate * 24 * opDays * 0.512;
+    sandElec += sandKwh;
+    sandElecKwh += sandHP * 0.746 * 24 * opDays * 0.512;
+
+    sandWater += sandBwVol * waterRate / 1000;
+    sandSewer += sandBwVol * sewerRate / 1000;
+    sandChem  += sandBwVol * chemRate  / 1000;
+    sandHeat  += sandBwVol * 8.33 * 1.2 * heatDelta / 100000 * gasRate;
+
+    // ── DEFENDER ANNUAL OPERATING ──
+    const defHP   = (flow * 55) / (3960 * 0.8);
+    const defKwh  = defHP * 0.746 * elecRate * 24 * opDays * 0.512;
+    defElec += defKwh;
+    defElecKwh += defHP * 0.746 * 24 * opDays * 0.512;
+
+    defWater += defBwVol * waterRate / 1000;
+    defSewer += defBwVol * sewerRate / 1000;
+    defChem  += defBwVol * chemRate  / 1000;
+    defHeat  += defBwVol * 8.33 * 1.2 * heatDelta / 100000 * gasRate;
+
+    const defPerliteAnnual = 0.075 * df.sf * defBwFreq * perliteRate;
+    defPerlite += defPerliteAnnual;
+  }
+
+  // Accessories
+  defCap += nComp * compressorPrice + nToolKit * toolKitPrice;
+
+  // Annual totals
+  const sandAnnual = sandElec + sandWater + sandChem + sandHeat + sandSewer + sandPerlite;
+  const defAnnual  = defElec  + defWater  + defChem  + defHeat  + defSewer  + defPerlite;
+  const annualVar  = sandAnnual - defAnnual;
+  const capVar     = defCap - sandCap;
+
+  // Payback (months)
+  const paybackMonths = annualVar > 0 ? (capVar / annualVar) * 12 : null;
+
+  // Water savings %
+  const waterSavePct = totalSandBwVol > 0 ? (totalSandBwVol - totalDefBwVol) / totalSandBwVol : 0;
+
+  // Elec savings %
+  const elecSavePct = sandElecKwh > 0 ? (sandElecKwh - defElecKwh) / sandElecKwh : 0;
+
+  // 10-year cumulative series
+  const years = [0,1,2,3,4,5,6,7,8,9,10];
+  const sandSeries = years.map(y => {
+    if (y === 0) return sandCap;
+    return sandCap + sandAnnual * years.slice(1, y+1).reduce((s, yr) => s + Math.pow(1+escalation, yr-1), 0);
+  });
+  const defSeries = years.map(y => {
+    if (y === 0) return defCap;
+    return defCap + defAnnual * years.slice(1, y+1).reduce((s, yr) => s + Math.pow(1+escalation, yr-1), 0);
+  });
+
+  const tenYrSandTotal = sandSeries[10];
+  const tenYrDefTotal  = defSeries[10];
+  const tenYrSavings   = tenYrSandTotal - tenYrDefTotal;
+
+  const tenYrWaterGal  = (totalSandBwVol - totalDefBwVol) * 10;
+  const tenYrKwhSaved  = (sandElecKwh - defElecKwh) * 10;
+
+  // Sand media replacement at year 5 and 10 (included in 10yr)
+  const sandMediaRepl = sandMediaCostTotal + sandMediaLoadTotal;
+
+  // ── UPDATE KPIs ──
+  document.getElementById('kpiWaterSavePct').textContent = pct(waterSavePct);
+  document.getElementById('kpiWaterGal').textContent     = fmtN(tenYrWaterGal) + ' gal';
+  document.getElementById('kpiPayback').textContent      = paybackMonths != null ? Math.round(paybackMonths) + ' mo' : 'N/A';
+  document.getElementById('kpiElecSavePct').textContent  = pct(elecSavePct);
+  document.getElementById('kpiElecKwh').textContent      = fmtN(tenYrKwhSaved) + ' kWh';
+  document.getElementById('kpi10yr').textContent         = fmt(tenYrSavings);
+  document.getElementById('noteEscalation').textContent  = v('escalation');
+
+  // ── SUMMARY TABLE ──
+  const tbl = document.getElementById('summaryTable');
+  const rows = [
+    { label:'A. INITIAL CAPITAL COSTS', isSection: true },
+    { label:'Filter Purchase Price',         sand: sandCap - (sandCap - sandCap), def: null, _sandRaw: null, _defRaw: null,
+      _s: null, _d: null },  // placeholder — recalc below
+  ];
+
+  // Recalc capital breakdown properly
+  let sandFilterPrice=0, sandMechSp=0, sandInstLab=0, sandMedLoad=0, sandMedCost=0;
+  let defFilterPrice=0, defMechSp=0, defPerlInit=0, defComp=0, defTk=0;
+  for (let i = 1; i <= 10; i++) {
+    const flow = parseFloat(document.getElementById(`pFlow${i}`).value) || 0;
+    if (!flow) continue;
+    const row = lookup(flow);
+    if (!row || !row.sand || !row.def) continue;
+    const sd = row.sand; const df = row.def;
+    sandFilterPrice += sd.price;
+    sandMechSp      += sd.footprint * mechSpaceRate;
+    sandInstLab     += sd.price * installVarPct;
+    sandMedLoad     += sd.media * sandLoadRate;
+    sandMedCost     += sd.media * sandMediaRate;
+    defFilterPrice  += df.price;
+    defMechSp       += df.footprint * mechSpaceRate;
+    defPerlInit     += 0.075 * df.sf * perliteRate;
+  }
+  defComp = nComp * compressorPrice;
+  defTk   = nToolKit * toolKitPrice;
+
+  const capRows = [
+    ['Filter Purchase Price', sandFilterPrice, defFilterPrice],
+    ['Mechanical Space',      sandMechSp,      defMechSp     ],
+    ['Installation Labor Variance', sandInstLab, 0           ],
+    ['Filter Media (Initial)', sandMedLoad + sandMedCost, defPerlInit],
+    ['Compressors & Tool Kits', 0, defComp + defTk          ],
+  ];
+  const annRows = [
+    ['Electrical Costs',     sandElec,   defElec   ],
+    ['Potable Water Fee',    sandWater,  defWater  ],
+    ['Make-up: Chemicals',   sandChem,   defChem   ],
+    ['Make-up: Heat',        sandHeat,   defHeat   ],
+    ['Sanitary Sewer Fee',   sandSewer,  defSewer  ],
+    ['Perlite Media (Annual)', sandPerlite, defPerlite],
+  ];
+
+  function varClass(diff) { return diff > 0 ? 'pos' : diff < 0 ? 'neg' : ''; }
+
+  let html = `<thead><tr>
+    <th style="text-align:left;min-width:220px;">Item</th>
+    <th>Sand Filter</th><th>Defender Filter</th><th>Variance (Savings)</th>
+  </tr></thead><tbody>`;
+
+  html += `<tr class="section-header"><td colspan="4">A. Initial Capital Costs</td></tr>`;
+  capRows.forEach(([lbl,s,d]) => {
+    const diff = s - d;
+    html += `<tr><td>${lbl}</td><td>${fmt(s)}</td><td>${fmt(d)}</td>
+      <td class="${varClass(diff)}">${fmt(diff)}</td></tr>`;
+  });
+  html += `<tr class="total-row"><td>TOTAL CAPITAL</td><td>${fmt(sandCap)}</td><td>${fmt(defCap)}</td>
+    <td class="${varClass(sandCap-defCap)}">${fmt(sandCap-defCap)}</td></tr>`;
+
+  html += `<tr class="section-header"><td colspan="4">B. Annual Operating Costs (Year 1)</td></tr>`;
+  annRows.forEach(([lbl,s,d]) => {
+    const diff = s - d;
+    html += `<tr><td>${lbl}</td><td>${fmt(s)}</td><td>${fmt(d)}</td>
+      <td class="${varClass(diff)}">${fmt(diff)}</td></tr>`;
+  });
+  html += `<tr class="total-row"><td>TOTAL ANNUAL OPERATING</td><td>${fmt(sandAnnual)}</td><td>${fmt(defAnnual)}</td>
+    <td class="${varClass(annualVar)}">${fmt(annualVar)}</td></tr>`;
+
+  html += `<tr class="section-header"><td colspan="4">C. 10-Year Life-Cycle Totals (at ${v('escalation')}% escalation)</td></tr>`;
+  html += `<tr><td>Sand Filter 10-Year Total</td><td>${fmt(tenYrSandTotal)}</td><td>—</td><td>—</td></tr>`;
+  html += `<tr><td>Defender Filter 10-Year Total</td><td>—</td><td>${fmt(tenYrDefTotal)}</td><td>—</td></tr>`;
+  html += `<tr class="total-row"><td>10-YEAR SAVINGS (Defender vs Sand)</td><td>—</td><td>—</td>
+    <td class="pos">${fmt(tenYrSavings)}</td></tr>`;
+
+  html += `</tbody>`;
+  tbl.innerHTML = html;
+
+  // ── CHART ──
+  const labels = years.map(y => y === 0 ? 'Capital' : `Yr ${y}`);
+  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+  chartInstance = new Chart(document.getElementById('roiChart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Sand Filter', data: sandSeries, borderColor: '#c25f00', backgroundColor: 'rgba(194,95,0,0.08)',
+          borderWidth: 2.5, pointRadius: 4, tension: 0.1 },
+        { label: 'Defender Filter', data: defSeries, borderColor: '#0062c3', backgroundColor: 'rgba(0,98,195,0.08)',
+          borderWidth: 2.5, pointRadius: 4, tension: 0.1 },
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: ctx => ' ' + ctx.dataset.label + ': $' + Math.round(ctx.parsed.y).toLocaleString()
+          }
+        },
+        legend: { position: 'top' }
+      },
+      scales: {
+        y: {
+          ticks: { callback: v => '$' + (v/1000).toFixed(0) + 'k' }
         }
+      }
+    }
+  });
 
-        function formatCurrency(amount) {
-            return '$' + amount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-        }
+  document.getElementById('kpiSection').style.display = '';
+}
 
-        function calculateROI() {
-            // Get pool GPM
-            const poolGPMs = [];
-            const gpm = parseFloat(document.getElementById('poolGPM1').value) || 0;
-            if (gpm > 0) poolGPMs.push(gpm);
+// ─── INIT ────────────────────────────────────────────────────────────────────
+buildPoolRows();
+document.getElementById('projDate').value = new Date().toISOString().slice(0,10);
 
-            if (poolGPMs.length === 0) {
-                alert('Please enter at least one pool flow rate (GPM).');
-                return;
-            }
-
-            // Get input values
-            const operatingDays = parseFloat(document.getElementById('operatingDays').value) || 365;
-            const backwashDuration = parseFloat(document.getElementById('backwashDuration').value) || 5;
-            const sandBackwashFreq = parseFloat(document.getElementById('sandBackwashFreq').value) || 104;
-            const defenderBackwashFreq = parseFloat(document.getElementById('defenderBackwashFreq').value) || 12;
-            const tempDelta = parseFloat(document.getElementById('tempDelta').value) || 30;
-            const annualEscalation = (parseFloat(document.getElementById('annualEscalation').value) || 7) / 100;
-
-            const electricalCost = parseFloat(document.getElementById('electricalCost').value) || 0.12;
-            const waterCost = parseFloat(document.getElementById('waterCost').value) || 3.5;
-            const sewerCost = parseFloat(document.getElementById('sewerCost').value) || 3.5;
-            const heatCost = parseFloat(document.getElementById('heatCost').value) || 0.9;
-            const chemicalCost = parseFloat(document.getElementById('chemicalCost').value) || 3;
-
-            const sandCapitalCost = parseFloat(document.getElementById('sandCapitalCost').value) || 0;
-            const mechSpaceValue = parseFloat(document.getElementById('mechSpaceValue').value) || 120;
-            const laborVariance = (parseFloat(document.getElementById('laborVariance').value) || 15) / 100;
-            const sandMediaCost = parseFloat(document.getElementById('sandMediaCost').value) || 17.8;
-            const mediaLoadingLabor = parseFloat(document.getElementById('mediaLoadingLabor').value) || 3;
-            const defenderCapitalCost = parseFloat(document.getElementById('defenderCapitalCost').value) || 0;
-            const perliteMediaCost = parseFloat(document.getElementById('perliteMediaCost').value) || 0.94;
-            const numCompressors = parseFloat(document.getElementById('numCompressors').value) || 1;
-            const numToolKits = parseFloat(document.getElementById('numToolKits').value) || 1;
-
-            // Aggregate filter data for all pools
-            let totalSandPrice = 0, totalSandSqFt = 0, totalSandVol = 0, totalSandMedia = 0;
-            let totalDefPrice = 0, totalDefVol = 0, totalDefArea = 0, totalDefBWRate = 0;
-
-            for (const gpm of poolGPMs) {
-                const match = findFilterMatch(gpm);
-                if (match) {
-                    totalSandPrice += match.sandPrice;
-                    totalSandSqFt += match.sandSqFt;
-                    totalSandVol += match.sandVol;
-                    totalSandMedia += match.sandMedia;
-                    totalDefPrice += match.defPrice;
-                    totalDefVol += match.defVol;
-                    totalDefArea += match.defArea;
-                    totalDefBWRate += match.defBWRate;
-                }
-            }
-
-            // Capital Costs
-            const sandFilterCost = sandCapitalCost;
-            const defFilterCost = defenderCapitalCost + (numCompressors * COMPRESSOR_COST) + (numToolKits * TOOLKIT_COST);
-
-            const sandMechSpace = totalSandSqFt * mechSpaceValue;
-            const defMechSpace = totalDefArea * mechSpaceValue * 0.3; // Defender takes ~30% of sand filter space
-
-            const sandLaborVariance = sandFilterCost * laborVariance;
-            const defLaborVariance = 0;
-
-            const sandMediaInitial = (totalSandMedia * 100) * (sandMediaCost / 100) + (totalSandMedia * mediaLoadingLabor);
-            const defMediaInitial = totalDefVol * 0.075 * perliteMediaCost;
-
-            const totalSandCapital = sandFilterCost + sandMechSpace + sandLaborVariance + sandMediaInitial;
-            const totalDefCapital = defFilterCost + defMechSpace + defLaborVariance + defMediaInitial;
-
-            // Annual Operating Costs
-            // Backwash volumes (gallons)
-            const sandBWVolume = totalSandSqFt * 20 * backwashDuration * sandBackwashFreq; // 20 gpm/sqft backwash rate
-            const defBWVolume = totalDefBWRate * backwashDuration * defenderBackwashFreq;
-
-            // Water costs
-            const sandWaterCost = (sandBWVolume / 1000) * waterCost;
-            const defWaterCost = (defBWVolume / 1000) * waterCost;
-
-            // Sewer costs
-            const sandSewerCost = (sandBWVolume / 1000) * sewerCost;
-            const defSewerCost = (defBWVolume / 1000) * sewerCost;
-
-            // Heat costs (therms = gallons * temp delta * 8.33 / 100000)
-            const sandHeatCost = (sandBWVolume * tempDelta * 8.33 / 100000) * heatCost;
-            const defHeatCost = (defBWVolume * tempDelta * 8.33 / 100000) * heatCost;
-
-            // Chemical costs
-            const sandChemCost = (sandBWVolume / 1000) * chemicalCost;
-            const defChemCost = (defBWVolume / 1000) * chemicalCost;
-
-            // Perlite media replacement (annual)
-            const defPerliteCost = totalDefVol * 0.075 * perliteMediaCost * (defenderBackwashFreq / 12);
-
-            const totalSandAnnual = sandWaterCost + sandSewerCost + sandHeatCost + sandChemCost;
-            const totalDefAnnual = defWaterCost + defSewerCost + defHeatCost + defChemCost + defPerliteCost;
-
-            // Display Capital Costs
-            const capitalHTML = `
-                <tr><td>Filter Purchase Price</td><td>${formatCurrency(sandFilterCost)}</td><td>${formatCurrency(defFilterCost)}</td><td class="${sandFilterCost - defFilterCost >= 0 ? 'savings-positive' : 'savings-negative'}">${formatCurrency(sandFilterCost - defFilterCost)}</td></tr>
-                <tr><td>Mechanical Space</td><td>${formatCurrency(sandMechSpace)}</td><td>${formatCurrency(defMechSpace)}</td><td class="${sandMechSpace - defMechSpace >= 0 ? 'savings-positive' : 'savings-negative'}">${formatCurrency(sandMechSpace - defMechSpace)}</td></tr>
-                <tr><td>Installation Labor Variance</td><td>${formatCurrency(sandLaborVariance)}</td><td>${formatCurrency(defLaborVariance)}</td><td class="${sandLaborVariance - defLaborVariance >= 0 ? 'savings-positive' : 'savings-negative'}">${formatCurrency(sandLaborVariance - defLaborVariance)}</td></tr>
-                <tr><td>Initial Media Cost</td><td>${formatCurrency(sandMediaInitial)}</td><td>${formatCurrency(defMediaInitial)}</td><td class="${sandMediaInitial - defMediaInitial >= 0 ? 'savings-positive' : 'savings-negative'}">${formatCurrency(sandMediaInitial - defMediaInitial)}</td></tr>
-                <tr class="total-row"><td>Total Capital Cost</td><td>${formatCurrency(totalSandCapital)}</td><td>${formatCurrency(totalDefCapital)}</td><td class="${totalSandCapital - totalDefCapital >= 0 ? 'savings-positive' : 'savings-negative'}">${formatCurrency(totalSandCapital - totalDefCapital)}</td></tr>
-            `;
-            document.getElementById('capitalCostsBody').innerHTML = capitalHTML;
-
-            // Display Operating Costs
-            const operatingHTML = `
-                <tr><td>Potable Water Fee</td><td>${formatCurrency(sandWaterCost)}</td><td>${formatCurrency(defWaterCost)}</td><td class="savings-positive">${formatCurrency(sandWaterCost - defWaterCost)}</td></tr>
-                <tr><td>Sanitary Sewer Fee</td><td>${formatCurrency(sandSewerCost)}</td><td>${formatCurrency(defSewerCost)}</td><td class="savings-positive">${formatCurrency(sandSewerCost - defSewerCost)}</td></tr>
-                <tr><td>Make-up Water Heat</td><td>${formatCurrency(sandHeatCost)}</td><td>${formatCurrency(defHeatCost)}</td><td class="savings-positive">${formatCurrency(sandHeatCost - defHeatCost)}</td></tr>
-                <tr><td>Make-up Water Chemicals</td><td>${formatCurrency(sandChemCost)}</td><td>${formatCurrency(defChemCost)}</td><td class="savings-positive">${formatCurrency(sandChemCost - defChemCost)}</td></tr>
-                <tr><td>Perlite Media (Defender)</td><td>$0</td><td>${formatCurrency(defPerliteCost)}</td><td class="savings-negative">-${formatCurrency(defPerliteCost)}</td></tr>
-                <tr class="total-row"><td>Total Annual Operating Cost</td><td>${formatCurrency(totalSandAnnual)}</td><td>${formatCurrency(totalDefAnnual)}</td><td class="${totalSandAnnual - totalDefAnnual >= 0 ? 'savings-positive' : 'savings-negative'}">${formatCurrency(totalSandAnnual - totalDefAnnual)}</td></tr>
-            `;
-            document.getElementById('operatingCostsBody').innerHTML = operatingHTML;
-
-            // 10-Year Forecast
-            let sandCumulative = totalSandCapital;
-            let defCumulative = totalDefCapital;
-            let forecastHTML = '';
-
-            for (let year = 1; year <= 10; year++) {
-                const escalationFactor = Math.pow(1 + annualEscalation, year - 1);
-                const sandYearCost = totalSandAnnual * escalationFactor;
-                const defYearCost = totalDefAnnual * escalationFactor;
-
-                sandCumulative += sandYearCost;
-                defCumulative += defYearCost;
-
-                const savings = sandCumulative - defCumulative;
-                forecastHTML += `<tr><td>Year ${year}</td><td>${formatCurrency(sandCumulative)}</td><td>${formatCurrency(defCumulative)}</td><td class="${savings >= 0 ? 'savings-positive' : 'savings-negative'}">${formatCurrency(savings)}</td></tr>`;
-            }
-            document.getElementById('forecastBody').innerHTML = forecastHTML;
-
-            // Total savings and payback
-            const totalSavingsAmount = sandCumulative - defCumulative;
-            document.getElementById('totalSavings').textContent = formatCurrency(totalSavingsAmount);
-
-            const annualSavings = totalSandAnnual - totalDefAnnual;
-            const capitalDifference = totalDefCapital - totalSandCapital;
-            let paybackMonths = '--';
-            if (annualSavings > 0 && capitalDifference > 0) {
-                paybackMonths = Math.ceil((capitalDifference / annualSavings) * 12);
-                if (paybackMonths > 120) paybackMonths = '120+';
-            } else if (capitalDifference <= 0) {
-                paybackMonths = '0 (Immediate)';
-            }
-            document.getElementById('paybackPeriod').textContent = paybackMonths + ' months';
-
-            // Water savings
-            const waterSaved = sandBWVolume - defBWVolume;
-            document.getElementById('waterSaved').textContent = waterSaved.toLocaleString() + ' gallons';
-
-            // Show results
-            document.getElementById('resultsSection').style.display = 'block';
-            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Set today's date
-        document.getElementById('roiDate').valueAsDate = new Date();
-
-        // Publish Results as PDF
-        function publishResults() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            const pageWidth = doc.internal.pageSize.getWidth();
-            const margin = 15;
-            let yPos = 15;
-
-            // Colors matching webpage
-            const primaryColor = [0, 125, 163];    // #007DA3
-            const accentColor = [97, 214, 4];      // #61D604
-            const darkText = [51, 51, 51];
-            const lightGray = [249, 249, 249];
-
-            // Helper to add section header
-            function addSectionHeader(title) {
-                doc.setFillColor(...lightGray);
-                doc.roundedRect(margin, yPos, pageWidth - 2*margin, 8, 1, 1, 'F');
-                doc.setDrawColor(...accentColor);
-                doc.setLineWidth(1.5);
-                doc.line(margin, yPos, margin, yPos + 8);
-                doc.setFontSize(11);
-                doc.setTextColor(...primaryColor);
-                doc.setFont('helvetica', 'bold');
-                doc.text(title, margin + 5, yPos + 5.5);
-                yPos += 12;
-            }
-
-            // Helper to add table
-            function addTable(headers, rows, colWidths) {
-                const startX = margin;
-                let x = startX;
-
-                // Header row
-                doc.setFillColor(...primaryColor);
-                doc.rect(startX, yPos, pageWidth - 2*margin, 7, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(8);
-                doc.setFont('helvetica', 'bold');
-                headers.forEach((h, i) => {
-                    doc.text(h, x + 2, yPos + 5);
-                    x += colWidths[i];
-                });
-                yPos += 7;
-
-                // Data rows
-                doc.setTextColor(...darkText);
-                doc.setFont('helvetica', 'normal');
-                rows.forEach((row, rowIdx) => {
-                    x = startX;
-                    if (rowIdx % 2 === 0) {
-                        doc.setFillColor(245, 245, 245);
-                        doc.rect(startX, yPos, pageWidth - 2*margin, 6, 'F');
-                    }
-                    row.forEach((cell, i) => {
-                        doc.text(String(cell), x + 2, yPos + 4);
-                        x += colWidths[i];
-                    });
-                    yPos += 6;
-                });
-                yPos += 4;
-            }
-
-            // Title
-            doc.setFontSize(18);
-            doc.setTextColor(...primaryColor);
-            doc.setFont('helvetica', 'bold');
-            doc.text('Defender Cost Savings Analysis', pageWidth / 2, yPos, { align: 'center' });
-            yPos += 8;
-
-            // Load and add defender image at top (smaller)
-            const img = new Image();
-            img.crossOrigin = 'anonymous';
-            img.onload = function() {
-                const canvas = document.createElement('canvas');
-                canvas.width = img.width;
-                canvas.height = img.height;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0);
-                const imgData = canvas.toDataURL('image/png');
-                // Calculate dimensions preserving aspect ratio
-                const maxWidth = 50;
-                const aspectRatio = img.height / img.width;
-                const imgHeight = maxWidth * aspectRatio;
-                doc.addImage(imgData, 'PNG', pageWidth / 2 - maxWidth / 2, yPos, maxWidth, imgHeight);
-                yPos += imgHeight + 5;
-                buildPDFContent();
-            };
-            img.onerror = function() {
-                buildPDFContent();
-            };
-            img.src = 'Images/defender_filter.png';
-
-            function buildPDFContent() {
-                // Project Information
-                addSectionHeader('Project Information');
-                doc.setFontSize(9);
-                doc.setTextColor(...darkText);
-                doc.setFont('helvetica', 'normal');
-                const projectName = document.getElementById('roiProjectName').value || '-';
-                const location = document.getElementById('roiLocation').value || '-';
-                const date = document.getElementById('roiDate').value || '-';
-                const preparedBy = document.getElementById('roiPreparedBy').value || '-';
-                const preparedFor = document.getElementById('roiPreparedFor').value || '-';
-                doc.text(`Project: ${projectName}    Location: ${location}    Date: ${date}`, margin, yPos);
-                yPos += 5;
-                doc.text(`Prepared By: ${preparedBy}    Prepared For: ${preparedFor}`, margin, yPos);
-                yPos += 8;
-
-                // Pool Data
-                addSectionHeader('Pool Data');
-                const poolDesc = document.getElementById('poolDesc1').value || '-';
-                const poolGPM = document.getElementById('poolGPM1').value || '-';
-                doc.setFontSize(9);
-                doc.text(`Pool: ${poolDesc}    Flow Rate: ${poolGPM} GPM`, margin, yPos);
-                yPos += 8;
-
-                // Operating Variables & Utility Rates (side by side in compact form)
-                addSectionHeader('Operating Variables & Utility Rates');
-                doc.setFontSize(8);
-                const opDays = document.getElementById('operatingDays').value;
-                const bwDur = document.getElementById('backwashDuration').value;
-                const sandBW = document.getElementById('sandBackwashFreq').value;
-                const defBW = document.getElementById('defenderBackwashFreq').value;
-                const tempDelta = document.getElementById('tempDelta').value;
-                const escalation = document.getElementById('annualEscalation').value;
-                const elecCost = document.getElementById('electricalCost').value;
-                const waterCost = document.getElementById('waterCost').value;
-                const sewerCost = document.getElementById('sewerCost').value;
-                const heatCost = document.getElementById('heatCost').value;
-                const chemCost = document.getElementById('chemicalCost').value;
-
-                doc.text(`Operating Days: ${opDays}  |  Backwash Duration: ${bwDur} min  |  Sand BW Freq: ${sandBW}/season  |  Defender BW Freq: ${defBW}/season`, margin, yPos);
-                yPos += 4;
-                doc.text(`Temp Delta: ${tempDelta}°F  |  Annual Escalation: ${escalation}%  |  Electrical: $${elecCost}/kWh  |  Water: $${waterCost}/1000gal`, margin, yPos);
-                yPos += 4;
-                doc.text(`Sewer: $${sewerCost}/1000gal  |  Heat: $${heatCost}/therm  |  Chemical: $${chemCost}/1000gal`, margin, yPos);
-                yPos += 8;
-
-                // Capital Cost Comparison
-                addSectionHeader('Capital Cost Comparison');
-                const capitalHeaders = ['Item', 'Sand Filter', 'Defender Filter', 'Variance'];
-                const capitalRows = [];
-                document.querySelectorAll('#capitalCostsBody tr').forEach(row => {
-                    const cells = row.querySelectorAll('td');
-                    if (cells.length >= 4) {
-                        capitalRows.push([cells[0].textContent, cells[1].textContent, cells[2].textContent, cells[3].textContent]);
-                    }
-                });
-                addTable(capitalHeaders, capitalRows, [55, 40, 45, 40]);
-
-                // Annual Operating Cost Comparison
-                addSectionHeader('Annual Operating Cost Comparison');
-                const operatingHeaders = ['Item', 'Sand Filter', 'Defender Filter', 'Annual Savings'];
-                const operatingRows = [];
-                document.querySelectorAll('#operatingCostsBody tr').forEach(row => {
-                    const cells = row.querySelectorAll('td');
-                    if (cells.length >= 4) {
-                        operatingRows.push([cells[0].textContent, cells[1].textContent, cells[2].textContent, cells[3].textContent]);
-                    }
-                });
-                addTable(operatingHeaders, operatingRows, [55, 40, 45, 40]);
-
-                // Check if we need a new page
-                if (yPos > 220) {
-                    doc.addPage();
-                    yPos = 15;
-                }
-
-                // 10-Year Savings Forecast
-                addSectionHeader('10-Year Savings Forecast');
-                const forecastHeaders = ['Year', 'Sand Cumulative', 'Defender Cumulative', 'Cumulative Savings'];
-                const forecastRows = [];
-                document.querySelectorAll('#forecastBody tr').forEach(row => {
-                    const cells = row.querySelectorAll('td');
-                    if (cells.length >= 4) {
-                        forecastRows.push([cells[0].textContent, cells[1].textContent, cells[2].textContent, cells[3].textContent]);
-                    }
-                });
-                addTable(forecastHeaders, forecastRows, [25, 50, 55, 50]);
-
-                // Summary Box
-                const totalSavings = document.getElementById('totalSavings').textContent;
-                const paybackPeriod = document.getElementById('paybackPeriod').textContent;
-                const waterSaved = document.getElementById('waterSaved').textContent;
-
-                // Water Savings - White box with blue text, larger font (above dollar amount)
-                doc.setFillColor(255, 255, 255);
-                doc.roundedRect(margin, yPos, pageWidth - 2*margin, 22, 3, 3, 'F');
-                doc.setTextColor(...primaryColor);
-                doc.setFontSize(16);
-                doc.setFont('helvetica', 'bold');
-                doc.text(waterSaved, pageWidth / 2, yPos + 10, { align: 'center' });
-                doc.setFontSize(10);
-                doc.text('Water Saved Per Year', pageWidth / 2, yPos + 18, { align: 'center' });
-                yPos += 26;
-
-                // 10-Year Total Savings - Blue box
-                doc.setFillColor(...primaryColor);
-                doc.roundedRect(margin, yPos, pageWidth - 2*margin, 30, 3, 3, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFontSize(12);
-                doc.setFont('helvetica', 'bold');
-                doc.text('10-Year Total Savings', pageWidth / 2, yPos + 8, { align: 'center' });
-                doc.setFontSize(18);
-                doc.text(totalSavings, pageWidth / 2, yPos + 18, { align: 'center' });
-                doc.setFontSize(9);
-                doc.setFont('helvetica', 'normal');
-                doc.text('Defender Filter vs Sand Filter', pageWidth / 2, yPos + 25, { align: 'center' });
-                yPos += 35;
-
-                // Payback Period
-                doc.setFillColor(...accentColor);
-                doc.roundedRect(pageWidth / 2 - 35, yPos, 70, 12, 2, 2, 'F');
-                doc.setTextColor(...darkText);
-                doc.setFontSize(10);
-                doc.setFont('helvetica', 'bold');
-                doc.text('Payback Period: ' + paybackPeriod, pageWidth / 2, yPos + 8, { align: 'center' });
-
-                // Footer
-                doc.setFontSize(8);
-                doc.setTextColor(150);
-                doc.setFont('helvetica', 'normal');
-                doc.text('© 2026 Xylem Inc. All rights reserved.', pageWidth / 2, 290, { align: 'center' });
-
-                doc.save('Defender_ROI_Analysis.pdf');
-            }
-        }
-    </script>
+// Pre-fill example pools from the sample file
+const preload = [{i:1,desc:'Competition Pool',io:'I',flow:465},{i:2,desc:'Leisure Pool',io:'I',flow:465},{i:3,desc:'Therapy Pool',io:'I',flow:425},{i:4,desc:'Lap Pool',io:'I',flow:425}];
+preload.forEach(p => {
+  document.getElementById(`pDesc${p.i}`).value = p.desc;
+  document.getElementById(`pIO${p.i}`).value   = p.io;
+  document.getElementById(`pFlow${p.i}`).value  = p.flow;
+});
+</script>
 </body>
 </html>
