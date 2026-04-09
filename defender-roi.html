@@ -384,7 +384,9 @@ function calculate() {
   let sandElecKwh=0, defElecKwh=0;
 
   for (let i = 1; i <= 10; i++) {
-    const flow = parseFloat(document.getElementById(`pFlow${i}`).value) || 0;
+    const flowEl = document.getElementById(`pFlow${i}`);
+    if (!flowEl) continue;
+    const flow = parseFloat(flowEl.value) || 0;
     if (!flow) continue;
     const isIndoor = document.getElementById(`pIO${i}`).value === 'I';
     const row = lookup(flow);
@@ -502,7 +504,9 @@ function calculate() {
   let sandFilterPrice=0, sandMechSp=0, sandInstLab=0, sandMedLoad=0, sandMedCost=0;
   let defFilterPrice=0, defMechSp=0, defPerlInit=0, defComp=0, defTk=0;
   for (let i = 1; i <= 10; i++) {
-    const flow = parseFloat(document.getElementById(`pFlow${i}`).value) || 0;
+    const flowEl = document.getElementById(`pFlow${i}`);
+    if (!flowEl) continue;
+    const flow = parseFloat(flowEl.value) || 0;
     if (!flow) continue;
     const row = lookup(flow);
     if (!row || !row.sand || !row.def) continue;
