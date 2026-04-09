@@ -41,17 +41,16 @@
     border-color: #007DA3; outline: none;
   }
 
-  /* KPI boxes */
-  .kpi-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 30px; }
-  .kpi {
-    flex: 1; min-width: 150px; background: #007DA3; color: #fff;
-    border-radius: 10px; padding: 16px; text-align: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  }
-  .kpi.green { background: #61D604; color: #333; }
-  .kpi.highlight { background: #005a75; }
-  .kpi .val { font-size: 26px; font-weight: 700; line-height: 1.1; }
-  .kpi .lbl { font-size: 11px; opacity: 0.9; margin-top: 5px; font-weight: 600; }
+  /* KPI rows */
+  .kpi-rows { margin-bottom: 30px; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .kpi-row { display: flex; align-items: center; justify-content: space-between; padding: 16px 22px; background: #fff; border-bottom: 1px solid #e8eef2; }
+  .kpi-row:last-child { border-bottom: none; }
+  .kpi-row:nth-child(even) { background: #f7fafc; }
+  .kpi-lbl { font-size: 0.95em; font-weight: 600; color: #444; display: flex; align-items: center; gap: 10px; }
+  .kpi-lbl::before { content: ''; display: inline-block; width: 4px; height: 18px; border-radius: 2px; background: #007DA3; flex-shrink: 0; }
+  .kpi-row:nth-child(4) .kpi-lbl::before { background: #61D604; }
+  .kpi-val { font-size: 1.3em; font-weight: 700; color: #007DA3; }
+  .kpi-row:nth-child(4) .kpi-val { color: #4fb003; }
 
   /* Results table */
   .res-table { width: 100%; border-collapse: collapse; }
@@ -194,30 +193,22 @@
 
     <!-- KPI SUMMARY -->
     <div id="kpiSection" style="display:none;">
-      <div class="kpi-row">
-        <div class="kpi green">
-          <div class="val" id="kpiWaterSavePct">—</div>
-          <div class="lbl">Annual Water Savings</div>
+      <div class="kpi-rows">
+        <div class="kpi-row">
+          <div class="kpi-lbl">Annual Water Savings (Gallons)</div>
+          <div class="kpi-val" id="kpiWaterGal">—</div>
         </div>
-        <div class="kpi green">
-          <div class="val" id="kpiWaterGal">—</div>
-          <div class="lbl">10-Year Gallons Saved</div>
+        <div class="kpi-row">
+          <div class="kpi-lbl">Annual Electrical Savings (kWh)</div>
+          <div class="kpi-val" id="kpiElecKwh">—</div>
         </div>
-        <div class="kpi highlight">
-          <div class="val" id="kpiPayback">—</div>
-          <div class="lbl">Adj. ROI Payback</div>
+        <div class="kpi-row">
+          <div class="kpi-lbl">Annual Energy Savings (Therms)</div>
+          <div class="kpi-val" id="kpiHeatTherms">—</div>
         </div>
-        <div class="kpi">
-          <div class="val" id="kpiElecSavePct">—</div>
-          <div class="lbl">Annual Electrical Savings</div>
-        </div>
-        <div class="kpi">
-          <div class="val" id="kpiElecKwh">—</div>
-          <div class="lbl">10-Year kWh Saved</div>
-        </div>
-        <div class="kpi green">
-          <div class="val" id="kpi10yr">—</div>
-          <div class="lbl">10-Year Total Savings</div>
+        <div class="kpi-row">
+          <div class="kpi-lbl">10-Year Savings ($)</div>
+          <div class="kpi-val" id="kpi10yr">—</div>
         </div>
       </div>
 
@@ -382,6 +373,7 @@ function calculate() {
   let sandMediaCostTotal=0, sandMediaLoadTotal=0;
   let totalSandBwVol=0, totalDefBwVol=0;
   let sandElecKwh=0, defElecKwh=0;
+  let sandHeatTherms=0, defHeatTherms=0;
 
   for (let i = 1; i <= 10; i++) {
     const flowEl = document.getElementById(`pFlow${i}`);
@@ -428,6 +420,7 @@ function calculate() {
     sandSewer += sandBwVol * sewerRate / 1000;
     sandChem  += sandBwVol * chemRate  / 1000;
     sandHeat  += sandBwVol * 8.33 * 1.2 * heatDelta / 100000 * gasRate;
+    sandHeatTherms += sandBwVol * 8.33 * 1.2 * heatDelta / 100000;
 
     // ── DEFENDER ANNUAL OPERATING ──
     const defHP   = (flow * 55) / (3960 * 0.8);
@@ -439,6 +432,7 @@ function calculate() {
     defSewer += defBwVol * sewerRate / 1000;
     defChem  += defBwVol * chemRate  / 1000;
     defHeat  += defBwVol * 8.33 * 1.2 * heatDelta / 100000 * gasRate;
+    defHeatTherms += defBwVol * 8.33 * 1.2 * heatDelta / 100000;
 
     const defPerliteAnnual = 0.075 * df.sf * defBwFreq * perliteRate;
     defPerlite += defPerliteAnnual;
@@ -484,13 +478,15 @@ function calculate() {
   const sandMediaRepl = sandMediaCostTotal + sandMediaLoadTotal;
 
   // ── UPDATE KPIs ──
-  document.getElementById('kpiWaterSavePct').textContent = pct(waterSavePct);
-  document.getElementById('kpiWaterGal').textContent     = fmtN(tenYrWaterGal) + ' gal';
-  document.getElementById('kpiPayback').textContent      = paybackMonths != null ? Math.round(paybackMonths) + ' mo' : 'N/A';
-  document.getElementById('kpiElecSavePct').textContent  = pct(elecSavePct);
-  document.getElementById('kpiElecKwh').textContent      = fmtN(tenYrKwhSaved) + ' kWh';
-  document.getElementById('kpi10yr').textContent         = fmt(tenYrSavings);
-  document.getElementById('noteEscalation').textContent  = v('escalation');
+  const annualWaterSaved  = totalSandBwVol - totalDefBwVol;
+  const annualElecSaved   = sandElecKwh - defElecKwh;
+  const annualThermsSaved = sandHeatTherms - defHeatTherms;
+
+  document.getElementById('kpiWaterGal').textContent    = fmtN(annualWaterSaved) + ' gal';
+  document.getElementById('kpiElecKwh').textContent     = fmtN(annualElecSaved) + ' kWh';
+  document.getElementById('kpiHeatTherms').textContent  = fmtN(annualThermsSaved) + ' therms';
+  document.getElementById('kpi10yr').textContent        = fmt(tenYrSavings);
+  document.getElementById('noteEscalation').textContent = v('escalation');
 
   // ── SUMMARY TABLE ──
   const tbl = document.getElementById('summaryTable');
