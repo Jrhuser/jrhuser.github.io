@@ -137,10 +137,14 @@
             <th>Description</th>
             <th>Indoor / Outdoor</th>
             <th>Flow Rate (GPM)</th>
+            <th></th>
           </tr>
         </thead>
         <tbody id="poolRows"></tbody>
       </table>
+      <div style="margin-top:12px;">
+        <button class="promo-btn" id="addPoolBtn" onclick="addPool()" style="padding:10px 22px;font-size:0.9em;">+ Add Pool</button>
+      </div>
     </div>
 
     <!-- ASSUMPTIONS -->
@@ -272,23 +276,48 @@ const compressorPrice = 1233;
 const toolKitPrice    = 383;
 
 // ─── POOL ROWS SETUP ─────────────────────────────────────────────────────────
-function buildPoolRows() {
+let poolCount = 0;
+
+function addPool(desc='', io='O', flow='') {
+  if (poolCount >= 10) return;
+  poolCount++;
+  const i = poolCount;
   const tbody = document.getElementById('poolRows');
-  for (let i = 1; i <= 10; i++) {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td style="font-weight:600;color:#007DA3;">Pool ${i}</td>
-      <td><input type="text" id="pDesc${i}" placeholder="e.g. Lap Pool" style="width:140px;"></td>
-      <td>
-        <select id="pIO${i}" style="width:120px;">
-          <option value="O">Outdoor</option>
-          <option value="I">Indoor</option>
-        </select>
-      </td>
-      <td><input type="number" id="pFlow${i}" placeholder="0" min="0" step="1" style="width:100px;"></td>
-    `;
-    tbody.appendChild(tr);
-  }
+  const tr = document.createElement('tr');
+  tr.id = `poolRow${i}`;
+  tr.innerHTML = `
+    <td style="font-weight:600;color:#007DA3;">Pool ${i}</td>
+    <td><input type="text" id="pDesc${i}" placeholder="e.g. Lap Pool" value="${desc}" style="width:140px;"></td>
+    <td>
+      <select id="pIO${i}" style="width:120px;">
+        <option value="O"${io==='O'?' selected':''}>Outdoor</option>
+        <option value="I"${io==='I'?' selected':''}>Indoor</option>
+      </select>
+    </td>
+    <td><input type="number" id="pFlow${i}" placeholder="0" min="0" step="1" value="${flow}" style="width:100px;"></td>
+    <td><button onclick="removePool(${i})" style="background:none;border:none;color:#c00;font-size:1.1em;cursor:pointer;padding:4px 8px;" title="Remove">&times;</button></td>
+  `;
+  tbody.appendChild(tr);
+  if (poolCount >= 10) document.getElementById('addPoolBtn').style.display = 'none';
+}
+
+function removePool(i) {
+  const row = document.getElementById(`poolRow${i}`);
+  if (row) row.remove();
+  // Renumber remaining rows
+  poolCount = 0;
+  document.querySelectorAll('#poolRows tr').forEach(tr => {
+    poolCount++;
+    const n = poolCount;
+    tr.id = `poolRow${n}`;
+    tr.cells[0].textContent = `Pool ${n}`;
+    tr.cells[0].style.cssText = 'font-weight:600;color:#007DA3;';
+    tr.querySelector('input[type="text"]').id = `pDesc${n}`;
+    tr.querySelector('select').id = `pIO${n}`;
+    tr.querySelector('input[type="number"]').id = `pFlow${n}`;
+    tr.querySelector('button').setAttribute('onclick', `removePool(${n})`);
+  });
+  document.getElementById('addPoolBtn').style.display = '';
 }
 
 // ─── LOOKUP HELPER ───────────────────────────────────────────────────────────
@@ -570,16 +599,8 @@ function calculate() {
 }
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
-buildPoolRows();
 document.getElementById('projDate').value = new Date().toISOString().slice(0,10);
-
-// Pre-fill example pools from the sample file
-const preload = [{i:1,desc:'Competition Pool',io:'I',flow:465},{i:2,desc:'Leisure Pool',io:'I',flow:465},{i:3,desc:'Therapy Pool',io:'I',flow:425},{i:4,desc:'Lap Pool',io:'I',flow:425}];
-preload.forEach(p => {
-  document.getElementById(`pDesc${p.i}`).value = p.desc;
-  document.getElementById(`pIO${p.i}`).value   = p.io;
-  document.getElementById(`pFlow${p.i}`).value  = p.flow;
-});
+addPool(); // start with 1 empty pool row
 </script>
 </body>
 </html>
