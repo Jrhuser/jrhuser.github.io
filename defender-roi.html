@@ -152,6 +152,21 @@
       </div>
     </div>
 
+    <!-- FILTER PURCHASE PRICE -->
+    <h3>Filter Purchase Price</h3>
+    <div class="card" style="padding:20px;">
+      <div class="grid-2">
+        <div class="field">
+          <label>Sand Filter Purchase Price ($)</label>
+          <input id="sandFilterPrice" type="number" placeholder="0" min="0" step="0.01">
+        </div>
+        <div class="field">
+          <label>Defender Filter Purchase Price ($)</label>
+          <input id="defFilterPrice" type="number" placeholder="0" min="0" step="0.01">
+        </div>
+      </div>
+    </div>
+
     <!-- ASSUMPTIONS -->
     <h3>Operating Cost Assumptions</h3>
     <div class="card" style="padding:20px;">
@@ -378,14 +393,13 @@ function calculate() {
     const sd = row.sand;
     const df = row.def;
 
-    // ── SAND CAPITAL ──
-    const sandMechSpace   = sd.footprint * mechSpaceRate;
-    const sandInstall     = sd.price * installVarPct;
-    sandCap += sd.price + sandMechSpace + sandInstall;
+    // ── SAND CAPITAL (excl. filter purchase price — user input) ──
+    const sandMechSpace = sd.footprint * mechSpaceRate;
+    sandCap += sandMechSpace;
 
-    // ── DEFENDER CAPITAL ──
+    // ── DEFENDER CAPITAL (excl. filter purchase price — user input) ──
     const defMechSpace = df.footprint * mechSpaceRate;
-    defCap += df.price + defMechSpace;
+    defCap += defMechSpace;
 
     // ── SAND BACKWASH VOLUME (gal/yr) ──
     const sandBwVol = sd.sf * sandBwRate * sandBwDur * sandBwFreq;
@@ -419,6 +433,13 @@ function calculate() {
     defHeat  += defBwVol * 8.33 * 1.2 * heatDelta / 100000 * gasRate;
 
   }
+
+  // Filter purchase prices (user input) + install labor variance on sand price
+  const userSandPrice = v('sandFilterPrice');
+  const userDefPrice  = v('defFilterPrice');
+  const sandInstallTotal = userSandPrice * installVarPct;
+  sandCap += userSandPrice + sandInstallTotal;
+  defCap  += userDefPrice;
 
   // Accessories
   defCap += nComp * compressorPrice + nToolKit * toolKitPrice;
@@ -471,15 +492,9 @@ function calculate() {
 
   // ── SUMMARY TABLE ──
   const tbl = document.getElementById('summaryTable');
-  const rows = [
-    { label:'A. INITIAL CAPITAL COSTS', isSection: true },
-    { label:'Filter Purchase Price',         sand: sandCap - (sandCap - sandCap), def: null, _sandRaw: null, _defRaw: null,
-      _s: null, _d: null },  // placeholder — recalc below
-  ];
 
   // Recalc capital breakdown properly
-  let sandFilterPrice=0, sandMechSp=0, sandInstLab=0;
-  let defFilterPrice=0, defMechSp=0, defComp=0, defTk=0;
+  let sandMechSp=0, defMechSp=0;
   for (let i = 1; i <= 10; i++) {
     const flowEl = document.getElementById(`pFlow${i}`);
     if (!flowEl) continue;
@@ -488,21 +503,17 @@ function calculate() {
     const row = lookup(flow);
     if (!row || !row.sand || !row.def) continue;
     const sd = row.sand; const df = row.def;
-    sandFilterPrice += sd.price;
-    sandMechSp      += sd.footprint * mechSpaceRate;
-    sandInstLab     += sd.price * installVarPct;
-
-    defFilterPrice  += df.price;
-    defMechSp       += df.footprint * mechSpaceRate;
+    sandMechSp += sd.footprint * mechSpaceRate;
+    defMechSp  += df.footprint * mechSpaceRate;
   }
-  defComp = nComp * compressorPrice;
-  defTk   = nToolKit * toolKitPrice;
+  const defComp = nComp * compressorPrice;
+  const defTk   = nToolKit * toolKitPrice;
 
   const capRows = [
-    ['Filter Purchase Price', sandFilterPrice, defFilterPrice],
-    ['Mechanical Space',      sandMechSp,      defMechSp     ],
-    ['Installation Labor Variance', sandInstLab, 0           ],
-    ['Compressors & Tool Kits', 0, defComp + defTk          ],
+    ['Filter Purchase Price',        userSandPrice,      userDefPrice              ],
+    ['Mechanical Space',             sandMechSp,         defMechSp                 ],
+    ['Installation Labor Variance',  sandInstallTotal,   0                         ],
+    ['Compressors & Tool Kits',      0,                  defComp + defTk           ],
   ];
   const annRows = [
     ['Electrical Costs',     sandElec,   defElec   ],
