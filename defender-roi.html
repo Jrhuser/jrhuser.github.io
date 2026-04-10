@@ -159,9 +159,6 @@
         <div>
           <div class="field"><label>Mechanical Space Value ($/ft²)</label><input id="mechSpace" type="number" value="255" step="1"></div>
           <div class="field"><label>Install Labor Variance (Sand %)</label><input id="installVar" type="number" value="15" step="1"></div>
-          <div class="field"><label>Sand Media Loading ($/lb)</label><input id="sandLoadCost" type="number" value="3.00" step="0.01"></div>
-          <div class="field"><label>Sand Media Cost ($/lb)</label><input id="sandMediaCost" type="number" value="19.99" step="0.01"></div>
-          <div class="field"><label>Perlite Media Cost ($/lb)</label><input id="perliteCost" type="number" value="0.94" step="0.01"></div>
         </div>
         <div>
           <div class="field"><label>Sand Backwash Rate (gpm/sf)</label><input id="sandBwRate" type="number" value="20" step="1"></div>
@@ -344,9 +341,6 @@ function calculate() {
   // Assumptions
   const mechSpaceRate  = v('mechSpace');
   const installVarPct  = v('installVar') / 100;
-  const sandLoadRate   = v('sandLoadCost');
-  const sandMediaRate  = v('sandMediaCost');
-  const perliteRate    = v('perliteCost');
   const sandBwRate     = v('sandBwRate');
   const sandBwDur      = v('sandBwDur');
   const sandBwFreq     = v('sandBwFreq');
@@ -369,8 +363,6 @@ function calculate() {
   let sandChem=0, defChem=0;
   let sandHeat=0, defHeat=0;
   let sandSewer=0, defSewer=0;
-  let sandPerlite=0, defPerlite=0;
-  let sandMediaCostTotal=0, sandMediaLoadTotal=0;
   let totalSandBwVol=0, totalDefBwVol=0;
   let sandElecKwh=0, defElecKwh=0;
 
@@ -389,16 +381,11 @@ function calculate() {
     // ── SAND CAPITAL ──
     const sandMechSpace   = sd.footprint * mechSpaceRate;
     const sandInstall     = sd.price * installVarPct;
-    const sandMediaLoad   = (sd.media * sandLoadRate);
-    const sandMediaCostPl = (sd.media * sandMediaRate);
-    sandCap += sd.price + sandMechSpace + sandInstall + sandMediaLoad + sandMediaCostPl;
-    sandMediaCostTotal += sandMediaCostPl;
-    sandMediaLoadTotal += sandMediaLoad;
+    sandCap += sd.price + sandMechSpace + sandInstall;
 
     // ── DEFENDER CAPITAL ──
     const defMechSpace = df.footprint * mechSpaceRate;
-    const defPerliteInit = 0.075 * df.sf * perliteRate;
-    defCap += df.price + defMechSpace + defPerliteInit;
+    defCap += df.price + defMechSpace;
 
     // ── SAND BACKWASH VOLUME (gal/yr) ──
     const sandBwVol = sd.sf * sandBwRate * sandBwDur * sandBwFreq;
@@ -431,16 +418,14 @@ function calculate() {
     defChem  += defBwVol * chemRate  / 1000;
     defHeat  += defBwVol * 8.33 * 1.2 * heatDelta / 100000 * gasRate;
 
-    const defPerliteAnnual = 0.075 * df.sf * defBwFreq * perliteRate;
-    defPerlite += defPerliteAnnual;
   }
 
   // Accessories
   defCap += nComp * compressorPrice + nToolKit * toolKitPrice;
 
   // Annual totals
-  const sandAnnual = sandElec + sandWater + sandChem + sandHeat + sandSewer + sandPerlite;
-  const defAnnual  = defElec  + defWater  + defChem  + defHeat  + defSewer  + defPerlite;
+  const sandAnnual = sandElec + sandWater + sandChem + sandHeat + sandSewer;
+  const defAnnual  = defElec  + defWater  + defChem  + defHeat  + defSewer;
   const annualVar  = sandAnnual - defAnnual;
   const capVar     = defCap - sandCap;
 
@@ -471,8 +456,6 @@ function calculate() {
   const tenYrWaterGal  = (totalSandBwVol - totalDefBwVol) * 10;
   const tenYrKwhSaved  = (sandElecKwh - defElecKwh) * 10;
 
-  // Sand media replacement at year 5 and 10 (included in 10yr)
-  const sandMediaRepl = sandMediaCostTotal + sandMediaLoadTotal;
 
   // ── UPDATE KPIs ──
   const annualWaterSaved  = totalSandBwVol - totalDefBwVol;
@@ -495,8 +478,8 @@ function calculate() {
   ];
 
   // Recalc capital breakdown properly
-  let sandFilterPrice=0, sandMechSp=0, sandInstLab=0, sandMedLoad=0, sandMedCost=0;
-  let defFilterPrice=0, defMechSp=0, defPerlInit=0, defComp=0, defTk=0;
+  let sandFilterPrice=0, sandMechSp=0, sandInstLab=0;
+  let defFilterPrice=0, defMechSp=0, defComp=0, defTk=0;
   for (let i = 1; i <= 10; i++) {
     const flowEl = document.getElementById(`pFlow${i}`);
     if (!flowEl) continue;
@@ -508,11 +491,9 @@ function calculate() {
     sandFilterPrice += sd.price;
     sandMechSp      += sd.footprint * mechSpaceRate;
     sandInstLab     += sd.price * installVarPct;
-    sandMedLoad     += sd.media * sandLoadRate;
-    sandMedCost     += sd.media * sandMediaRate;
+
     defFilterPrice  += df.price;
     defMechSp       += df.footprint * mechSpaceRate;
-    defPerlInit     += 0.075 * df.sf * perliteRate;
   }
   defComp = nComp * compressorPrice;
   defTk   = nToolKit * toolKitPrice;
@@ -521,7 +502,6 @@ function calculate() {
     ['Filter Purchase Price', sandFilterPrice, defFilterPrice],
     ['Mechanical Space',      sandMechSp,      defMechSp     ],
     ['Installation Labor Variance', sandInstLab, 0           ],
-    ['Filter Media (Initial)', sandMedLoad + sandMedCost, defPerlInit],
     ['Compressors & Tool Kits', 0, defComp + defTk          ],
   ];
   const annRows = [
@@ -530,7 +510,6 @@ function calculate() {
     ['Make-up: Chemicals',   sandChem,   defChem   ],
     ['Make-up: Heat',        sandHeat,   defHeat   ],
     ['Sanitary Sewer Fee',   sandSewer,  defSewer  ],
-    ['Perlite Media (Annual)', sandPerlite, defPerlite],
   ];
 
   function varClass(diff) { return diff > 0 ? 'pos' : diff < 0 ? 'neg' : ''; }
