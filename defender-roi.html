@@ -211,7 +211,6 @@
 
     <div class="actions">
       <button class="btn-calc" onclick="calculate()">Calculate ROI</button>
-      <button class="btn-print" onclick="window.print()">Print / Save PDF</button>
     </div>
 
     <!-- KPI SUMMARY -->
@@ -247,6 +246,9 @@
       <div class="card" style="padding:20px;">
         <canvas id="roiChart"></canvas>
         <p class="note">Costs escalated at <span id="noteEscalation">7</span>% per year compounded. Defender capital is higher but lower annual operating costs generate savings over the analysis period.</p>
+      </div>
+      <div style="margin-top:24px;">
+        <button class="btn-print" onclick="window.print()">Print / Save PDF</button>
       </div>
     </div>
 
