@@ -100,6 +100,7 @@
     .actions, nav, .back-link { display: none !important; }
     .card { break-inside: avoid; }
     .return-summary-heading { break-before: page; margin-top: 0 !important; padding-top: 0 !important; }
+    .lifecycle-heading { break-before: page; margin-top: 0 !important; padding-top: 0 !important; }
     .grid-2 { grid-template-columns: 1fr 1fr !important; }
     .grid-3 { grid-template-columns: 1fr 1fr 1fr !important; }
     .field input, .field select { border: 1px solid #ccc !important; border-radius: 4px !important; padding: 4px 6px !important; font-size: 0.85em !important; }
@@ -125,7 +126,7 @@
 
     <div class="promo-header">
       <h1>Defender Filter ROI Calculator</h1>
-      <p>10-Year Life-Cycle Cost Analysis: Defender Perlite Filter vs. Sand Filter</p>
+      <p>10-Year Life-Cycle Cost Analysis: Defender Regenerative Media Filter vs. Sand Filter</p>
     </div>
 
     <!-- PROJECT INFO -->
@@ -242,7 +243,7 @@
       </div>
 
       <!-- 10-YEAR CHART -->
-      <h3>10-Year Life-Cycle Cost Forecast</h3>
+      <h3 class="lifecycle-heading">10-Year Life-Cycle Cost Forecast</h3>
       <div class="card" style="padding:20px;">
         <canvas id="roiChart"></canvas>
         <p class="note">Costs escalated at <span id="noteEscalation">7</span>% per year compounded. Defender capital is higher but lower annual operating costs generate savings over the analysis period.</p>
