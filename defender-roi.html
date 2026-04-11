@@ -95,8 +95,15 @@
   .promo-header p { color: #666; font-size: 1.1em; }
 
   @media print {
-    .actions, nav { display: none; }
+    .actions, nav, .back-link { display: none !important; }
     .card { break-inside: avoid; }
+    .grid-2 { grid-template-columns: 1fr 1fr !important; }
+    .grid-3 { grid-template-columns: 1fr 1fr 1fr !important; }
+    .field input, .field select { border: 1px solid #ccc !important; border-radius: 4px !important; padding: 4px 6px !important; font-size: 0.85em !important; }
+    .field label { font-size: 0.78em !important; }
+    .field { margin-bottom: 6px !important; }
+    .card[style*="padding"] { padding: 12px !important; }
+    h3 { font-size: 13px !important; margin-top: 14px !important; }
   }
 
   @media (max-width: 768px) {
@@ -215,7 +222,7 @@
           <div class="kpi-val" id="kpiElecKwh">—</div>
         </div>
         <div class="kpi-row">
-          <div class="kpi-lbl">Annual Energy Savings (Therms)</div>
+          <div class="kpi-lbl">Annual Energy Savings (BTUs)</div>
           <div class="kpi-val" id="kpiHeatTherms">—</div>
         </div>
         <div class="kpi-row">
@@ -486,7 +493,7 @@ function calculate() {
 
   document.getElementById('kpiWaterGal').textContent    = fmtN(annualWaterSaved) + ' gal';
   document.getElementById('kpiElecKwh').textContent     = fmtN(annualElecSaved) + ' kWh';
-  document.getElementById('kpiHeatTherms').textContent  = fmtN(annualThermsSaved) + ' therms';
+  document.getElementById('kpiHeatTherms').textContent  = fmtN(annualThermsSaved * 100000) + ' BTUs';
   document.getElementById('kpi10yr').textContent        = fmt(tenYrSavings);
   document.getElementById('noteEscalation').textContent = v('escalation');
 
