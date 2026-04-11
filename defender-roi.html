@@ -94,9 +94,12 @@
   .promo-header h1 { color: #007DA3; margin-bottom: 10px; }
   .promo-header p { color: #666; font-size: 1.1em; }
 
+  .return-summary-heading { margin-top: 30px; }
+
   @media print {
     .actions, nav, .back-link { display: none !important; }
     .card { break-inside: avoid; }
+    .return-summary-heading { break-before: page; margin-top: 0 !important; padding-top: 0 !important; }
     .grid-2 { grid-template-columns: 1fr 1fr !important; }
     .grid-3 { grid-template-columns: 1fr 1fr 1fr !important; }
     .field input, .field select { border: 1px solid #ccc !important; border-radius: 4px !important; padding: 4px 6px !important; font-size: 0.85em !important; }
@@ -212,6 +215,7 @@
 
     <!-- KPI SUMMARY -->
     <div id="kpiSection" style="display:none;">
+      <h3 class="return-summary-heading">Return Summary</h3>
       <div class="kpi-rows">
         <div class="kpi-row">
           <div class="kpi-lbl">Annual Water Savings (Gallons)</div>
