@@ -1,224 +1,139 @@
 # The Pump Room — Neptune Benson / Xylem Aquatics Sales Toolbox
 
-A static, client-side web app that helps sales reps and customers size, configure, and request quotes for **Neptune Benson** (Xylem) aquatics equipment — filtration, pumps, and UV disinfection. Everything runs in the browser with no backend; product data lives in a JSON file and quotes are generated as pre-filled `mailto:` emails.
+This is the website behind **The Pump Room**, a set of online sales tools for Neptune Benson (Xylem) aquatics equipment — filters, pumps, and UV disinfection. Sales reps and customers use it to size equipment, compare costs, and request quotes.
 
-Hosted via **GitHub Pages** at `https://jrhuser.github.io/`.
+**The live site:** https://jrhuser.github.io/
 
----
-
-## What it does
-
-The site is a collection of standalone HTML tools that share a common stylesheet (`style.css`) and product database (`product.json`). The main entry point is the **Equipment Selector**, with links out to the other tools.
-
-### 1. Equipment Selector — [`index.html`](index.html)
-
-The core sizing tool. It builds a "Pump Room" bill of materials from a target flow rate.
-
-- **Project details** — optional project name, system name, and project zip code (used for freight estimates and sales-rep routing).
-- **Flow rate input** — enter the **Design Flow Rate (GPM)** directly, *or* enter **Pool Volume** + **Required Turnover** (minutes / hours / turnovers-per-day) and the tool back-calculates the flow rate. The volume / turnover / flow fields stay in sync as you edit them.
-- **Equipment groups** (select one or more):
-  - **Filtration** — choose **Regenerative Media (RMF / Defender)** or **Sand Filtration**. RMF adds a **Ceiling Height** constraint (8'–>10') that filters out models too tall for the room (footprint height is parsed from the data). RMF results are sorted by list price (lowest first).
-  - **Pumps** — choose voltage (230/460V or 575V) and drive (**Pump Only** or **Green Drive VFD**).
-  - **Disinfection (UV)** — choose enclosure rating (**NEMA 4X** outdoor / **NEMA 12** indoor).
-- **Matching logic** — for each selected group, products are filtered by the secondary options, then matched against the flow rate's min/max range. If the flow exceeds every model's max flow, the tool selects the largest model and calculates how many **units in parallel** are needed (`ceil(flow / maxFlow)`), distributing flow per unit (e.g. NSF filtration-rate flux is computed per unit).
-- **Bill of Materials** — results render in per-group tables (Filtration / Pumps / UV) with model, quantity, flow range, performance figures (NSF 2.0/3.0 filtration rates, pump BEP/TDH, UV max flow at 60 mJ/cm²), footprint, and links to technical PDFs in `product/`.
-- **Download all docs** — `Download Files for all Selections` bundles every spec sheet, datasheet/pump curve, and written spec for the checked items into a single ZIP (built in-browser with JSZip). Pump selections automatically include the Green Drive VFD sheet.
-- **Add / Request Quote** — `Add/Request Quote` accumulates the current configuration as a named "system," then opens a pre-filled email to the inside-sales address with project details, every accumulated system's parameters and products, a freight-quote request for the zip code, and any applicable promotions. Multiple systems can be added to one quote before sending.
-- **Sales-rep CC routing** — the project zip code (US zip or Canadian postal code) is mapped to a state/province, and the matching rep from `product.json`'s `sales-reps` list is CC'd on the quote email automatically.
-- **Promotional upgrades** — a "Promotional Upgrade" section captures whether the job is a trade-in (Neptune Benson equipment by serial number, or competitive equipment by brand/model) and appends the relevant promo offers to the quote.
-- **Deep-link parameters** — the page reads URL query params so other pages can preconfigure it:
-  - `?select=UV,Filter,Pump` — pre-checks equipment groups
-  - `?filterType=RMF` — pre-selects filter technology
-  - `?promo=Yes` — turns on the promotional-upgrade flow
-
-### 2. Defender ROI Calculator — [`defender-roi.html`](defender-roi.html)
-
-A self-contained **10-year life-cycle cost analysis** comparing a **Defender regenerative media filter** against a conventional **sand filter**.
-
-- Enter project info and up to **10 pools** (description, indoor/outdoor, flow rate).
-- Enter filter purchase prices plus a large set of operational-cost assumptions (mechanical space value, backwash rate/duration/frequency, water/sewer/chemical/gas/electric rates, heat delta, annual cost escalation, compressors, tool kits — all pre-populated with sensible defaults).
-- An internal lookup table maps each pool's flow to matched sand vs. Defender model sizing (square footage, media volume, footprint, tank volume, list price).
-- Outputs:
-  - **KPI summary** — annual water savings (gal), electrical savings (kWh), energy savings (BTUs), and total 10-year savings ($).
-  - **Cost comparison table** — capital costs, year-1 annual operating costs, and 10-year life-cycle totals with per-line variance.
-  - **10-year forecast chart** — cumulative cost curves for both technologies (Chart.js), with costs escalated annually.
-  - **Print / Save PDF** — print-optimized layout for handing a customer a clean report.
-
-### 3. Promotions — [`promotions.html`](promotions.html)
-
-A landing page of current promotional programs as cards, each linking to the relevant configurator:
-
-- **UV Panel Upgrade (Spectra III)** → `uv-panel-upgrade.html`
-- **UV System Upgrade (Wafer)** → `index.html?select=UV&promo=Yes`
-- **Filtration System Upgrade (Defender)** → `index.html?select=Filter,Pump&filterType=RMF&promo=Yes`
-- Placeholder card for future promotions.
-
-### 4. Spectra III Panel Upgrade Configurator — [`uv-panel-upgrade.html`](uv-panel-upgrade.html)
-
-A guided, step-by-step quote builder for re-powering legacy ETS-UV systems with the Spectra III control platform (without replacing the reactor).
-
-- Step 1: pick UV model (SP-25, ECF-210 … ECF-430).
-- Step 2: pick intensity sensor (AT-900 / AT-463).
-- Step 3: pick cable length (30 ft / 100 ft).
-- Step 4: optionally add **PM parts** to qualify for a 5-year warranty extension.
-- Step 5: enter serial number; Step 6: apply a discount percentage.
-- A live **quote table** assembles the correct part numbers and prices (all pricing data is embedded in the page) and computes list vs. discounted totals.
-- **Request Quote** opens a pre-filled email (with a copy/paste-ready part-number list) to the ETS-UV order desk; **Publish** prints a clean PDF-ready version.
-
-### 5. Sales Literature — [`sales-literature.html`](sales-literature.html)
-
-A simple card grid linking to product brochures and spec PDFs (Defender, ETS-UV, Guardian sand filters, Spectra III).
+You don't need to know anything about web development or GitHub to keep this site up to date. You make every change by **talking to Claude Code in plain English** — Claude finds the right place, makes the edit, and publishes it for you. This guide explains the tools and walks you through making changes.
 
 ---
 
-## Project structure
+## What's on the site
 
-```
-.
-├── index.html              # Equipment Selector (main tool)
-├── defender-roi.html       # Defender vs. sand filter ROI calculator
-├── promotions.html         # Promotions landing page
-├── uv-panel-upgrade.html   # Spectra III panel upgrade quote builder
-├── sales-literature.html   # Brochure / spec download links
-├── script.js               # Logic for the Equipment Selector
-├── style.css               # Shared site styling (Xylem branding)
-├── product.json            # Product database + sales-rep territory map
-├── product/                # Technical PDFs: spec sheets, cut sheets, datasheets, CAD
-├── Images/                 # Logos, equipment icons, sensor photos
-└── *.pdf / *.xlsx          # Reference sales sheets and source analysis files
-```
+The site has five pages that all work together.
 
-### `product.json`
+### 1. Equipment Selector (the main page)
 
-The single source of truth for the Equipment Selector. Two top-level keys:
+The home page and the heart of the tool. You enter a pool's flow rate (or its volume and turnover, and it figures out the flow rate), pick which equipment you need — filtration, pumps, and/or UV — answer a few questions about each, and it produces a recommended **bill of materials**: the right models for that flow, with their specs and links to the technical PDFs.
 
-- **`product-DB`** — an array of product records (filters, UV units, pumps). Notable fields:
-  - `Grouping` (`Filter` / `UV` / `Pump`), `Equipment Type` (e.g. `RMF`, `Sand Filter`), `Model`, `Part Number`
-  - Flow data: `Min Flow (gpm)`, `Max Flow`, `Best Efficiency Flow (gpm)`, `Max Flow (60 mj/cm^2)`
-  - Filter performance: `NSF 2.0 / 3.0 Filter Area (sq ft)`, `Footprint LxWxH (Inches)`
-  - Pump performance: `Power` (voltage), `HP`, `TDH`, `TDH @ Best Efficieny`
-  - UV: `Nema Rating`
-  - `List Price`, and document filenames: `Product Sheet`, `Additional Info/Pump Curve`, `Written Specification` (all resolved relative to `product/`)
-- **`sales-reps`** — maps each rep's email to a list of US states / Canadian provinces, used to auto-CC the right rep on quote emails based on the project zip/postal code.
+From there you can:
+- **Download all the technical documents** for the selected items as a single zip file.
+- **Request a quote** — this opens a pre-filled email to inside sales with the project details and selected equipment. If you entered a project zip code, it automatically copies the right regional sales rep on the email.
+- Apply **promotional upgrades** (trade-ins, etc.) that get added to the quote.
 
-To add or update products, edit `product.json` and drop any referenced PDFs into `product/`.
+### 2. Defender ROI Calculator
+
+A cost-comparison tool that shows the **10-year savings** of a Defender regenerative media filter versus a traditional sand filter. You enter your pools and some cost assumptions (water rates, energy rates, etc. — it comes pre-filled with reasonable defaults), and it produces savings figures, a comparison table, and a chart. It can be printed or saved as a PDF to hand to a customer.
+
+### 3. Promotions
+
+A page of current promotional offers, shown as cards. Each card links to the right tool for that promotion.
+
+### 4. Spectra III Panel Upgrade
+
+A step-by-step quote builder for upgrading older ETS-UV systems to the Spectra III control panel. You pick the UV model, sensor, cable length, and warranty options, and it builds a quote with the correct part numbers and prices that can be emailed or printed.
+
+### 5. Sales Literature
+
+A simple page of links to product brochures and spec sheets.
 
 ---
 
-## Running locally
+## Making changes (everything through Claude Code)
 
-It's a fully static site — no build step. Because the Equipment Selector fetches `product.json` over `fetch()`, you need to serve it over HTTP (opening `index.html` directly via `file://` will fail the fetch).
+This is how you'll do all your updates. You never have to edit files by hand or learn any commands — you just describe what you want.
 
-```powershell
-# from the repo root, using Python
-python -m http.server 8000
-# then open http://localhost:8000/
-```
-
-Any static file server works (`npx serve`, VS Code Live Server, etc.).
-
-## Editing with Claude Code (desktop app)
-
-You don't need to know git or write code by hand — you can do the whole pull → edit → publish cycle by talking to **Claude Code** in plain English. This section assumes you've already installed the Claude Code desktop app and have the repo on your machine (it was originally cloned from `https://github.com/Jrhuser/jrhuser.github.io.git`).
-
-### One-time setup
+### First time only
 
 1. Open the **Claude Code** desktop app.
-2. Point it at this project folder (the folder that contains `index.html` and `product.json`). Claude works inside whatever folder you open.
-3. Make sure you're signed in to GitHub so pushes are allowed. If a push ever fails with an authentication error, tell Claude *"I need to authenticate with GitHub"* and follow its instructions (it will typically have you run `gh auth login`).
+2. Open this project folder (the folder that contains all the website files). Claude works inside whatever folder you open.
+3. Make sure you're signed in to GitHub. If Claude ever tells you a change couldn't be published because of a sign-in problem, just say *"Help me sign in to GitHub"* and follow along.
 
-### The everyday workflow
+### Every time you make a change
 
-Each time you want to make a change, ask Claude to do these three things in order:
+Do these in order. The exact words don't matter — just say it naturally.
 
-1. **Pull the latest version first** so you're editing the current live site, not a stale copy:
+**Step 1 — Get the latest version.** Before editing, say:
 
-   > "Pull the latest changes from GitHub."
+> "Get the latest version of the site."
 
-   (Claude runs `git pull` for you.)
+This makes sure you're working from what's currently live, not an old copy.
 
-2. **Describe the edit you want in plain language.** You don't have to know which file it lives in — Claude does. Examples:
+**Step 2 — Describe your change.** You don't need to know where anything lives — Claude does. For example:
 
-   > "Add a new 30 HP pump to the product list: 575V, part number 1003-XXXX, min flow 1200, max flow 1500."
-   >
-   > "Change the Defender filter price for the SP-33-48-732 to $95,000."
-   >
-   > "Update Kari's sales territory to also include Texas."
-   >
-   > "Add a new promotion card for a winterization special."
+> "Add a new 30 HP pump: 575 volt, part number 1003-9999, minimum flow 1200, maximum flow 1500."
+>
+> "Change the price of the Defender SP-33-48-732 filter to $95,000."
+>
+> "Add Texas to Kari's sales territory."
+>
+> "Add a new promotion card for a winterization special."
+>
+> "Fix the typo on the promotions page where it says 'Disinfeciton'."
 
-   Claude will find the right file (`product.json`, one of the HTML pages, etc.), make the edit, and tell you what it changed. Ask it to show you the change if you want to review it.
+Claude makes the edit and tells you what changed. If you want to see it first, just say *"Show me what you changed."*
 
-3. **Publish it.** When you're happy with the change:
+**Step 3 — Preview it (optional but recommended).** To look at the change before it goes live, say:
 
-   > "Commit this with a message describing the change and push it to GitHub."
+> "Show me the site so I can check it."
 
-   Claude commits and pushes; GitHub Pages updates the live site at `https://jrhuser.github.io/` within a minute or so. Hard-refresh the page (Ctrl+F5) to see it.
+Claude will open a local preview and give you a link. This preview is private to your computer — nobody else sees it.
 
-### Tips
+**Step 4 — Publish it.** When you're happy:
 
-- **Preview before publishing.** You can ask *"Run the site locally so I can check it"* and Claude will start a local server and give you a `http://localhost:...` link to review before you push.
-- **Ask it to double-check the data file.** After editing `product.json`, say *"Validate the JSON"* — a stray comma there can silently break the Equipment Selector, and Claude can catch it before it goes live.
-- **You can undo.** If something looks wrong after a change, ask *"Undo the last change"* or *"Revert the last commit"* and Claude will walk it back.
-- **One change at a time.** Pull → edit → review → push in small steps. It keeps the history clean and makes it easy to back out a single change if needed.
+> "Publish this change."
 
-## Maintaining & updating
+Claude saves and uploads the change. The live site at https://jrhuser.github.io/ updates within a minute or two. If you don't see the change right away, refresh the page with **Ctrl+F5** (a "hard refresh" that ignores the browser's saved copy).
 
-Because there's no build step or backend, maintenance is mostly editing data files and HTML, then committing. Here's where to make the common changes:
+### If something goes wrong
 
-### Add, edit, or remove a product (Equipment Selector)
+- **Undo a change you haven't published yet:** *"Undo that last change."*
+- **Undo a change you already published:** *"Revert the last published change."* Claude will walk it back and publish the fix.
+- **Not sure if it published?** Ask *"Is everything published?"* and Claude will check.
 
-1. Edit **`product.json`** → the `product-DB` array. Copy an existing record of the same `Grouping` and adjust its fields. Key things to get right:
-   - `Grouping` must be exactly `Filter`, `Pump`, or `UV`.
-   - For filters, `Equipment Type` must match a dropdown value (`RMF` or `Sand Filter`); for pumps, `Power` must match a voltage option (`230/460` or `575`); for UV, `Nema Rating` must match (`N4x` or `N12`).
-   - `Min Flow (gpm)` / `Max Flow` define the flow-matching range. Leave `Max Flow` as `null` for an open-ended top end.
-   - For RMF filters, `Footprint LxWxH (Inches)` is parsed for the **height** (last value) to enforce the ceiling-height filter, and `List Price` drives the lowest-price-first sort.
-2. Put any referenced PDFs in **`product/`**. The `Product Sheet`, `Additional Info/Pump Curve`, and `Written Specification` fields are filenames resolved relative to `product/` — the filename in the JSON must match the file exactly (including extension and spaces).
-3. Validate the JSON before committing (a trailing comma or missing quote will silently break the whole selector — the page just shows no results). For example: `Get-Content product.json -Raw | ConvertFrom-Json` in PowerShell, or `python -m json.tool product.json`.
+---
 
-### Update sales-rep territories
+## Common changes and what to say
 
-Edit the `sales-reps` array in **`product.json`** — each entry has `name`, `email`, and a `states` list (US state + Canadian province codes). The zip/postal-code → state mapping itself lives in `getStateFromZip()` in [`script.js`](script.js); you only need to touch that function if a code range is wrong or you're adding new geography.
+Here are the things you'll most often want to change, and a plain-English request for each. You can always just describe what you want — these are starting points.
 
-### Update the Spectra III upgrade pricing/parts
+| You want to… | Say something like… |
+| --- | --- |
+| Add, edit, or remove a product (filter, pump, UV unit) | *"Add this filter to the product list: [details]"* / *"Remove the NB530 5 HP pump"* |
+| Change a product's price, flow range, or specs | *"Change the max flow on the [model] to 1500"* |
+| Attach a spec sheet or brochure to a product | *"Attach this PDF to the [model] — I've put the file in the project folder"* (drop the PDF in the folder first) |
+| Change which sales rep covers which states | *"Update the sales territories — give Texas to Jesus instead of Kari"* |
+| Add, edit, or remove a promotion | *"Add a promotion card for [offer]"* |
+| Update Spectra III upgrade prices or parts | *"Update the price of the ECF-220 panel to [amount]"* |
+| Update the ROI calculator's pricing or assumptions | *"Update the default electricity rate in the ROI calculator to $0.14"* |
+| Fix a typo or change wording anywhere | *"Fix the wording on [page] that says…"* |
 
-All of that data is **hard-coded inside [`uv-panel-upgrade.html`](uv-panel-upgrade.html)** (not in `product.json`) — see the `panelData`, `cableData`, and `pmPartsData` objects in the inline `<script>`. Edit those objects to change part numbers, descriptions, or prices.
+**One tip worth knowing:** the product list is kept in a data file that has to be formatted just right — one misplaced comma can quietly break the Equipment Selector so it shows no results. You don't need to understand the format, but after Claude edits the product list, it's worth saying *"Double-check the product data file is still valid."* Claude can verify it before it goes live.
 
-### Update the Defender ROI model
+---
 
-The sizing/pricing lookup table (`lookupTable`) and cost constants (`compressorPrice`, `toolKitPrice`) are hard-coded in the inline `<script>` in [`defender-roi.html`](defender-roi.html). Default assumption values (water/sewer/energy rates, escalation, etc.) are set as `value="..."` attributes on the input fields in the same file.
+## How publishing works (the short version)
 
-### Add or change a promotion
+This site is hosted on **GitHub Pages**, a free service that turns the project files directly into a public website. There's no separate "deploy" step or staging site — when Claude publishes a change, it goes straight to the live site within a minute or two.
 
-Edit [`promotions.html`](promotions.html) — duplicate a `.promo-card` block and point its button at the right configurator (a deep link into `index.html?select=...&filterType=...&promo=Yes`, or a dedicated page). If the promo should also appear in quote emails, update the promo text in the `addToCartButton` handler in [`script.js`](script.js).
+Because there's no staging area, two good habits:
+- **Preview before you publish** when the change is more than a tiny wording fix.
+- **Make one change at a time** rather than batching several together. It's easier to review, and easier to undo just one thing if needed.
 
-### Styling / branding
+---
 
-Shared styles live in [`style.css`](style.css); the ROI, promotions, and panel-upgrade pages also have page-specific `<style>` blocks inline. Brand colors are teal `#007DA3` and green `#61D604`.
+## Where things live (reference)
 
-## Deployment
+You don't need this to make changes — Claude finds the right file for you — but if you're curious, here's roughly what's what:
 
-The repo is named `jrhuser.github.io`, which makes it a **GitHub Pages user site** served from the repo root at `https://jrhuser.github.io/`. There is no build pipeline — GitHub publishes the files as-is from the branch configured under **Settings → Pages** (typically `main`).
+- **The main Equipment Selector page** and its behavior — the home page files.
+- **The product list** (every filter, pump, and UV unit, plus the sales-rep territories) — a single data file Claude edits when you add or change products.
+- **The Defender ROI Calculator**, **Promotions**, **Spectra III Panel Upgrade**, and **Sales Literature** — each is its own page.
+- **Technical PDFs** (spec sheets, brochures, datasheets) — kept in a documents folder; these are what the "download documents" feature pulls from.
+- **Images** (logos, equipment photos) — kept in an images folder.
 
-To deploy a change:
+If you ever want a guided tour of any of these, just ask Claude: *"Walk me through how the [tool] works."*
 
-```powershell
-git add -A
-git commit -m "Describe your change"
-git push
-```
-
-Within a minute or so of the push, GitHub Pages rebuilds and the live site reflects the change. Notes:
-
-- Test locally first (see **Running locally**) — there's no staging environment, so a push goes straight to production.
-- Hard-refresh (Ctrl+F5) when verifying, since browsers cache `product.json`, `script.js`, and `style.css`.
-- If the site doesn't update, check **Settings → Pages** for the build status and confirm you pushed to the branch Pages is configured to serve.
-
-## Tech notes
-
-- Vanilla HTML / CSS / JavaScript — no framework, no bundler.
-- External libraries loaded via CDN: **JSZip** (bundle downloads), **Chart.js** (ROI chart), **Font Awesome** + **Google Fonts (Roboto)**.
-- Quotes are delivered through `mailto:` links, so the user's email client opens with the request pre-filled — there is no server-side processing or data storage.
-- Branding follows Xylem colors (teal `#007DA3`, green `#61D604`).
+---
 
 © Xylem Inc.
