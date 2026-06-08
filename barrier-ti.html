@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barrier Ti Configurator | Neptune Benson</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .config-container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+        .back-link { display: inline-block; margin-bottom: 20px; color: #007DA3; text-decoration: none; font-weight: 600; }
+        .back-link:hover { text-decoration: underline; }
+        .config-header { text-align: center; margin-bottom: 30px; border-bottom: 3px solid #61D604; padding-bottom: 20px; }
+        .config-header h1 { color: #007DA3; margin-bottom: 10px; }
+        .config-header p { color: #666; max-width: 800px; margin: 0 auto; }
+        .benefits-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; margin-top: 20px; }
+        .benefit-item { display: flex; align-items: center; gap: 8px; font-size: 0.9em; color: #555; }
+        .benefit-item::before { content: "✓"; color: #61D604; font-weight: 700; }
+        .step-section { background: #f9f9f9; border-radius: 8px; padding: 25px; margin-bottom: 20px; border-left: 5px solid #007DA3; }
+        .step-section h3 { margin-top: 0; color: #007DA3; display: flex; align-items: center; gap: 10px; }
+        .step-number { background: #007DA3; color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9em; flex-shrink: 0; }
+        .help-text { font-size: 0.85em; color: #666; margin-top: 5px; margin-bottom: 0; }
+
+        /* Flow inputs */
+        .flow-inputs { display: flex; gap: 25px; margin-top: 15px; flex-wrap: wrap; align-items: flex-end; }
+        .flow-field { display: flex; flex-direction: column; gap: 6px; }
+        .flow-field label { font-weight: 600; color: #444; font-size: 0.9em; }
+        .flow-field input[type="number"], .flow-field select { padding: 10px 14px; border: 2px solid #ddd; border-radius: 6px; font-size: 1em; min-width: 150px; }
+        .flow-field input[type="number"]:focus, .flow-field select:focus { outline: none; border-color: #007DA3; }
+
+        .recommendation-box { margin-top: 15px; padding: 12px 16px; border-radius: 6px; font-size: 0.9em; display: none; }
+        .recommendation-box.show { display: block; }
+        .recommendation-box.info { background: #e8f7fd; border: 1px solid #007DA3; color: #005a75; }
+        .recommendation-box.warn { background: #fff3cd; border: 1px solid #ffc107; color: #856404; }
+
+        /* Model grid */
+        .model-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 15px; margin-top: 15px; }
+        .model-option { position: relative; }
+        .model-option input { position: absolute; opacity: 0; }
+        .model-option label { display: block; padding: 18px; background: white; border: 2px solid #ddd; border-radius: 10px; cursor: pointer; transition: all 0.2s; }
+        .model-option label:hover { border-color: #007DA3; }
+        .model-option input:checked + label { border-color: #61D604; background: #f0fff0; }
+        .recommended-badge { display: none; background: #007DA3; color: white; font-size: 0.7em; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .model-option.is-recommended .recommended-badge { display: inline-block; }
+        .model-name { font-weight: 700; color: #007DA3; font-size: 1.15em; margin-bottom: 4px; }
+        .model-flow { font-size: 0.82em; color: #666; margin-bottom: 6px; }
+        .model-price { font-weight: 700; color: #333; font-size: 0.95em; }
+        .model-no-wiper { font-size: 0.75em; color: #bbb; margin-top: 6px; font-style: italic; }
+
+        /* Cable options */
+        .cable-grid { display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap; }
+        .cable-option { position: relative; }
+        .cable-option input { position: absolute; opacity: 0; }
+        .cable-option label { display: flex; flex-direction: column; align-items: center; padding: 14px 35px; background: white; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-weight: 600; }
+        .cable-option label:hover { border-color: #007DA3; }
+        .cable-option input:checked + label { border-color: #61D604; background: #f0fff0; }
+        .cable-price-hint { font-size: 0.78em; color: #888; font-weight: 400; margin-top: 3px; }
+
+        /* Wiper */
+        .wiper-row { margin-top: 15px; }
+        .wiper-row label { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; }
+        .wiper-row input[type="checkbox"] { margin-top: 3px; width: 16px; height: 16px; flex-shrink: 0; }
+        .wiper-na-note { color: #aaa; font-size: 0.88em; font-style: italic; margin-top: 10px; }
+        .wiper-info-box { background: #fff3cd; border: 1px solid #ffc107; border-radius: 6px; padding: 12px 15px; margin-top: 12px; font-size: 0.85em; color: #555; }
+        .wiper-info-box strong { color: #856404; }
+
+        /* Discount */
+        .discount-wrap { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+        .discount-wrap input { width: 120px; padding: 10px; border: 2px solid #ddd; border-radius: 4px; font-size: 1em; }
+        .discount-wrap span { font-size: 1.1em; color: #555; font-weight: 600; }
+
+        /* Quote section */
+        .quote-section { background: linear-gradient(135deg, #007DA3, #005a75); color: white; border-radius: 8px; padding: 30px; margin-top: 30px; }
+        .quote-section h3 { margin-top: 0; color: white; }
+        .quote-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .quote-table th, .quote-table td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.2); }
+        .quote-table th { opacity: 0.8; font-weight: 600; }
+        .price { text-align: right; font-weight: 700; }
+        .quote-total { font-size: 1.5em; font-weight: 700; text-align: right; margin-top: 15px; padding-top: 15px; border-top: 2px solid rgba(255,255,255,0.3); }
+        .quote-discount { color: #61D604; font-weight: 700; }
+        .btn-quote { background: #61D604; color: #333; border: none; padding: 15px 40px; font-size: 1.1em; font-weight: 700; border-radius: 6px; cursor: pointer; margin-top: 20px; }
+        .btn-quote:hover { background: #52b603; }
+        .btn-publish { background: transparent; color: white; border: 2px solid white; padding: 13px 38px; font-size: 1.1em; font-weight: 700; border-radius: 6px; cursor: pointer; margin-top: 20px; margin-left: 12px; }
+        .btn-publish:hover { background: rgba(255,255,255,0.15); }
+        .hidden { display: none !important; }
+        .print-config-summary { display: none; }
+
+        @page { size: letter; margin: 0.45in; }
+        @media print {
+            header, .back-link, .step-section, .btn-quote, .btn-publish, footer { display: none !important; }
+            html, body { height: auto !important; }
+            body, .container, main, .config-container { background: white !important; margin: 0 !important; padding: 0 !important; }
+            main.config-container { max-width: 100% !important; padding: 0 !important; }
+            .config-header { text-align: left; margin-bottom: 10px !important; padding-bottom: 8px !important; border-bottom: 2px solid #007DA3 !important; }
+            .config-header h1 { color: #007DA3 !important; font-size: 16px !important; margin-bottom: 4px !important; }
+            .config-header p { font-size: 11px !important; margin: 0 !important; }
+            .benefits-list { display: none !important; }
+            .print-config-summary { display: block !important; font-size: 11px !important; color: #555 !important; margin: 6px 0 10px !important; padding: 6px 10px !important; background: #f4f7f6 !important; border-left: 3px solid #007DA3; }
+            .quote-section { background: white !important; color: #333 !important; border: 1.5px solid #007DA3; border-radius: 6px; padding: 14px !important; margin-top: 0 !important; }
+            .quote-section h3 { color: #007DA3 !important; font-size: 14px !important; margin-bottom: 8px !important; }
+            .quote-table { margin: 0 0 8px !important; }
+            .quote-table th, .quote-table td { padding: 6px 8px !important; font-size: 11px !important; border-bottom: 1px solid #ddd !important; color: #333 !important; }
+            .quote-table th { background: #007DA3 !important; color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .quote-discount { color: #007DA3 !important; }
+            .quote-total { font-size: 13px !important; padding-top: 8px !important; margin-top: 8px !important; }
+            #quoteTotalWrap div { font-size: 11px !important; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="Images/xylem_logo_white.png" alt="Xylem Logo" class="logo">
+        <h1>Barrier Ti UV System Configurator</h1>
+    </header>
+
+    <div class="container">
+        <main class="config-container">
+            <a href="promotions.html" class="back-link">&larr; Back to Promotions</a>
+
+            <div class="config-header">
+                <h1>Barrier&trade; Ti UV System Configurator</h1>
+                <p>Size and configure a Barrier Ti system for your application. Enter your peak flow rate and water quality to get a model recommendation, then select accessories and generate a printable quote.</p>
+                <div class="benefits-list">
+                    <div class="benefit-item">NSF/ANSI Standard 50 Certified</div>
+                    <div class="benefit-item">40 mJ/cm&sup2; UV dose for 3-Log Crypto</div>
+                    <div class="benefit-item">16,000-hour lamp life (EOLL rated)</div>
+                    <div class="benefit-item">110V or 230V single phase</div>
+                    <div class="benefit-item">Optional quartz wiper assembly</div>
+                    <div class="benefit-item">Commercial &amp; aquatic applications</div>
+                </div>
+            </div>
+
+            <!-- STEP 1: Flow Rate & UVT -->
+            <div class="step-section">
+                <h3><span class="step-number">1</span> Enter Flow Rate &amp; Water Quality</h3>
+                <p class="help-text">Sized for 40 mJ/cm&sup2; UV dose @ EOLL (16,000 hrs). Design at &le;94% UVT for commercial pools unless actual UVT data is available.</p>
+                <div class="flow-inputs">
+                    <div class="flow-field">
+                        <label for="flowRate">Peak Flow Rate (GPM)</label>
+                        <input type="number" id="flowRate" placeholder="e.g. 200" min="1" max="9999" step="1" oninput="recommendModel()">
+                    </div>
+                    <div class="flow-field">
+                        <label for="uvtPct">UVT (%)</label>
+                        <select id="uvtPct" onchange="recommendModel()">
+                            <option value="90">90%</option>
+                            <option value="91">91%</option>
+                            <option value="92">92%</option>
+                            <option value="93">93%</option>
+                            <option value="94" selected>94% (Recommended)</option>
+                            <option value="95">95%</option>
+                            <option value="96">96%</option>
+                            <option value="97">97%</option>
+                            <option value="98">98%</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="recommendation-box" id="recommendationBox"></div>
+            </div>
+
+            <!-- STEP 2: Select Model -->
+            <div class="step-section">
+                <h3><span class="step-number">2</span> Select Model</h3>
+                <p class="help-text">Model is auto-suggested based on your flow rate and UVT. You may override the selection.</p>
+                <div class="model-grid">
+                    <div class="model-option" id="opt-Ti-1200-4">
+                        <input type="radio" name="uvModel" id="model-ti1200" value="Ti-1200-4" onchange="updateQuote()">
+                        <label for="model-ti1200">
+                            <div class="recommended-badge">Recommended</div>
+                            <div class="model-name">Ti-1200-4</div>
+                            <div class="model-flow">Up to <strong>110 gpm</strong> @ 94% UVT</div>
+                            <div class="model-price">$10,372.10</div>
+                            <div class="model-no-wiper">No wiper kit available</div>
+                        </label>
+                    </div>
+                    <div class="model-option" id="opt-Ti-2200-8">
+                        <input type="radio" name="uvModel" id="model-ti2200" value="Ti-2200-8" onchange="updateQuote()">
+                        <label for="model-ti2200">
+                            <div class="recommended-badge">Recommended</div>
+                            <div class="model-name">Ti-2200-8</div>
+                            <div class="model-flow">Up to <strong>246 gpm</strong> @ 94% UVT</div>
+                            <div class="model-price">$18,014.70</div>
+                        </label>
+                    </div>
+                    <div class="model-option" id="opt-Ti-4200-8">
+                        <input type="radio" name="uvModel" id="model-ti4200" value="Ti-4200-8" onchange="updateQuote()">
+                        <label for="model-ti4200">
+                            <div class="recommended-badge">Recommended</div>
+                            <div class="model-name">Ti-4200-8</div>
+                            <div class="model-flow">Up to <strong>506 gpm</strong> @ 94% UVT</div>
+                            <div class="model-price">$24,565.50</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3: Cable Length -->
+            <div class="step-section">
+                <h3><span class="step-number">3</span> Select Cable Length</h3>
+                <p class="help-text">Choose based on distance between the controller and the reactor.</p>
+                <div class="cable-grid">
+                    <div class="cable-option">
+                        <input type="radio" name="cableLen" id="cable-30" value="30" onchange="updateQuote()">
+                        <label for="cable-30">
+                            30 ft
+                            <span class="cable-price-hint" id="cableHint30"></span>
+                        </label>
+                    </div>
+                    <div class="cable-option">
+                        <input type="radio" name="cableLen" id="cable-45" value="45" onchange="updateQuote()">
+                        <label for="cable-45">
+                            45 ft
+                            <span class="cable-price-hint" id="cableHint45"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 4: Wiper Kit -->
+            <div class="step-section">
+                <h3><span class="step-number">4</span> Add Manual Wiper Kit</h3>
+                <div id="wiperAvailable">
+                    <div class="wiper-row">
+                        <label>
+                            <input type="checkbox" id="includeWiper" onchange="updateQuote()">
+                            <span>
+                                <strong>Include Manual Wiper Kit</strong><br>
+                                <span style="font-size:0.88em;color:#666;">Keeps the quartz sleeve clean for consistent UV output between maintenance intervals.</span>
+                            </span>
+                        </label>
+                    </div>
+                    <div class="wiper-info-box">
+                        <strong>Note:</strong> The wiper kit is an optional add-on for the quartz wiper assembly. A separate wiper seal kit is available for ongoing maintenance service.
+                    </div>
+                </div>
+                <div id="wiperNotAvailable" class="hidden">
+                    <p class="wiper-na-note">The Ti-1200-4 does not include a wiper kit option. Wiper kits are available for the Ti-2200-8 and Ti-4200-8 models.</p>
+                </div>
+                <div id="wiperSelectModel" class="">
+                    <p class="wiper-na-note">Select a model above to see wiper kit availability.</p>
+                </div>
+            </div>
+
+            <!-- STEP 5: Discount -->
+            <div class="step-section">
+                <h3><span class="step-number">5</span> Discount</h3>
+                <p style="font-size:0.9em;color:#666;margin-bottom:5px;">Enter a discount percentage to apply to the total price.</p>
+                <div class="discount-wrap">
+                    <input type="number" id="discountPct" placeholder="0" min="0" max="100" step="0.1" oninput="updateQuote()">
+                    <span>%</span>
+                </div>
+            </div>
+
+            <!-- QUOTE -->
+            <div id="quoteSection" class="quote-section hidden">
+                <h3>Your Configuration</h3>
+                <table class="quote-table">
+                    <thead>
+                        <tr>
+                            <th>Part Number</th>
+                            <th>Description</th>
+                            <th>Qty</th>
+                            <th class="price">Price</th>
+                        </tr>
+                    </thead>
+                    <tbody id="quoteBody"></tbody>
+                </table>
+                <div class="quote-total" id="quoteTotalWrap">
+                    Total: <span id="quoteTotal">$0.00</span>
+                </div>
+                <div style="margin-top:20px;font-size:0.85em;opacity:0.9;">
+                    <p><strong>Note:</strong> All flow rates assume 94% minimum UVT unless actual data is provided. Minimum 40 mJ/cm&sup2; UV Dose @ EOLL (16,000 hrs). Prices expire 12/31/2026. Confidential — Neptune Benson, 334 Knight St., Suite 3100, Warwick RI 02886.</p>
+                    <p>For commissioning and support, contact: <a href="mailto:ets-uv.service@xylem.com" style="color:#61D604;">ets-uv.service@xylem.com</a> | (877) 885-4628</p>
+                </div>
+                <div class="print-config-summary" id="printConfigSummary"></div>
+                <button class="btn-quote" onclick="requestQuote()">Request Quote</button>
+                <button class="btn-publish" onclick="window.print()">Publish</button>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Xylem Inc. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const uvtTable = {
+            90: { "Ti-1200-4": 84.7,  "Ti-2200-8": 191.4, "Ti-4200-8": 335.0 },
+            91: { "Ti-1200-4": 89.9,  "Ti-2200-8": 202.4, "Ti-4200-8": 366.7 },
+            92: { "Ti-1200-4": 95.7,  "Ti-2200-8": 214.9, "Ti-4200-8": 404.5 },
+            93: { "Ti-1200-4": 102.4, "Ti-2200-8": 229.4, "Ti-4200-8": 450.2 },
+            94: { "Ti-1200-4": 110.0, "Ti-2200-8": 246.5, "Ti-4200-8": 506.0 },
+            95: { "Ti-1200-4": 118.6, "Ti-2200-8": 266.8, "Ti-4200-8": 506.0 },
+            96: { "Ti-1200-4": 127.9, "Ti-2200-8": 290.8, "Ti-4200-8": 506.0 },
+            97: { "Ti-1200-4": 132.0, "Ti-2200-8": 318.6, "Ti-4200-8": 506.0 },
+            98: { "Ti-1200-4": 132.0, "Ti-2200-8": 330.0, "Ti-4200-8": 506.0 }
+        };
+
+        const modelData = {
+            "Ti-1200-4": {
+                partNumber: "1003-8425",
+                description: "Barrier Ti-1200-4 UV System",
+                price: 10372.10,
+                hasWiper: false,
+                cables: {
+                    "30": { pn: "1003-8139", desc: "Cable Kit, Ti-1200-4, 30'", price: 797.10 },
+                    "45": { pn: "1003-8140", desc: "Cable Kit, Ti-1200-4, 45'", price: 963.61 }
+                },
+                wiper: null
+            },
+            "Ti-2200-8": {
+                partNumber: "1003-8426",
+                description: "Barrier Ti-2200-8 UV System",
+                price: 18014.70,
+                hasWiper: true,
+                cables: {
+                    "30": { pn: "1003-8141", desc: "Cable Kit, Ti-2200-8, 30'", price: 1120.71 },
+                    "45": { pn: "1003-8142", desc: "Cable Kit, Ti-2200-8, 45'", price: 1349.75 }
+                },
+                wiper: { pn: "1003-8137", desc: "Manual Wiper Kit, Barrier Ti-2200-8", price: 1112.76 }
+            },
+            "Ti-4200-8": {
+                partNumber: "1003-8427",
+                description: "Barrier Ti-4200-8 UV System",
+                price: 24565.50,
+                hasWiper: true,
+                cables: {
+                    "30": { pn: "1003-8143", desc: "Cable Kit, Ti-4200-8, 30'", price: 1764.52 },
+                    "45": { pn: "1003-8144", desc: "Cable Kit, Ti-4200-8, 45'", price: 2047.26 }
+                },
+                wiper: { pn: "1003-8138", desc: "Manual Wiper Kit, Barrier Ti-4200-8", price: 1566.95 }
+            }
+        };
+
+        const models = ["Ti-1200-4", "Ti-2200-8", "Ti-4200-8"];
+
+        function fmt(n) {
+            return n.toLocaleString('en-US', { minimumFractionDigits: 2 });
+        }
+
+        function recommendModel() {
+            const flow = parseFloat(document.getElementById('flowRate').value);
+            const uvt = parseInt(document.getElementById('uvtPct').value);
+            const box = document.getElementById('recommendationBox');
+
+            models.forEach(m => document.getElementById('opt-' + m).classList.remove('is-recommended'));
+
+            if (!flow || flow <= 0) {
+                box.className = 'recommendation-box';
+                return;
+            }
+
+            const caps = uvtTable[uvt];
+            const suitable = models.filter(m => caps[m] >= flow);
+
+            if (suitable.length === 0) {
+                box.className = 'recommendation-box warn show';
+                box.innerHTML = `<strong>Flow exceeds single-unit capacity.</strong> The Ti-4200-8 handles up to ${caps["Ti-4200-8"]} gpm at ${uvt}% UVT. For ${flow} gpm, multiple units or a custom configuration may be required — contact your Neptune Benson representative.`;
+                return;
+            }
+
+            const recommended = suitable[0];
+            document.getElementById('opt-' + recommended).classList.add('is-recommended');
+            document.querySelector(`input[value="${recommended}"]`).checked = true;
+            updateQuote();
+
+            const cap = caps[recommended];
+            box.className = 'recommendation-box info show';
+            box.innerHTML = `<strong>${recommended} recommended</strong> — rated up to ${cap} gpm at ${uvt}% UVT, covering your ${flow} gpm requirement.`;
+        }
+
+        function updateCableHints(model) {
+            if (!model) return;
+            const d = modelData[model];
+            document.getElementById('cableHint30').textContent = '$' + fmt(d.cables['30'].price);
+            document.getElementById('cableHint45').textContent = '$' + fmt(d.cables['45'].price);
+        }
+
+        function updateWiperVisibility(model) {
+            const avail  = document.getElementById('wiperAvailable');
+            const na     = document.getElementById('wiperNotAvailable');
+            const prompt = document.getElementById('wiperSelectModel');
+
+            if (!model) {
+                avail.classList.add('hidden');
+                na.classList.add('hidden');
+                prompt.classList.remove('hidden');
+                return;
+            }
+            prompt.classList.add('hidden');
+            const hasWiper = modelData[model].hasWiper;
+            avail.classList.toggle('hidden', !hasWiper);
+            na.classList.toggle('hidden', hasWiper);
+            if (!hasWiper) document.getElementById('includeWiper').checked = false;
+        }
+
+        function updateQuote() {
+            const model    = document.querySelector('input[name="uvModel"]:checked')?.value;
+            const cableLen = document.querySelector('input[name="cableLen"]:checked')?.value;
+
+            updateCableHints(model);
+            updateWiperVisibility(model);
+
+            if (!model || !cableLen) {
+                document.getElementById('quoteSection').classList.add('hidden');
+                return;
+            }
+
+            const data         = modelData[model];
+            const cable        = data.cables[cableLen];
+            const includeWiper = document.getElementById('includeWiper').checked && data.hasWiper;
+            const discountPct  = parseFloat(document.getElementById('discountPct').value) || 0;
+
+            let html     = '';
+            let subtotal = 0;
+
+            // System unit
+            html += `<tr>
+                <td>${data.partNumber}</td>
+                <td>${data.description}</td>
+                <td>1</td>
+                <td class="price">$${fmt(data.price)}</td>
+            </tr>`;
+            subtotal += data.price;
+
+            // Cable kit
+            html += `<tr>
+                <td>${cable.pn}</td>
+                <td>${cable.desc}</td>
+                <td>1</td>
+                <td class="price">$${fmt(cable.price)}</td>
+            </tr>`;
+            subtotal += cable.price;
+
+            // Wiper kit (optional)
+            if (includeWiper && data.wiper) {
+                html += `<tr>
+                    <td>${data.wiper.pn}</td>
+                    <td>${data.wiper.desc}</td>
+                    <td>1</td>
+                    <td class="price">$${fmt(data.wiper.price)}</td>
+                </tr>`;
+                subtotal += data.wiper.price;
+            }
+
+            // Discount row
+            const discountAmt     = subtotal * (discountPct / 100);
+            const discountedTotal = subtotal - discountAmt;
+
+            if (discountPct > 0) {
+                html += `<tr>
+                    <td colspan="3" style="font-style:italic;">Discount (${discountPct}%)</td>
+                    <td class="price quote-discount">-$${fmt(discountAmt)}</td>
+                </tr>`;
+            }
+
+            document.getElementById('quoteBody').innerHTML = html;
+
+            const totalWrap = document.getElementById('quoteTotalWrap');
+            if (discountPct > 0) {
+                totalWrap.innerHTML = `
+                    <div style="font-size:1em;opacity:0.7;text-decoration:line-through;text-align:right;">List: $${fmt(subtotal)}</div>
+                    <div>Total: <span id="quoteTotal">$${fmt(discountedTotal)}</span></div>`;
+            } else {
+                totalWrap.innerHTML = `Total: <span id="quoteTotal">$${fmt(subtotal)}</span>`;
+            }
+
+            // Print summary line
+            const flow = document.getElementById('flowRate').value;
+            const uvt  = document.getElementById('uvtPct').value;
+            document.getElementById('printConfigSummary').innerHTML =
+                `<strong>Model:</strong> ${model} &nbsp;|&nbsp;` +
+                `<strong>Flow:</strong> ${flow || '—'} gpm &nbsp;|&nbsp;` +
+                `<strong>UVT:</strong> ${uvt}% &nbsp;|&nbsp;` +
+                `<strong>Cable:</strong> ${cableLen} ft &nbsp;|&nbsp;` +
+                `<strong>Wiper Kit:</strong> ${includeWiper ? 'Yes' : 'No'} &nbsp;|&nbsp;` +
+                `<strong>Discount:</strong> ${discountPct > 0 ? discountPct + '%' : 'None'}`;
+
+            document.getElementById('quoteSection').classList.remove('hidden');
+        }
+
+        function requestQuote() {
+            const model    = document.querySelector('input[name="uvModel"]:checked')?.value;
+            const cableLen = document.querySelector('input[name="cableLen"]:checked')?.value;
+            if (!model || !cableLen) return;
+
+            const data         = modelData[model];
+            const cable        = data.cables[cableLen];
+            const includeWiper = document.getElementById('includeWiper').checked && data.hasWiper;
+            const discountPct  = parseFloat(document.getElementById('discountPct').value) || 0;
+            const flow         = document.getElementById('flowRate').value;
+            const uvt          = document.getElementById('uvtPct').value;
+            const totalEl      = document.getElementById('quoteTotal');
+            const total        = totalEl ? totalEl.textContent : '';
+
+            let subtotal = data.price + cable.price;
+            if (includeWiper && data.wiper) subtotal += data.wiper.price;
+            const discountAmt = subtotal * (discountPct / 100);
+
+            let parts = 'PARTS LIST:\n' + '─'.repeat(60) + '\n';
+            parts += `${data.partNumber}  |  ${data.description}  |  Qty: 1  |  $${fmt(data.price)}\n`;
+            parts += `${cable.pn}  |  ${cable.desc}  |  Qty: 1  |  $${fmt(cable.price)}\n`;
+            if (includeWiper && data.wiper) {
+                parts += `${data.wiper.pn}  |  ${data.wiper.desc}  |  Qty: 1  |  $${fmt(data.wiper.price)}\n`;
+            }
+            if (discountPct > 0) {
+                parts += `Discount (${discountPct}%): -$${fmt(discountAmt)}\n`;
+            }
+            parts += '─'.repeat(60) + '\n';
+            parts += `TOTAL: ${total}\n`;
+            parts += '\nPART NUMBERS:\n';
+            parts += data.partNumber + '  1\n';
+            parts += cable.pn + '  1\n';
+            if (includeWiper && data.wiper) parts += data.wiper.pn + '  1\n';
+
+            const subject = encodeURIComponent(`Barrier Ti Quote Request — ${model}`);
+            const body = encodeURIComponent(
+                `I would like to request a quote for a Barrier Ti UV System:\n\n` +
+                `Model: ${model}\n` +
+                `Flow Rate: ${flow || 'Not specified'} gpm\n` +
+                `UVT: ${uvt}%\n` +
+                `Cable Length: ${cableLen} ft\n` +
+                `Wiper Kit: ${includeWiper ? 'Yes' : 'No'}\n\n` +
+                `${parts}\n\nPlease contact me to finalize this order.`
+            );
+
+            const to = 'Christian.Balents@Xylem.com,Jamie.Wood@Xylem.com';
+            const cc = 'ets-uv.service@xylem.com';
+            window.location.href = `mailto:${to}?cc=${cc}&subject=${subject}&body=${body}`;
+        }
+    </script>
+</body>
+</html>
